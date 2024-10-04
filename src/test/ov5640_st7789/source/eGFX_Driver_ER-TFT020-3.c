@@ -85,7 +85,8 @@ void eGFX_duplicate_and_dump2(eGFX_ImagePlane *Image)
 
 }
 
-uint16_t scaled_row_buff_storage[eGFX_PHYSICAL_SCREEN_SIZE_X*2][2];
+uint16_t scaled_row_buff_storage1[eGFX_PHYSICAL_SCREEN_SIZE_X*2];
+uint16_t scaled_row_buff_storage2[eGFX_PHYSICAL_SCREEN_SIZE_X*2];
 
 uint8_t buff_index = 0;
 
@@ -99,11 +100,6 @@ void eGFX_duplicate_and_dump(eGFX_ImagePlane *Image)
 
     GPIO_PinWrite(GPIO4, 1, 1);
 
-
-    //LPSPI1->TCR &= ~(LPSPI_TCR_FRAMESZ_MASK);
-    //LPSPI1->TCR |= LPSPI_TCR_FRAMESZ(8-1);
-
-
     lpspi1_init(8);
 
 
@@ -111,19 +107,14 @@ void eGFX_duplicate_and_dump(eGFX_ImagePlane *Image)
     LCD_SetPos(0, 319, 0, 239); // 320x240
 #endif
 
-   // lpspi1_init(32);
-    //LPSPI1->TCR &= ~LPSPI_TCR_FRAMESZ_MASK;
-    //LPSPI1->TCR |= LPSPI_TCR_FRAMESZ(32-1);
-
+    lpspi1_init(32);
 
     delta = 0;
-
     buff_index = 0;
-    scaled_row_buff = &scaled_row_buff_storage[0][buff_index];
+    scaled_row_buff = &scaled_row_buff_storage1[0];
 
     for(uint32_t j = 0; j < 120; j++)
     {
-
 
         for(uint32_t i = 0; i < 160; i++)
         {
@@ -131,8 +122,8 @@ void eGFX_duplicate_and_dump(eGFX_ImagePlane *Image)
             scaled_row_buff[2*i + 1] = original_row_buffer[i + delta];
 
 
-            scaled_row_buff[2*i + eGFX_PHYSICAL_SCREEN_SIZE_X] = original_row_buffer[i + delta];
-            scaled_row_buff[2*i + 1 + eGFX_PHYSICAL_SCREEN_SIZE_X] = original_row_buffer[i + delta];
+            scaled_row_buff[2*i + 320] = original_row_buffer[i + delta];
+            scaled_row_buff[2*i + 1 + 320] = original_row_buffer[i + delta];
 
         }
 
@@ -140,12 +131,16 @@ void eGFX_duplicate_and_dump(eGFX_ImagePlane *Image)
 
         ST7789__display_row(scaled_row_buff, eGFX_PHYSICAL_SCREEN_SIZE_X*2);
 
-        buff_index++;
-        buff_index &=0x01;
-        scaled_row_buff = &scaled_row_buff_storage[0][buff_index];
+        if(scaled_row_buff == &scaled_row_buff_storage2[0])
+        {
+        	scaled_row_buff = &scaled_row_buff_storage1[0];
+        }
+        else
+        {
+        	scaled_row_buff = &scaled_row_buff_storage2[0];
+        }
 
-
-    }
+   }
 
     GPIO_PinWrite(GPIO4, 1, 0);
 }

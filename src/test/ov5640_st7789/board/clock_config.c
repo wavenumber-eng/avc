@@ -22,7 +22,7 @@ product: Clocks v14.0
 processor: MCXN947
 package_id: MCXN947VDF
 mcu_data: ksdk2_0
-processor_version: 16.2.0
+processor_version: 16.3.0
 board: FRDM-MCXN947
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
 /* clang-format on */

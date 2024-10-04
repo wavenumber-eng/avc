@@ -11,7 +11,7 @@ product: Pins v16.0
 processor: MCXN947
 package_id: MCXN947VDF
 mcu_data: ksdk2_0
-processor_version: 16.2.0
+processor_version: 16.3.0
 board: FRDM-MCXN947
 pin_labels:
 - {pin_num: P1, pin_signal: PIO4_0/WUU0_IN18/TRIG_IN6/FC2_P0/CT_INP16/EZH_PIO24/PLU_IN0/SINC0_MCLK3, label: 'P4_0/J8[4]/SJ14[1]', identifier: CAM_DEBUG}

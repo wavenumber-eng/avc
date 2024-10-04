@@ -25,7 +25,7 @@
             <file path="board/pin_mux.h" update_enabled="true"/>
          </generated_project_files>
          <pins_profile>
-            <processor_version>16.2.0</processor_version>
+            <processor_version>16.3.0</processor_version>
             <pin_labels>
                <pin_label pin_num="P1" pin_signal="PIO4_0/WUU0_IN18/TRIG_IN6/FC2_P0/CT_INP16/EZH_PIO24/PLU_IN0/SINC0_MCLK3" label="P4_0/J8[4]/SJ14[1]" identifier="CAM_DEBUG"/>
                <pin_label pin_num="D2" pin_signal="PIO1_12/WUU0_IN12/TRACE_CLK/FC4_P4/FC3_P0/CT2_MAT2/SCT0_OUT4/FLEXIO0_D20/EZH_PIO8/PLU_OUT2/ENET0_RXER/CAN1_RXD/TSI0_CH21/ADC1_A12" label="P1_12/J2[11]/J9[28]" identifier="BACK_LIGHT"/>
@@ -249,7 +249,7 @@
             <file path="board/clock_config.h" update_enabled="true"/>
          </generated_project_files>
          <clocks_profile>
-            <processor_version>16.2.0</processor_version>
+            <processor_version>16.3.0</processor_version>
          </clocks_profile>
          <clock_configurations>
             <clock_configuration name="BOARD_BootClockFRO12M" id_prefix="" prefix_user_defined="false">
