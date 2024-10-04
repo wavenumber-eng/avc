@@ -1,0 +1,25 @@
+{
+    "workbench.colorCustomizations": {
+        "activityBar.activeBackground": "#adf062",
+        "activityBar.background": "#adf062",
+        "activityBar.foreground": "#15202b",
+        "activityBar.inactiveForeground": "#15202b99",
+        "activityBarBadge.background": "#3395ec",
+        "activityBarBadge.foreground": "#15202b",
+        "commandCenter.border": "#15202b99",
+        "sash.hoverBorder": "#adf062",
+        "statusBar.background": "#95eb34",
+        "statusBar.foreground": "#15202b",
+        "statusBarItem.hoverBackground": "#7cd715",
+        "statusBarItem.remoteBackground": "#95eb34",
+        "statusBarItem.remoteForeground": "#15202b",
+        "titleBar.activeBackground": "#95eb34",
+        "titleBar.activeForeground": "#15202b",
+        "titleBar.inactiveBackground": "#95eb3499",
+        "titleBar.inactiveForeground": "#15202b99"
+    },
+    "peacock.color": "#95eb34",
+    "files.associations": {
+        "avc__motor_control.h": "c"
+    }
+}
