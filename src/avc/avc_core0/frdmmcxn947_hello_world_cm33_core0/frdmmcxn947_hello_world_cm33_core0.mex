@@ -119,7 +119,6 @@
                   </pin>
                   <pin peripheral="PWM1" signal="A, 0" pin_num="K2" pin_signal="PIO2_6/TRIG_IN4/FC9_P4/SDHC0_D3/SCT0_OUT4/PWM1_A0/FLEXIO0_D14/EZH_PIO26/FLEXSPI0_B_DATA2/SINC0_MCLK2/SAI0_TX_BCLK"/>
                   <pin peripheral="PWM1" signal="A, 1" pin_num="K3" pin_signal="PIO2_4/WUU0_IN17/FC9_P0/SDHC0_CLK/SCT0_OUT2/PWM1_A1/FLEXIO0_D12/EZH_PIO24/FLEXSPI0_B_DATA0/SINC0_MCLK1/SAI0_RXD1"/>
-                  <pin peripheral="PWM1" signal="A, 2" pin_num="H3" pin_signal="PIO2_2/WUU0_IN16/CLKOUT/FC9_P3/SDHC0_D1/SCT0_OUT0/PWM1_A2/FLEXIO0_D10/EZH_PIO22/FLEXSPI0_B_SS0_b/SINC0_MCLK0/SAI0_TXD0"/>
                   <pin peripheral="PWM1" signal="B, 0" pin_num="L2" pin_signal="PIO2_7/TRIG_IN5/FC9_P5/SDHC0_D2/SCT0_OUT5/PWM1_B0/FLEXIO0_D15/EZH_PIO27/FLEXSPI0_B_DATA3/SINC0_MBIT2/SAI0_TX_FS"/>
                   <pin peripheral="PWM1" signal="B, 1" pin_num="K1" pin_signal="PIO2_5/TRIG_OUT3/FC9_P2/SDHC0_CMD/SCT0_OUT3/PWM1_B1/FLEXIO0_D13/EZH_PIO25/FLEXSPI0_B_DATA1/SINC0_MBIT1/SAI0_TXD1"/>
                   <pin peripheral="ADC0" signal="A, 0" pin_num="P3" pin_signal="ADC0_A0"/>
@@ -133,6 +132,7 @@
                         <pin_feature name="direction" value="INPUT"/>
                      </pin_features>
                   </pin>
+                  <pin peripheral="PWM1" signal="B, 2" pin_num="J3" pin_signal="PIO2_3/FC9_P1/SDHC0_D0/SCT0_OUT1/PWM1_B2/FLEXIO0_D11/EZH_PIO23/FLEXSPI0_B_SCLK/SINC0_MBIT0/SAI0_RXD0"/>
                </pins>
             </function>
             <function name="BOARD_LCDPins">

@@ -139,6 +139,45 @@ void BOARD_InitPins_Core0(void);
  */
 void BOARD_LCDPins(void);
 
+#define PCR_DSE_dse1 0x01u /*!<@brief Drive Strength Enable: High */
+#define PCR_IBE_ibe1 0x01u /*!<@brief Input Buffer Enable: Enables */
+#define PCR_INV_inv0 0x00u /*!<@brief Invert Input: Does not invert */
+#define PCR_SRE_sre0 0x00u /*!<@brief Slew Rate Enable: Fast */
+
+/*! @name PORT1_18 (coord G4), P1_18/J9[6]
+  @{ */
+
+/* Symbols to be used with GPIO driver */
+#define BOARD_CAMPINS_CAM_PDWN_GPIO GPIO1                /*!<@brief GPIO peripheral base pointer */
+#define BOARD_CAMPINS_CAM_PDWN_GPIO_PIN 18U              /*!<@brief GPIO pin number */
+#define BOARD_CAMPINS_CAM_PDWN_GPIO_PIN_MASK (1U << 18U) /*!<@brief GPIO pin mask */
+
+/* Symbols to be used with PORT driver */
+#define BOARD_CAMPINS_CAM_PDWN_PORT PORT1                /*!<@brief PORT peripheral base pointer */
+#define BOARD_CAMPINS_CAM_PDWN_PIN 18U                   /*!<@brief PORT pin number */
+#define BOARD_CAMPINS_CAM_PDWN_PIN_MASK (1U << 18U)      /*!<@brief PORT pin mask */
+                                                         /* @} */
+
+/*! @name PORT1_19 (coord G5), P1_19/J9[5]
+  @{ */
+
+/* Symbols to be used with GPIO driver */
+#define BOARD_CAMPINS_CAM_RST_GPIO GPIO1                /*!<@brief GPIO peripheral base pointer */
+#define BOARD_CAMPINS_CAM_RST_GPIO_PIN 19U              /*!<@brief GPIO pin number */
+#define BOARD_CAMPINS_CAM_RST_GPIO_PIN_MASK (1U << 19U) /*!<@brief GPIO pin mask */
+
+/* Symbols to be used with PORT driver */
+#define BOARD_CAMPINS_CAM_RST_PORT PORT1                /*!<@brief PORT peripheral base pointer */
+#define BOARD_CAMPINS_CAM_RST_PIN 19U                   /*!<@brief PORT pin number */
+#define BOARD_CAMPINS_CAM_RST_PIN_MASK (1U << 19U)      /*!<@brief PORT pin mask */
+                                                        /* @} */
+
+/*!
+ * @brief Configures pin routing and optionally pin electrical features.
+ *
+ */
+void BOARD_CAMPins(void);
+
 #if defined(__cplusplus)
 }
 #endif

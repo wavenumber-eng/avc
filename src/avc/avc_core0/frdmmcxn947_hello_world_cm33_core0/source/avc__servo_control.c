@@ -19,7 +19,7 @@ void avc__servo_control_init()
     pwmConfig.pairOperation   = kPWM_Independent;
     PWM_Init(PWM1, kPWM_Module_2, &pwmConfig);
 
-    pwmSignal_single.pwmChannel       = kPWM_PwmA;
+    pwmSignal_single.pwmChannel       = kPWM_PwmB;
     pwmSignal_single.level            = kPWM_HighTrue;
     pwmSignal_single.dutyCyclePercent = 5; 
     pwmSignal_single.faultState       = kPWM_PwmFaultState0;
@@ -42,7 +42,7 @@ void avc__set_servo(int8_t position)
 
     PWM_UpdatePwmDutycycleHighAccuracy(PWM1,
                                         kPWM_Module_2,
-                                        kPWM_PwmA,
+                                        kPWM_PwmB,
                                         kPWM_SignedCenterAligned,
                                         position_counts);
 
