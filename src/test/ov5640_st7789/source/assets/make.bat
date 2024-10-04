@@ -1,0 +1,1 @@
+.\eGFX_Tools.exe GenerateSprites ./ eGFX_IMAGE_PLANE_16BPP_RGB565 ./
