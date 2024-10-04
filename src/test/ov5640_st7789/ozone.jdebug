@@ -32,7 +32,7 @@ void OnProjectLoad (void) {
   //
   // User settings
   //
-  File.Open ("./Debug/ov5640__frdmmcxn947_smartdma_camera_flexio_mculcd_camera.axf");
+  File.Open ("./Debug/ov5640_st7789.axf");
 }
 
 /*********************************************************************

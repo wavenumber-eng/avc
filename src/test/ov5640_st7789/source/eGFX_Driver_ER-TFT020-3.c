@@ -55,7 +55,7 @@ void eGFX_Dump(eGFX_ImagePlane *Image)
 }
 
 
-void eGFX_duplicate_and_dump(eGFX_ImagePlane *Image)
+void eGFX_duplicate_and_dump2(eGFX_ImagePlane *Image)
 {
     uint16_t *original_row_buffer = (uint16_t *)Image->Data;
     uint16_t scaled_row_buff[eGFX_PHYSICAL_SCREEN_SIZE_X];
@@ -84,6 +84,72 @@ void eGFX_duplicate_and_dump(eGFX_ImagePlane *Image)
     GPIO_PinWrite(GPIO4, 1, 0);
 
 }
+
+uint16_t scaled_row_buff_storage[eGFX_PHYSICAL_SCREEN_SIZE_X*2][2];
+
+uint8_t buff_index = 0;
+
+uint16_t *scaled_row_buff;
+
+void eGFX_duplicate_and_dump(eGFX_ImagePlane *Image)
+{
+    uint16_t *original_row_buffer = (uint16_t *)Image->Data;
+
+    uint32_t delta;
+
+    GPIO_PinWrite(GPIO4, 1, 1);
+
+
+    //LPSPI1->TCR &= ~(LPSPI_TCR_FRAMESZ_MASK);
+    //LPSPI1->TCR |= LPSPI_TCR_FRAMESZ(8-1);
+
+
+    lpspi1_init(8);
+
+
+#if (defined(CONFIG_DISPLAY_ORIENTATION) && (CONFIG_DISPLAY_ORIENTATION == LANDSCAPE))
+    LCD_SetPos(0, 319, 0, 239); // 320x240
+#endif
+
+   // lpspi1_init(32);
+    //LPSPI1->TCR &= ~LPSPI_TCR_FRAMESZ_MASK;
+    //LPSPI1->TCR |= LPSPI_TCR_FRAMESZ(32-1);
+
+
+    delta = 0;
+
+    buff_index = 0;
+    scaled_row_buff = &scaled_row_buff_storage[0][buff_index];
+
+    for(uint32_t j = 0; j < 120; j++)
+    {
+
+
+        for(uint32_t i = 0; i < 160; i++)
+        {
+            scaled_row_buff[2*i] = original_row_buffer[i + delta];
+            scaled_row_buff[2*i + 1] = original_row_buffer[i + delta];
+
+
+            scaled_row_buff[2*i + eGFX_PHYSICAL_SCREEN_SIZE_X] = original_row_buffer[i + delta];
+            scaled_row_buff[2*i + 1 + eGFX_PHYSICAL_SCREEN_SIZE_X] = original_row_buffer[i + delta];
+
+        }
+
+        delta +=160;
+
+        ST7789__display_row(scaled_row_buff, eGFX_PHYSICAL_SCREEN_SIZE_X*2);
+
+        buff_index++;
+        buff_index &=0x01;
+        scaled_row_buff = &scaled_row_buff_storage[0][buff_index];
+
+
+    }
+
+    GPIO_PinWrite(GPIO4, 1, 0);
+}
+
 
 void eGFX_SetBacklight(uint8_t BacklightValue)
 {
