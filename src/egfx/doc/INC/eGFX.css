@@ -1,0 +1,28 @@
+div.MainBody {
+  max-width: 800;
+  margin: 20px;
+  border: 3px solid #888888;
+  padding: 5px 10px;
+}
+
+
+img {
+    max-width: 100%;
+}
+
+
+p {
+  font-family: Consolas, Helvetica, sans-serif;
+}
+
+ul {
+  font-family: Consolas, Helvetica, sans-serif;
+}
+
+h1 {
+  font-family: Consolas, Helvetica, sans-serif;
+}
+
+h2 {
+  font-family: Consolas, Helvetica, sans-serif;
+}
