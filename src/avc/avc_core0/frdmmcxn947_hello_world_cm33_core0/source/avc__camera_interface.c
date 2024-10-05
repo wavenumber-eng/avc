@@ -6,28 +6,9 @@
 #include "fsl_ov5640.h"
 #include "board.h"
 #include "fsl_smartdma.h"
+#include "lpspi1.h"
 
-/* Symbols to be used with GPIO driver */
-#define BOARD_INITCAMERAPINS_CAM_RST_GPIO GPIO1                /*!<@brief GPIO peripheral base pointer */
-#define BOARD_INITCAMERAPINS_CAM_RST_GPIO_PIN 19U              /*!<@brief GPIO pin number */
-#define BOARD_INITCAMERAPINS_CAM_RST_GPIO_PIN_MASK (1U << 19U) /*!<@brief GPIO pin mask */
-
-/* Symbols to be used with PORT driver */
-#define BOARD_INITCAMERAPINS_CAM_RST_PORT PORT1                /*!<@brief PORT peripheral base pointer */
-#define BOARD_INITCAMERAPINS_CAM_RST_PIN 19U                   /*!<@brief PORT pin number */
-#define BOARD_INITCAMERAPINS_CAM_RST_PIN_MASK (1U << 19U)      /*!<@brief PORT pin mask */
-                                                               /* @} */
-
-/* Symbols to be used with GPIO driver */
-#define BOARD_INITCAMERAPINS_CAM_PDWN_GPIO GPIO1                /*!<@brief GPIO peripheral base pointer */
-#define BOARD_INITCAMERAPINS_CAM_PDWN_GPIO_PIN 18U              /*!<@brief GPIO pin number */
-#define BOARD_INITCAMERAPINS_CAM_PDWN_GPIO_PIN_MASK (1U << 18U) /*!<@brief GPIO pin mask */
-
-/* Symbols to be used with PORT driver */
-#define BOARD_INITCAMERAPINS_CAM_PDWN_PORT PORT1                /*!<@brief PORT peripheral base pointer */
-#define BOARD_INITCAMERAPINS_CAM_PDWN_PIN 18U                   /*!<@brief PORT pin number */
-#define BOARD_INITCAMERAPINS_CAM_PDWN_PIN_MASK (1U << 18U)      /*!<@brief PORT pin mask */
-              
+    
 
 #if CONFIG__CAMERA_SELECT == CAMERA__OV7670
 /* Camera resource and handle */
@@ -63,6 +44,17 @@ camera_device_handle_t handle =
 
 static uint16_t g_camera_buffer[DEMO_BUFFER_WIDTH * DEMO_BUFFER_HEIGHT];
 volatile uint8_t g_samrtdma_stack[32] = {0};
+
+
+uint16_t processing_buffer [160 * 120];
+eGFX_ImagePlane camera_image =
+{
+    .Type =  eGFX_IMAGE_PLANE_16BPP_RGB565, 
+    .Data = (uint8_t *)processing_buffer, 
+    .SizeX = 320, 
+    .SizeY = 240, 
+    .User = NULL
+};
 
 void avc__camera_interface_init()
 {
@@ -188,9 +180,14 @@ void camera__pull_power_pin(bool pullUp)
         GPIO_PortClear(BOARD_INITCAMERAPINS_CAM_PDWN_GPIO, BOARD_INITCAMERAPINS_CAM_PDWN_GPIO_PIN_MASK);
 }
 
-volatile bool cam_data_rdy = false;
 
 static void SDMA_CompleteCallback(void *param)
 {
-    cam_data_rdy = 1;
+    if(display_data_request)
+    {
+        dma_copy_buffer((uint32_t * )g_camera_buffer, (uint32_t * )camera_image.Data, 1, 160 * 120 * 2);
+        display_data_request = false;
+    }
+
+    GPIO_PinWrite(GPIO4, 0, 1);
 }

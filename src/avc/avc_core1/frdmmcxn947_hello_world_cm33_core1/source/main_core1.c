@@ -75,7 +75,7 @@ int main(void)
     }
 
     /* Configure LED */
-    LED_INIT();
+//    LED_INIT();
 
 //    CLOCK_SetClkDiv(kCLOCK_DivFlexcom1Clk, 1u);
 //    CLOCK_AttachClk(kPLL_DIV_to_FLEXCOMM1);
@@ -90,7 +90,7 @@ int main(void)
     for (;;)
     {
         SDK_DelayAtLeastUs(500000U, SDK_DEVICE_MAXIMUM_CPU_CLOCK_FREQUENCY);
-        LED_TOGGLE();
+//        LED_TOGGLE();
         //if(cam_data_rdy)
         //{
         //    LED_TOGGLE();

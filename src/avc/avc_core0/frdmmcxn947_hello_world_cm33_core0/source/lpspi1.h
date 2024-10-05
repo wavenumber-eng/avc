@@ -7,6 +7,7 @@
 
 extern volatile bool isTransferCompleted;
 extern volatile bool mem_transfer_done;
+extern volatile bool display_data_request;
 
 extern void lpspi1_init(uint8_t transaction_bits);
 extern void lpspi1_transfer_block(void *block, uint32_t block_size);

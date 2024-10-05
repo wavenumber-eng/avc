@@ -25,20 +25,6 @@ extern "C" {
  */
 void BOARD_InitBootPins(void);
 
-/*! @name PORT0_10 (coord B12), P0_10/SJ5[1]
-  @{ */
-
-/* Symbols to be used with GPIO driver */
-#define BOARD_INITPINS_CORE1_LED_RED_GPIO GPIO0                /*!<@brief GPIO peripheral base pointer */
-#define BOARD_INITPINS_CORE1_LED_RED_GPIO_PIN 10U              /*!<@brief GPIO pin number */
-#define BOARD_INITPINS_CORE1_LED_RED_GPIO_PIN_MASK (1U << 10U) /*!<@brief GPIO pin mask */
-
-/* Symbols to be used with PORT driver */
-#define BOARD_INITPINS_CORE1_LED_RED_PORT PORT0                /*!<@brief PORT peripheral base pointer */
-#define BOARD_INITPINS_CORE1_LED_RED_PIN 10U                   /*!<@brief PORT pin number */
-#define BOARD_INITPINS_CORE1_LED_RED_PIN_MASK (1U << 10U)      /*!<@brief PORT pin mask */
-                                                               /* @} */
-
 /*!
  * @brief Configures pin routing and optionally pin electrical features.
  *

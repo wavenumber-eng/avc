@@ -20,6 +20,7 @@ volatile bool mem_transfer_done = false;
 
 edma_handle_t g_DMA_Handle;
 
+volatile bool display_data_request = true;
 
 
 void lpspi1_init(uint8_t transaction_bits)
@@ -121,7 +122,6 @@ void dma_copy_buffer(void * src_buff, void * dest_buff, uint8_t data_width, uint
     EDMA_StartTransfer(&g_DMA_Handle);
 
 
-//    while (mem_transfer_done != true);
 
 }
 
