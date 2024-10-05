@@ -12,6 +12,7 @@
 #include "fsl_common.h"
 #include "fsl_gpio.h"
 
+#include "ipc.h"
 
 //#include "st7789.h"
 //#include "lpspi1.h"
@@ -48,6 +49,8 @@ void SystemInitHook(void)
 /*!
  * @brief Main function
  */
+
+volatile uint32_t test_counter;
 int main(void)
 {
     uint32_t startupData, i;
@@ -89,7 +92,10 @@ int main(void)
 
     for (;;)
     {
+    	test_counter++;
         SDK_DelayAtLeastUs(500000U, SDK_DEVICE_MAXIMUM_CPU_CLOCK_FREQUENCY);
+       // avc_ipc.core1_counter++;
+
 //        LED_TOGGLE();
         //if(cam_data_rdy)
         //{

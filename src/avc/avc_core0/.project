@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>frdmmcxn947_hello_world_cm33_core0</name>
+	<name>avc_core0</name>
 	<comment></comment>
 	<projects>
 		<project>frdmmcxn947_hello_world_cm33_core1</project>
 	</projects>
 	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.xtext.ui.shared.xtextBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
 		<buildCommand>
 			<name>org.eclipse.cdt.managedbuilder.core.genmakebuilder</name>
 			<triggers>clean,full,incremental,</triggers>
@@ -24,5 +29,23 @@
 		<nature>com.nxp.mcuxpresso.core.datamodels.sdkNature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
+		<nature>org.eclipse.xtext.ui.shared.xtextNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>ipc</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>ipc/ipc.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/ipc/ipc.c</locationURI>
+		</link>
+		<link>
+			<name>ipc/ipc.h</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/ipc/ipc.h</locationURI>
+		</link>
+	</linkedResources>
 </projectDescription>

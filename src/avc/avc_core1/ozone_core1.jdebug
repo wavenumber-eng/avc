@@ -4,8 +4,8 @@
 *                         www.segger.com                             *
 **********************************************************************
 
-File          : C:/ELI/projects/Wavenumber/avc/src/avc/avc_core0/mcxn947_core0.jdebug
-Created       : 5 Oct 2024 15:05
+File          : C:/ELI/projects/Wavenumber/avc/src/avc/avc_core1/ozone_core1.jdebug
+Created       : 5 Oct 2024 15:09
 Ozone Version : V3.36
 */
 
@@ -22,9 +22,9 @@ void OnProjectLoad (void) {
   //
   // Dialog-generated settings
   //
-  Project.AddPathSubstitute ("C:/ELI/projects/Wavenumber/avc/src/avc/avc_core0", "$(ProjectDir)");
-  Project.AddPathSubstitute ("c:/eli/projects/wavenumber/avc/src/avc/avc_core0", "$(ProjectDir)");
-  Project.SetDevice ("MCXN947_M33_0");
+  Project.AddPathSubstitute ("C:/ELI/projects/Wavenumber/avc/src/avc/avc_core1", "$(ProjectDir)");
+  Project.AddPathSubstitute ("c:/eli/projects/wavenumber/avc/src/avc/avc_core1", "$(ProjectDir)");
+  Project.SetDevice ("MCXN947_M33_1");
   Project.SetHostIF ("USB", "");
   Project.SetTargetIF ("SWD");
   Project.SetTIFSpeed ("4 MHz");
@@ -32,7 +32,7 @@ void OnProjectLoad (void) {
   //
   // User settings
   //
-  File.Open ("./Debug/avc_core0.axf");
+  File.Open ("$(ProjectDir)/Debug/avc_core1.axf");
 }
 
 /*********************************************************************

@@ -15,6 +15,7 @@
 #include "avc__motor_control.h"
 #include "avc__servo_control.h"
 #include "avc__camera_master_config.h"
+#include "ipc.h"
 
 #define CONFIG__CAMERA_CORE0_ENABLE 1
 
@@ -94,6 +95,9 @@ volatile uint16_t bat;
 /*!
  * @brief Main function
  */
+
+volatile uint32_t test;
+
 int main(void)
 {
 
@@ -165,7 +169,8 @@ int main(void)
 
     while (1)
     {
-        
+        //test = avc_ipc.core1_counter;
+
         bat = avc__read_battery_voltage();
         
         // Test mode enable
