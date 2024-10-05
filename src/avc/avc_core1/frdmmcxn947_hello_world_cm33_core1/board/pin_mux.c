@@ -48,9 +48,7 @@ void BOARD_InitBootPins(void)
  * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
 BOARD_InitPins_Core1:
 - options: {callFromInitBoot: 'true', coreID: cm33_core1, enableClock: 'true'}
-- pin_list:
-  - {pin_num: B12, peripheral: GPIO0, signal: 'GPIO, 10', pin_signal: PIO0_10/FC0_P6/CT0_MAT0/FLEXIO0_D2/ADC0_B10, slew_rate: fast, open_drain: disable, drive_strength: low,
-    pull_select: down, pull_enable: disable, input_buffer: enable, invert_input: normal}
+- pin_list: []
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
 /* clang-format on */
@@ -63,31 +61,6 @@ BOARD_InitPins_Core1:
  * END ****************************************************************************************************************/
 void BOARD_InitPins_Core1(void)
 {
-    /* Enables the clock for PORT0 controller: Enables clock */
-    CLOCK_EnableClock(kCLOCK_Port0);
-
-    const port_pin_config_t LED_RED = {/* Internal pull-up/down resistor is disabled */
-                                       .pullSelect = kPORT_PullDisable,
-                                       /* Low internal pull resistor value is selected. */
-                                       .pullValueSelect = kPORT_LowPullResistor,
-                                       /* Fast slew rate is configured */
-                                       .slewRate = kPORT_FastSlewRate,
-                                       /* Passive input filter is disabled */
-                                       .passiveFilterEnable = kPORT_PassiveFilterDisable,
-                                       /* Open drain output is disabled */
-                                       .openDrainEnable = kPORT_OpenDrainDisable,
-                                       /* Low drive strength is configured */
-                                       .driveStrength = kPORT_LowDriveStrength,
-                                       /* Pin is configured as PIO0_10 */
-                                       .mux = kPORT_MuxAlt0,
-                                       /* Digital input enabled */
-                                       .inputBuffer = kPORT_InputBufferEnable,
-                                       /* Digital input is not inverted */
-                                       .invertInput = kPORT_InputNormal,
-                                       /* Pin Control Register fields [15:0] are not locked */
-                                       .lockRegister = kPORT_UnlockRegister};
-    /* PORT0_10 (pin B12) is configured as PIO0_10 */
-    PORT_SetPinConfig(BOARD_INITPINS_CORE1_LED_RED_PORT, BOARD_INITPINS_CORE1_LED_RED_PIN, &LED_RED);
 }
 
 /* clang-format off */

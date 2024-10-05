@@ -14,6 +14,7 @@
 #include "avc__adc.h"
 #include "avc__motor_control.h"
 #include "avc__servo_control.h"
+#include "avc__camera_master_config.h"
 
 #define CONFIG__CAMERA_CORE0_ENABLE 1
 
@@ -158,8 +159,8 @@ int main(void)
     lpspi1_init(8); // Initialize with 8-bit SPI transactions
     eGFX_InitDriver(0);
     eGFX_Dump(&Sprite_16BPP_RGB565_bg1);
-
     avc__camera_interface_init();
+
 #endif
 
     while (1)
@@ -177,6 +178,17 @@ int main(void)
 
             avc__set_motor_pwm(left_intensity, right_intensity);
             avc__set_servo(servo_position);
+
+
+            if((display_data_request == false)  && (mem_transfer_done == true))
+            {
+                #if CONFIG__OV7670_IS_160x120 == 1
+                    eGFX_duplicate_and_dump(&camera_image);
+                #else
+                    eGFX_Dump(&camera_image);
+                #endif
+                display_data_request = true;
+            }
 
         }
     }

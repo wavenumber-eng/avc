@@ -410,7 +410,7 @@ void BOARD_BootClockFROHF144M(void);
 #define BOARD_BOOTCLOCKPLL150M_CLK16K1_TOVSYS_CLOCK   0UL            /* Clock consumers of CLK16K1_toVSYS_clock output : CMP0, CMP1, CMP2, LPTMR0, LPTMR1 */
 #define BOARD_BOOTCLOCKPLL150M_CLK16K2_TOWAKE_CLOCK   0UL            /* Clock consumers of CLK16K2_toWAKE_clock output : N/A */
 #define BOARD_BOOTCLOCKPLL150M_CLK16K3_TOMAIN_CLOCK   0UL            /* Clock consumers of CLK16K3_toMAIN_clock output : N/A */
-#define BOARD_BOOTCLOCKPLL150M_CLKOUT_CLOCK           0UL            /* Clock consumers of CLKOUT_clock output : N/A */
+#define BOARD_BOOTCLOCKPLL150M_CLKOUT_CLOCK           6000000UL      /* Clock consumers of CLKOUT_clock output : N/A */
 #define BOARD_BOOTCLOCKPLL150M_CLK_144M_CLOCK         144000000UL    /* Clock consumers of CLK_144M_clock output : N/A */
 #define BOARD_BOOTCLOCKPLL150M_CLK_1M_CLOCK           0UL            /* Clock consumers of CLK_1M_clock output : N/A */
 #define BOARD_BOOTCLOCKPLL150M_CLK_48M_CLOCK          48000000UL     /* Clock consumers of CLK_48M_clock output : N/A */

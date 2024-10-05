@@ -49,25 +49,8 @@
                         <data>true</data>
                      </feature>
                   </dependency>
-                  <dependency resourceType="SWComponent" resourceId="platform.drivers.port" description="Pins initialization requires the PORT Driver in the project." problem_level="2" source="Pins:BOARD_InitPins_Core1">
-                     <feature name="enabled" evaluation="equal" configuration="cm33_core1">
-                        <data>true</data>
-                     </feature>
-                  </dependency>
                </dependencies>
-               <pins>
-                  <pin peripheral="GPIO0" signal="GPIO, 10" pin_num="B12" pin_signal="PIO0_10/FC0_P6/CT0_MAT0/FLEXIO0_D2/ADC0_B10">
-                     <pin_features>
-                        <pin_feature name="slew_rate" value="fast"/>
-                        <pin_feature name="open_drain" value="disable"/>
-                        <pin_feature name="drive_strength" value="low"/>
-                        <pin_feature name="pull_select" value="down"/>
-                        <pin_feature name="pull_enable" value="disable"/>
-                        <pin_feature name="input_buffer" value="enable"/>
-                        <pin_feature name="invert_input" value="normal"/>
-                     </pin_features>
-                  </pin>
-               </pins>
+               <pins/>
             </function>
             <function name="BOARD_CameraPins">
                <description>Configures pin routing and optionally pin electrical features.</description>

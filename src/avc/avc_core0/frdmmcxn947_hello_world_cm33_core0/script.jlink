@@ -1,7 +1,7 @@
 ExitOnError 1
 r
 h
-loadfile "C:\companies\wavenumber\bunny_vision\bunny_vision_sw\src\avc\avc_core0\frdmmcxn947_hello_world_cm33_core0\Debug\frdmmcxn947_hello_world_cm33_core0.hex"
+loadfile "C:\companies\wavenumber\avc_code\avc\src\avc\avc_core0\frdmmcxn947_hello_world_cm33_core0\Debug\frdmmcxn947_hello_world_cm33_core0.hex"
 qc
 
 qc

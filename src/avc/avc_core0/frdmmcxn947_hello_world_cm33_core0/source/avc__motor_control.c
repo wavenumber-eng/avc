@@ -80,7 +80,7 @@ void avc__enable_motor_control()
 {
     if(motor_ctrl_inst.outputs_enable == 0)
     {
-        PORT_SetPinMux(PORT2, 2U, kPORT_MuxAlt5); /* PORT2_2 (pin H3) is configured as PWM1_A2 */
+        PORT_SetPinMux(PORT2, 3U, kPORT_MuxAlt5); /* PORT2_2 (pin H3) is configured as PWM1_A2 */
         PORT_SetPinMux(PORT2, 4U, kPORT_MuxAlt5); /* PORT2_4 (pin K3) is configured as PWM1_A1 */
         PORT_SetPinMux(PORT2, 5U, kPORT_MuxAlt5); /* PORT2_5 (pin K1) is configured as PWM1_B1 */
         PORT_SetPinMux(PORT2, 6U, kPORT_MuxAlt5); /* PORT2_6 (pin K2) is configured as PWM1_A0 */
@@ -99,7 +99,7 @@ void avc__enable_motor_control()
  */
 void avc__disable_motor_control()
 {
-        PORT_SetPinMux(PORT2, 2U, kPORT_MuxAsGpio); /* PORT2_2 disconnected from PWM1_A2 */
+        PORT_SetPinMux(PORT2, 3U, kPORT_MuxAsGpio); /* PORT2_2 disconnected from PWM1_A2 */
         PORT_SetPinMux(PORT2, 4U, kPORT_MuxAsGpio); /* PORT2_4 disconnected from PWM1_A1 */
         PORT_SetPinMux(PORT2, 5U, kPORT_MuxAsGpio); /* PORT2_5 disconnected from PWM1_B1 */
         PORT_SetPinMux(PORT2, 6U, kPORT_MuxAsGpio); /* PORT2_6 disconnected from PWM1_A0 */
