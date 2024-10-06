@@ -39,12 +39,12 @@
 		<link>
 			<name>ipc/ipc.c</name>
 			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/ipc/ipc.c</locationURI>
+			<locationURI>PARENT-2-PROJECT_LOC/common/ipc/ipc.c</locationURI>
 		</link>
 		<link>
 			<name>ipc/ipc.h</name>
 			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/ipc/ipc.h</locationURI>
+			<locationURI>PARENT-2-PROJECT_LOC/common/ipc/ipc.h</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

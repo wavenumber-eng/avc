@@ -335,10 +335,10 @@ void camera__pull_power_pin(bool pullUp)
 
 static void SDMA_CompleteCallback(void *param)
 {
-    if(display_data_request)
+    if(request_frame_for_display)
     {
         dma_copy_buffer((uint32_t * )g_camera_buffer, (uint32_t * )camera_image.Data, 1, 160 * 120 * 2);
-        display_data_request = false;
+        request_frame_for_display = false;
     }
 
 

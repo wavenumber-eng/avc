@@ -129,8 +129,8 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/mcmgr}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/CMSIS}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/video}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../egfx/src&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../ipc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../common/egfx/src&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../common/ipc&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/source}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/board}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/frdmmcxn947/multicore_examples/hello_world/cm33_core1}&quot;"/>

@@ -23,25 +23,11 @@ extern SPRITE_SECTION eGFX_ImagePlane 	Sprite_16BPP_RGB565_bg0;
 extern SPRITE_SECTION eGFX_ImagePlane 	Sprite_16BPP_RGB565_bg1;
 
 ////***************************************************************************
-////                         Sprite_16BPP_RGB565_bg2
-////***************************************************************************
-
-
-extern SPRITE_SECTION eGFX_ImagePlane 	Sprite_16BPP_RGB565_bg2;
-
-////***************************************************************************
 ////                         Sprite_16BPP_RGB565_bg2_save
 ////***************************************************************************
 
 
 extern SPRITE_SECTION eGFX_ImagePlane 	Sprite_16BPP_RGB565_bg2_save;
-
-////***************************************************************************
-////                         Sprite_16BPP_RGB565_bg3
-////***************************************************************************
-
-
-extern SPRITE_SECTION eGFX_ImagePlane 	Sprite_16BPP_RGB565_bg3;
 
 ////***************************************************************************
 ////                         Sprite_16BPP_RGB565_colors

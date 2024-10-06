@@ -22,7 +22,7 @@ volatile bool mem_transfer_done = false;
 
 edma_handle_t g_DMA_Handle;
 
-volatile bool display_data_request = true;
+volatile bool request_frame_for_display = true;
 
 
 void lpspi1_init(uint8_t transaction_bits)

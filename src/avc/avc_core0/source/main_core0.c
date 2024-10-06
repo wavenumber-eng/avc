@@ -43,7 +43,7 @@ void SystemInitHook(void)
 		NVIC_SetPriority(MAILBOX_IRQn, 2);
 	#endif
 
-	//	NVIC_EnableIRQ(MAILBOX_IRQn);
+		NVIC_EnableIRQ(MAILBOX_IRQn);
 
 }
 
@@ -134,7 +134,7 @@ int main(void)
 
 
 
-            if((display_data_request == false)  && (mem_transfer_done == true))
+            if((request_frame_for_display == false)  && (mem_transfer_done == true))
             {
             	eGFX_DrawStringColored(&camera_image,
             							"TEST MODE",50,10,
@@ -146,7 +146,7 @@ int main(void)
                 #else
                     eGFX_Dump(&camera_image);
                 #endif
-                display_data_request = true;
+                request_frame_for_display = true;
             }
 
         }

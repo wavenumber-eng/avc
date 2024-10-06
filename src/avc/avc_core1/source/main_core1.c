@@ -17,7 +17,7 @@ void SystemInitHook(void)
         NVIC_SetPriority(MAILBOX_IRQn, 2);
     #endif
 
-  //  NVIC_EnableIRQ(MAILBOX_IRQn);
+    NVIC_EnableIRQ(MAILBOX_IRQn);
 
 }
 
