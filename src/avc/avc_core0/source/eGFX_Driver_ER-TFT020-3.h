@@ -29,7 +29,7 @@ extern void  eGFX_InitDriver(eGFX_VSyncCallback_t VS);
 */
 
   extern void eGFX_Dump(eGFX_ImagePlane *Image);
-
+  extern void eGFX_duplicate_and_dump(eGFX_ImagePlane *Image);
   /*
       A driver should expose at least one back buffer that is the physical screen size and have
       a matching color space.

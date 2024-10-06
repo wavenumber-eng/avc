@@ -276,6 +276,8 @@ outputs:
 - {id: MAIN_clock.outFreq, value: 150 MHz}
 - {id: PLL0_CLK_clock.outFreq, value: 150 MHz}
 - {id: PLL_DIV_clock.outFreq, value: 75 MHz}
+- {id: SYSTICK0_clock.outFreq, value: 25 MHz}
+- {id: SYSTICK1_clock.outFreq, value: 25 MHz}
 - {id: Slow_clock.outFreq, value: 37.5 MHz}
 - {id: System_clock.outFreq, value: 150 MHz}
 - {id: gdet_clock.outFreq, value: 48 MHz}
@@ -289,6 +291,7 @@ settings:
 - {id: SCG.PLL0M_MULT.scale, value: '50', locked: true}
 - {id: SCG.PLL0SRCSEL.sel, value: SCG.FIRC_48M}
 - {id: SCG.PLL0_NDIV.scale, value: '8', locked: true}
+- {id: SCG.PLL0_PDIV.scale, value: '2', locked: true}
 - {id: SCG.SCSSEL.sel, value: SCG.PLL0_CLK}
 - {id: SYSCON.CLKOUTDIV.scale, value: '2', locked: true}
 - {id: SYSCON.CLKOUTSEL.sel, value: SCG.FRO_12M}
@@ -297,6 +300,12 @@ settings:
 - {id: SYSCON.FREQMETARGETCLKSEL.sel, value: SYSCON.evtg_out0a}
 - {id: SYSCON.PLLCLKDIV.scale, value: '2', locked: true}
 - {id: SYSCON.PLLCLKDIVSEL.sel, value: SCG.PLL0_CLK}
+- {id: SYSCON.SYSTICKCLKDIV0.scale, value: '6', locked: true}
+- {id: SYSCON.SYSTICKCLKDIV1.scale, value: '6', locked: true}
+- {id: SYSCON.SYSTICKCLKSEL0.sel, value: SYSCON.SYSTICKCLKDIV0}
+- {id: SYSCON.SYSTICKCLKSEL1.sel, value: SYSCON.SYSTICKCLKDIV1}
+- {id: SYSTICKCLKDIV0_HALT, value: Enable}
+- {id: SYSTICKCLKDIV1_HALT, value: Enable}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
 /* clang-format on */
 
@@ -348,10 +357,14 @@ void BOARD_BootClockPLL150M(void)
 
     /*!< Set up clock selectors  */
     CLOCK_AttachClk(kPLL0_to_MAIN_CLK);
+    CLOCK_AttachClk(kSYSTICK_DIV0_to_SYSTICK0);                 /*!< Switch SYSTICK0 to SYSTICK_DIV0 */
+    CLOCK_AttachClk(kSYSTICK_DIV1_to_SYSTICK1);                 /*!< Switch SYSTICK1 to SYSTICK_DIV1 */
     CLOCK_AttachClk(kFRO12M_to_CLKOUT);                 /*!< Switch CLKOUT to FRO12M */
     CLOCK_AttachClk(kPLL0_to_PLLCLKDIV);                 /*!< Switch PLLCLKDIV to PLL0 */
 
     /*!< Set up dividers */
+    CLOCK_SetClkDiv(kCLOCK_DivSystickClk0, 6U);           /*!< Set SYSTICKCLKDIV0 divider to value 6 */
+    CLOCK_SetClkDiv(kCLOCK_DivSystickClk1, 6U);           /*!< Set SYSTICKCLKDIV1 divider to value 6 */
     CLOCK_SetClkDiv(kCLOCK_DivAhbClk, 1U);           /*!< Set AHBCLKDIV divider to value 1 */
     CLOCK_SetClkDiv(kCLOCK_DivClkOut, 2U);           /*!< Set CLKOUTDIV divider to value 2 */
     CLOCK_SetClkDiv(kCLOCK_DivPllClk, 2U);           /*!< Set PLLCLKDIV divider to value 2 */

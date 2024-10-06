@@ -22,13 +22,12 @@ void OnProjectLoad (void) {
   //
   // Dialog-generated settings
   //
-  Project.AddPathSubstitute ("C:/ELI/projects/Wavenumber/avc/src/avc/avc_core1", "$(ProjectDir)");
-  Project.AddPathSubstitute ("c:/eli/projects/wavenumber/avc/src/avc/avc_core1", "$(ProjectDir)");
   Project.SetDevice ("MCXN947_M33_1");
   Project.SetHostIF ("USB", "");
   Project.SetTargetIF ("SWD");
   Project.SetTIFSpeed ("4 MHz");
   Project.AddSvdFile ("$(InstallDir)/Config/CPU/Cortex-M33F.svd");
+  Project.AddSvdFile ("./MCXN947_cm33_core1.svd");
   //
   // User settings
   //

@@ -528,6 +528,8 @@
                   <clock_output id="MAIN_clock.outFreq" value="150 MHz" locked="false" accuracy=""/>
                   <clock_output id="PLL0_CLK_clock.outFreq" value="150 MHz" locked="false" accuracy=""/>
                   <clock_output id="PLL_DIV_clock.outFreq" value="75 MHz" locked="false" accuracy=""/>
+                  <clock_output id="SYSTICK0_clock.outFreq" value="25 MHz" locked="false" accuracy=""/>
+                  <clock_output id="SYSTICK1_clock.outFreq" value="25 MHz" locked="false" accuracy=""/>
                   <clock_output id="Slow_clock.outFreq" value="37.5 MHz" locked="false" accuracy=""/>
                   <clock_output id="System_clock.outFreq" value="150 MHz" locked="false" accuracy=""/>
                   <clock_output id="gdet_clock.outFreq" value="48 MHz" locked="false" accuracy=""/>
@@ -542,6 +544,7 @@
                   <setting id="SCG.PLL0M_MULT.scale" value="50" locked="true"/>
                   <setting id="SCG.PLL0SRCSEL.sel" value="SCG.FIRC_48M" locked="false"/>
                   <setting id="SCG.PLL0_NDIV.scale" value="8" locked="true"/>
+                  <setting id="SCG.PLL0_PDIV.scale" value="2" locked="true"/>
                   <setting id="SCG.SCSSEL.sel" value="SCG.PLL0_CLK" locked="false"/>
                   <setting id="SYSCON.CLKOUTDIV.scale" value="2" locked="true"/>
                   <setting id="SYSCON.CLKOUTSEL.sel" value="SCG.FRO_12M" locked="false"/>
@@ -550,6 +553,12 @@
                   <setting id="SYSCON.FREQMETARGETCLKSEL.sel" value="SYSCON.evtg_out0a" locked="false"/>
                   <setting id="SYSCON.PLLCLKDIV.scale" value="2" locked="true"/>
                   <setting id="SYSCON.PLLCLKDIVSEL.sel" value="SCG.PLL0_CLK" locked="false"/>
+                  <setting id="SYSCON.SYSTICKCLKDIV0.scale" value="6" locked="true"/>
+                  <setting id="SYSCON.SYSTICKCLKDIV1.scale" value="6" locked="true"/>
+                  <setting id="SYSCON.SYSTICKCLKSEL0.sel" value="SYSCON.SYSTICKCLKDIV0" locked="false"/>
+                  <setting id="SYSCON.SYSTICKCLKSEL1.sel" value="SYSCON.SYSTICKCLKDIV1" locked="false"/>
+                  <setting id="SYSTICKCLKDIV0_HALT" value="Enable" locked="false"/>
+                  <setting id="SYSTICKCLKDIV1_HALT" value="Enable" locked="false"/>
                </clock_settings>
                <called_from_default_init>true</called_from_default_init>
             </clock_configuration>

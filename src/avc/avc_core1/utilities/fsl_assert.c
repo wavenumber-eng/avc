@@ -9,7 +9,7 @@
 
 #include "fsl_common.h"
 #include "fsl_assert.h"
-#include "fsl_debug_console.h"
+//#include "fsl_debug_console.h"
 
 /* User can implement its own asser handler (dump logs, registers, etc) by reimplementing the function fsl_assert_hook() */
 __attribute__ ((weak)) int fsl_assert_hook(const char *failedExpr, const char *file, int line)
@@ -45,7 +45,7 @@ void __assertion_failed(char *failedExpr)
     const char *file = NULL;
     int line = -1;
 
-    (void)PRINTF("ASSERT ERROR \" %s \n", failedExpr);
+    //(void)PRINTF("ASSERT ERROR \" %s \n", failedExpr);
 
     (void)fsl_assert_hook(failedExpr, file, line);
 

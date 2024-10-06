@@ -55,7 +55,7 @@ void eGFX_Dump(eGFX_ImagePlane *Image)
 }
 
 
-void eGFX_duplicate_and_dump(eGFX_ImagePlane *Image)
+void eGFX_duplicate_and_dump2(eGFX_ImagePlane *Image)
 {
     uint16_t *original_row_buffer = (uint16_t *)Image->Data;
     uint16_t scaled_row_buff[eGFX_PHYSICAL_SCREEN_SIZE_X];
@@ -84,6 +84,85 @@ void eGFX_duplicate_and_dump(eGFX_ImagePlane *Image)
     GPIO_PinWrite(GPIO4, 1, 0);
 
 }
+
+
+
+uint16_t scaled_row_buff_storage1[eGFX_PHYSICAL_SCREEN_SIZE_X*2];
+uint16_t scaled_row_buff_storage2[eGFX_PHYSICAL_SCREEN_SIZE_X*2];
+
+uint8_t buff_index = 0;
+
+uint16_t *scaled_row_buff;
+
+uint16_t y8;
+uint16_t y8_max;
+
+
+void eGFX_duplicate_and_dump(eGFX_ImagePlane *Image)
+{
+    uint16_t *original_row_buffer = (uint16_t *)Image->Data;
+
+    uint32_t delta;
+
+    GPIO_PinWrite(GPIO4, 1, 1);
+
+    lpspi1_init(8);
+
+    uint16_t temp;
+
+#if (defined(CONFIG_DISPLAY_ORIENTATION) && (CONFIG_DISPLAY_ORIENTATION == LANDSCAPE))
+    LCD_SetPos(0, 319, 0, 239); // 320x240
+#endif
+
+    lpspi1_init(32);
+
+    delta = 0;
+    buff_index = 0;
+    scaled_row_buff = &scaled_row_buff_storage1[0];
+
+
+    for(uint32_t j = 0; j < 120; j++)
+    {
+
+        for(uint32_t i = 0; i < 160; i++)
+        {
+
+         	temp = original_row_buffer[i + delta];
+
+         	y8 = eGFX_RGB565_TO_Y8(temp);
+         	if(y8>y8_max)
+         	{
+         		y8_max = y8;
+         	}
+            temp = eGFX_Y8_TO_RGB565(y8);
+
+            scaled_row_buff[2*i] = temp;
+            scaled_row_buff[2*i + 1] = temp;
+
+
+            scaled_row_buff[2*i + 320] = temp;
+            scaled_row_buff[2*i + 1 + 320] = temp;
+
+        }
+
+        delta +=160;
+
+        ST7789__display_row(scaled_row_buff, eGFX_PHYSICAL_SCREEN_SIZE_X*2);
+
+        if(scaled_row_buff == &scaled_row_buff_storage2[0])
+        {
+        	scaled_row_buff = &scaled_row_buff_storage1[0];
+        }
+        else
+        {
+        	scaled_row_buff = &scaled_row_buff_storage2[0];
+        }
+
+   }
+
+    GPIO_PinWrite(GPIO4, 1, 0);
+}
+
 
 void eGFX_SetBacklight(uint8_t BacklightValue)
 {

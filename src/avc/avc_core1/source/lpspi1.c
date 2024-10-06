@@ -1,5 +1,5 @@
 #include "lpspi1.h"
-#include "fsl_debug_console.h"
+
 
 #define MASTER_DMA_RX_CHANNEL   0U
 #define MASTER_DMA_TX_CHANNEL   1U

@@ -84,6 +84,8 @@ void lpspi1_transfer_block(void *block, uint32_t block_size)
     masterXfer.configFlags = kLPSPI_MasterPcs0 | kLPSPI_MasterPcsContinuous | kLPSPI_MasterByteSwap;
     isTransferCompleted = false;
 
+    //This is needed to avoid chip select pulses between each transfer...
+    LPSPI1->TCR |=  LPSPI_TCR_CONT(1);
     //LPSPI_MasterTransferBlocking(LPSPI1, &masterXfer);
     LPSPI_MasterTransferEDMALite(LPSPI1, &g_m_edma_handle,&masterXfer);
 
@@ -117,6 +119,8 @@ void dma_copy_buffer(void * src_buff, void * dest_buff, uint8_t data_width, uint
                             data_width * transfer_size, 
                             kEDMA_MemoryToMemory);
     mem_transfer_done =false;
+
+
 
     EDMA_SubmitTransfer(&g_DMA_Handle, &transferConfig);
     EDMA_StartTransfer(&g_DMA_Handle);

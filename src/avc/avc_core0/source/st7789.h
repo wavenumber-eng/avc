@@ -23,7 +23,7 @@ extern void Write_Cmd(unsigned char DL);
 extern void Write_Data(unsigned char DH,unsigned char DL);
 extern void delayms(unsigned int tt);
 extern void Write_Data_U16(uint16_t y);
-extern inline void  Write_Data_U32(uint32_t y);
+
 extern void LCD_SetPos(unsigned int x0,unsigned int x1,unsigned int y0,unsigned int y1);
 extern void ClearScreen(unsigned int bColor);
 extern void LCD_FULL(unsigned int i);
