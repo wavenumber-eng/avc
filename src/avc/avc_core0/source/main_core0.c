@@ -1,18 +1,22 @@
 
 
+#include "avc__master_config.h"
 #include "fsl_debug_console.h"
 #include "pin_mux.h"
 #include "board.h"
 
 #include "fsl_gpio.h"
 
+#include "avc__io.h"
+
 #include "avc__adc.h"
 #include "avc__motor_control.h"
 #include "avc__servo_control.h"
-#include "avc__camera_master_config.h"
 #include "ipc.h"
 #include "fsl_device_registers.h"
 #include "fsl_mailbox.h"
+#include "e.h"
+
 #define CONFIG__CAMERA_CORE0_ENABLE 1
 
 
@@ -35,7 +39,7 @@
 
 void SystemInitHook(void)
 {
-        MAILBOX_Init(MAILBOX);
+     MAILBOX_Init(MAILBOX);
 
 	#if defined(FSL_FEATURE_MAILBOX_SIDE_A)
 		NVIC_SetPriority(MAILBOX_IRQn, 5);
@@ -63,23 +67,28 @@ int main(void)
 
     /* Init board hardware.*/
     /* attach FRO 12M to FLEXCOMM4 (debug console) */
-    CLOCK_SetClkDiv(kCLOCK_DivFlexcom4Clk, 1u);
-    CLOCK_AttachClk(BOARD_DEBUG_UART_CLK_ATTACH);
 
     BOARD_InitBootPins();
     BOARD_InitBootClocks(); 
-    BOARD_InitDebugConsole();
 
     CLOCK_EnableClock(kCLOCK_Gpio0);
 
-    GPIO_EnablePinControlNonSecure(BOARD_LED_RED_GPIO, (1 << BOARD_LED_RED_GPIO_PIN));
+    avc_io__uart_init();
+
+    e__init();
+
+
+    avc__adc_init();
+    avc__motor_control_init();
+    avc__servo_control_init();
+    avc__enable_motor_control();
+
 
     /* Print the initial banner from Primary core */
-    (void)PRINTF("\r\nHello World from the Primary Core!\r\n\n");
-
+    (void)DEBUG("\r\nHello World from the Primary Core!\r\n\n");
 
     /* Boot Secondary core application */
-    (void)PRINTF("Starting Secondary core.\r\n");
+    (void)DEBUG("Starting Secondary core.\r\n");
 
     /* Boot source for Core 1 from RAM */
     SYSCON->CPBOOT = ((uint32_t)(char *)CORE1_BOOT_ADDRESS & SYSCON_CPBOOT_CPBOOT_MASK);
@@ -89,14 +98,9 @@ int main(void)
     SYSCON->CPUCTRL = temp | SYSCON_CPUCTRL_CPU1RSTEN_MASK | SYSCON_CPUCTRL_CPU1CLKEN_MASK;
     SYSCON->CPUCTRL = (temp | SYSCON_CPUCTRL_CPU1CLKEN_MASK) & (~SYSCON_CPUCTRL_CPU1RSTEN_MASK);
 
-
-
     (void)PRINTF("The secondary core application has been started.\r\n");
 
-    avc__adc_init();
-    avc__motor_control_init();
-    avc__servo_control_init();
-    avc__enable_motor_control();
+
 
 
 #if (CONFIG__CAMERA_CORE0_ENABLE == 1)

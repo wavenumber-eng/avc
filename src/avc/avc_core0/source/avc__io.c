@@ -1,0 +1,77 @@
+#include "e.h"
+#include "stdint.h"
+#include "fsl_lpuart.h"
+#include "fsl_clock.h"
+#include "fsl_reset.h"
+
+#ifndef CONFIG__AVC_UART_TX_Q_SIZE_BYTES
+	#define CONFIG__AVC_UART_TX_Q_SIZE_BYTES 2048
+#endif
+
+#ifndef CONFIG__AVC_UART_RX_Q_SIZE_BYTES
+	#define CONFIG__AVC_UART_RX_Q_SIZE_BYTES 2048
+#endif
+
+BYTE_QUEUE__MAKE(UART4_TX_Q , CONFIG__AVC_UART_TX_Q_SIZE_BYTES);
+BYTE_QUEUE__MAKE(UART4_RX_Q , CONFIG__AVC_UART_TX_Q_SIZE_BYTES);
+
+
+void LP_FLEXCOMM4_IRQHandler(void)
+{
+    /* If new data arrived. */
+    if ((kLPUART_RxDataRegFullFlag)&LPUART_GetStatusFlags(LPUART4))
+    {
+    	bq__enqueue(&UART4_RX_Q, LPUART4->DATA);
+    }
+
+    if ((kLPUART_TxDataRegEmptyFlag)&LPUART_GetStatusFlags(LPUART4))
+    {
+        if(bq__bytes_available_to_write(&UART4_TX_Q))
+    	{
+    		LPUART4->DATA = bq__dequeue_next(&UART4_TX_Q);
+    	}
+    	else
+    	{
+    		 LPUART_DisableInterrupts(LPUART4, kLPUART_TxDataRegEmptyInterruptEnable);
+    	}
+    }
+
+    SDK_ISR_EXIT_BARRIER;
+}
+
+void avc_io__uart_enqueue_hook(void *arg)
+{
+	LPUART_EnableInterrupts((LPUART_Type *)arg, kLPUART_TxDataRegEmptyInterruptEnable);
+}
+
+void avc_io__uart_init()
+{
+	    CLOCK_SetClkDiv(kCLOCK_DivFlexcom4Clk, 1u);
+	    CLOCK_AttachClk(kFRO12M_to_FLEXCOMM4);
+
+    	UART4_TX_Q.enqueue_hook = avc_io__uart_enqueue_hook;
+    	UART4_TX_Q.hook_arg = (void *)LPUART4;
+
+    	lpuart_config_t config;
+
+    	/*
+    	 *
+    	 * UART 4
+    	 *
+    	 */
+
+        RESET_ClearPeripheralReset(kFC4_RST_SHIFT_RSTn);
+        LPUART_GetDefaultConfig(&config);
+	    config.baudRate_Bps = 115200;
+	    config.enableTx     = true;
+	    config.enableRx     = true;
+
+	    LPUART_Init(LPUART4, &config, 12000000);
+
+	    LPUART_GetDefaultConfig(&config);
+
+	    LPUART_EnableInterrupts(LPUART4, kLPUART_RxDataRegFullInterruptEnable);
+
+	    EnableIRQ(LP_FLEXCOMM4_IRQn);
+
+}

@@ -1,5 +1,5 @@
+#include "avc__master_config.h"
 #include "avc__camera_interface.h"
-#include "avc__camera_master_config.h"
 #include "fsl_clock.h"
 #include "fsl_inputmux.h"
 #include "fsl_ov7670.h"

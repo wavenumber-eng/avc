@@ -104,7 +104,6 @@ void avc__adc_init()
     LPADC_EnableInterrupts(ADC0, kLPADC_FIFOWatermarkInterruptEnable);
     EnableIRQ(ADC0_IRQn);
 
-    PRINTF("ADC Full Range: %d\r\n", g_LpadcFullRange);
 
     CTIMER_GetDefaultConfig(&config);
     CTIMER_Init(CTIMER, &config);
