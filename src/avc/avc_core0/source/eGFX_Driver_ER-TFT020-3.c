@@ -18,6 +18,11 @@ extern void ST7789_Initial(void);
 
 void eGFX_InitDriver(eGFX_VSyncCallback_t VS)
 {
+    CLOCK_SetClkDiv(kCLOCK_DivFlexcom1Clk, 1u);
+    CLOCK_AttachClk(kPLL_DIV_to_FLEXCOMM1);
+
+	lpspi1_init(8); // Initialize with 8-bit SPI transactions
+
     eGFX_ImagePlaneInit(&eGFX_BackBuffer[0],
                         BackBufferStore,
                         eGFX_PHYSICAL_SCREEN_SIZE_X,
@@ -43,7 +48,7 @@ void eGFX_Dump(eGFX_ImagePlane *Image)
     uint32_t packets;
 
     lpspi1_init(8);
-    GPIO_PinWrite(GPIO4, 1, 1);
+  //  GPIO_PinWrite(GPIO4, 1, 1);
 
 #if (defined(CONFIG_DISPLAY_ORIENTATION) && (CONFIG_DISPLAY_ORIENTATION == LANDSCAPE))
     LCD_SetPos(0, 319, 0, 239); // 320x240
@@ -51,7 +56,7 @@ void eGFX_Dump(eGFX_ImagePlane *Image)
 
     lpspi1_init(32);
     ST7789__display_img(buffer);
-    GPIO_PinWrite(GPIO4, 1, 0);
+   // GPIO_PinWrite(GPIO4, 1, 0);
 }
 
 
@@ -62,7 +67,7 @@ void eGFX_duplicate_and_dump2(eGFX_ImagePlane *Image)
     uint32_t delta;
 
     lpspi1_init(8);
-    GPIO_PinWrite(GPIO4, 1, 1);
+   // GPIO_PinWrite(GPIO4, 1, 1);
 
 #if (defined(CONFIG_DISPLAY_ORIENTATION) && (CONFIG_DISPLAY_ORIENTATION == LANDSCAPE))
     LCD_SetPos(0, 319, 0, 239); // 320x240
@@ -78,10 +83,10 @@ void eGFX_duplicate_and_dump2(eGFX_ImagePlane *Image)
             scaled_row_buff[2*i] = original_row_buffer[i + delta];
             scaled_row_buff[2*i + 1] = original_row_buffer[i + delta];
         }
-        ST7789__display_row(scaled_row_buff, eGFX_PHYSICAL_SCREEN_SIZE_X);
-        ST7789__display_row(scaled_row_buff, eGFX_PHYSICAL_SCREEN_SIZE_X);
+        ST7789__display_row((uint8_t * )scaled_row_buff, eGFX_PHYSICAL_SCREEN_SIZE_X);
+        ST7789__display_row((uint8_t * )scaled_row_buff, eGFX_PHYSICAL_SCREEN_SIZE_X);
     }
-    GPIO_PinWrite(GPIO4, 1, 0);
+   // GPIO_PinWrite(GPIO4, 1, 0);
 
 }
 
@@ -104,7 +109,6 @@ void eGFX_duplicate_and_dump(eGFX_ImagePlane *Image)
 
     uint32_t delta;
 
-    GPIO_PinWrite(GPIO4, 1, 1);
 
     lpspi1_init(8);
 
@@ -129,16 +133,8 @@ void eGFX_duplicate_and_dump(eGFX_ImagePlane *Image)
 
          	temp = original_row_buffer[i + delta];
 
-         	y8 = eGFX_RGB565_TO_Y8(temp);
-         	if(y8>y8_max)
-         	{
-         		y8_max = y8;
-         	}
-            temp = eGFX_Y8_TO_RGB565(y8);
-
             scaled_row_buff[2*i] = temp;
             scaled_row_buff[2*i + 1] = temp;
-
 
             scaled_row_buff[2*i + 320] = temp;
             scaled_row_buff[2*i + 1 + 320] = temp;
@@ -147,7 +143,7 @@ void eGFX_duplicate_and_dump(eGFX_ImagePlane *Image)
 
         delta +=160;
 
-        ST7789__display_row(scaled_row_buff, eGFX_PHYSICAL_SCREEN_SIZE_X*2);
+        ST7789__display_row((uint8_t * )scaled_row_buff, eGFX_PHYSICAL_SCREEN_SIZE_X*2);
 
         if(scaled_row_buff == &scaled_row_buff_storage2[0])
         {
@@ -160,7 +156,6 @@ void eGFX_duplicate_and_dump(eGFX_ImagePlane *Image)
 
    }
 
-    GPIO_PinWrite(GPIO4, 1, 0);
 }
 
 

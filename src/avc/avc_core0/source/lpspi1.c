@@ -1,5 +1,7 @@
 #include "lpspi1.h"
 #include "fsl_debug_console.h"
+#include "fsl_gpio.h"
+
 
 #define MASTER_DMA_RX_CHANNEL   0U
 #define MASTER_DMA_TX_CHANNEL   1U
@@ -108,6 +110,7 @@ void LPSPI_MasterUserCallback(LPSPI_Type *base, lpspi_master_edma_handle_t *hand
 
 void dma_copy_buffer(void * src_buff, void * dest_buff, uint8_t data_width, uint32_t transfer_size)
 {
+    GPIO_PinWrite(GPIO4, 0, 1);
     edma_transfer_config_t transferConfig;
 
     EDMA_PrepareTransfer(&transferConfig,   //GOOD
@@ -120,11 +123,8 @@ void dma_copy_buffer(void * src_buff, void * dest_buff, uint8_t data_width, uint
                             kEDMA_MemoryToMemory);
     mem_transfer_done =false;
 
-
-
     EDMA_SubmitTransfer(&g_DMA_Handle, &transferConfig);
     EDMA_StartTransfer(&g_DMA_Handle);
-
 
 
 }
@@ -135,5 +135,6 @@ void DMA_Callback(edma_handle_t *handle, void *userData, bool transferDone, uint
     if (transferDone)
     {
         mem_transfer_done = true;
+        GPIO_PinWrite(GPIO4, 0, 0);
     }
 }

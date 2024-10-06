@@ -1,5 +1,7 @@
-#ifndef BV_CAMERA__MASTER_CONFIG_H_
-#define BV_CAMERA__MASTER_CONFIG_H_
+
+#ifndef AVC_CAMERA__MASTER_CONFIG_H_
+#define AVC_CAMERA__MASTER_CONFIG_H_
+
 
 #define CAMERA__OV7670							1
 #define CAMERA__OV5460  						2

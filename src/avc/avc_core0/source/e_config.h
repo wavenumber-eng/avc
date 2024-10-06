@@ -1,3 +1,5 @@
+#include "avc__master_config.h"
+
 #ifndef E__CONFIG_H_
 #define E__CONFIG_H_
 
@@ -16,6 +18,9 @@
 #define CONFIG__E_LOG__RTT_ENABLE				    (1)
 
 #define CONFIG__E_LOG__RTT_TX_BUFFER_SIZE           (4096)
+
+#include "e_queue.h"
+extern byte_queue_t UART4_TX_Q;
 
 #define CONFIG__E_ADDTIONAL_LOGGER(...) 			bq__printf(&UART4_TX_Q,__VA_ARGS__)
 

@@ -150,6 +150,7 @@ void SMARTDMA_Reset(void)
 /*!
  * brief SMARTDMA IRQ.
  */
+
 void SMARTDMA_HandleIRQ(void)
 {
     if (NULL != s_smartdmaCallback)

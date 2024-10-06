@@ -3,6 +3,9 @@
 #ifndef __IPC_H
 #define __IPC_H
 
+#define CORE1_EXE_ADDRESS	0x4001000
+
+
 typedef struct {
 
 	volatile uint32_t core1_counter;

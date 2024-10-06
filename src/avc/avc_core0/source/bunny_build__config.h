@@ -1,10 +1,10 @@
-#include "bunny_debug.h"
+#include "e.h"
 
 #ifndef BUNNY_BUILD__CONFIG_H_
 #define BUNNY_BUILD__CONFIG_H_
 
-
-#define BUNNY_BUILD_PRINTF(...)			     BUNNY_DBG(__VA_ARGS__)
+#define LPC_EZH_ARCH_B_CON_BASE 			LPC_EZH_ARCH_B_CON_BASE__MCX
+#define BUNNY_BUILD_PRINTF(...)			     E_LOG(__VA_ARGS__)
 #define BUNNY_BUILD_MAX_LABELS				 32
 
 /*

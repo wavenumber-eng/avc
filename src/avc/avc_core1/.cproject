@@ -726,8 +726,8 @@
 &lt;vendor&gt;NXP&lt;/vendor&gt;&#13;
 &lt;memory can_program="true" id="Flash" is_ro="true" size="2048" type="Flash"/&gt;&#13;
 &lt;memory id="RAM" size="512" type="RAM"/&gt;&#13;
-&lt;memoryInstance derived_from="RAM" edited="true" id="CORE1" location="0x4000000" size="0x10000"/&gt;&#13;
-&lt;memoryInstance derived_from="RAM" edited="true" id="rpmsg_sh_mem" location="0x20040000" size="0x10000"/&gt;&#13;
+&lt;memoryInstance derived_from="RAM" edited="true" id="CORE1" location="0x4001000" size="0x10000"/&gt;&#13;
+&lt;memoryInstance derived_from="RAM" edited="true" id="IPC_MEM" location="0x20040000" size="0x10000"/&gt;&#13;
 &lt;/chip&gt;&#13;
 &lt;processor&gt;&#13;
 &lt;name gcc_name="cortex-m33"&gt;Cortex-M33&lt;/name&gt;&#13;

@@ -32,10 +32,6 @@
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
-/* Address of RAM, where the image for core1 should be copied */
-#define CORE1_BOOT_ADDRESS  0x20050000        ///0x2004E000
-
-
 
 void SystemInitHook(void)
 {
@@ -52,31 +48,22 @@ void SystemInitHook(void)
 }
 
 volatile uint16_t bat;
-
-/*!
- * @brief Main function
- */
-
 volatile uint32_t test;
+int8_t left_intensity, right_intensity, servo_position;
 
 int main(void)
 {
 
-    int8_t left_intensity, right_intensity, servo_position;
-
-
-    /* Init board hardware.*/
-    /* attach FRO 12M to FLEXCOMM4 (debug console) */
 
     BOARD_InitBootPins();
     BOARD_InitBootClocks(); 
 
     CLOCK_EnableClock(kCLOCK_Gpio0);
+    CLOCK_EnableClock(kCLOCK_Dma0);
 
     avc_io__uart_init();
 
     e__init();
-
 
     avc__adc_init();
     avc__motor_control_init();
@@ -91,46 +78,36 @@ int main(void)
     (void)DEBUG("Starting Secondary core.\r\n");
 
     /* Boot source for Core 1 from RAM */
-    SYSCON->CPBOOT = ((uint32_t)(char *)CORE1_BOOT_ADDRESS & SYSCON_CPBOOT_CPBOOT_MASK);
+    SYSCON->CPBOOT = ((uint32_t)(char *)CORE1_EXE_ADDRESS & SYSCON_CPBOOT_CPBOOT_MASK);
 
     uint32_t temp = SYSCON->CPUCTRL;
     temp |= 0xc0c40000U;
     SYSCON->CPUCTRL = temp | SYSCON_CPUCTRL_CPU1RSTEN_MASK | SYSCON_CPUCTRL_CPU1CLKEN_MASK;
     SYSCON->CPUCTRL = (temp | SYSCON_CPUCTRL_CPU1CLKEN_MASK) & (~SYSCON_CPUCTRL_CPU1RSTEN_MASK);
 
-    (void)PRINTF("The secondary core application has been started.\r\n");
+    (void)DEBUG("The secondary core application has been started.\r\n");
 
 
+     avc__camera_interface_init();
 
 
 #if (CONFIG__CAMERA_CORE0_ENABLE == 1)
-    CLOCK_SetClkDiv(kCLOCK_DivFlexcom1Clk, 1u);
-    CLOCK_AttachClk(kPLL_DIV_to_FLEXCOMM1);
 
-    CLOCK_EnableClock(kCLOCK_Dma0);
-    lpspi1_init(8); // Initialize with 8-bit SPI transactions
+
     eGFX_InitDriver(0);
-    eGFX_Dump(&Sprite_16BPP_RGB565_bg1);
-    avc__camera_interface_init();
+    eGFX_Dump((eGFX_ImagePlane *)&Sprite_16BPP_RGB565_bg1);
+
+    e_tick__delay_ms(2000);
 /*
  *
- * * RAM ECC Setting -->> ECC is disabled
- * Check AHB Clock Control --> All RAMs enabled
- *
- *disable 2nd core and try ipc struct --> Fails
- *disable 2nd core but moved its memory to 1st64k SRAMX
- *disable
- *disable
+
+
  * What is full dump time of 320x240
  * What is DMA Copy time for temporatory buffer
  * does can full dump work with entire frame
-
  * Expand Flash
- * Make backbuffer for camera
- * Bunny cam
  * Check Vsync to 1st Hync Timing
  * Check actual fraem rate
- * add "e"
  * add avc__frame_ready()
  * add avc__request_frame()
  *
@@ -143,7 +120,7 @@ int main(void)
         test = avc_ipc.core1_counter;
 
         bat = avc__read_battery_voltage();
-        
+
         // Test mode enable
         if(GPIO_PinRead(GPIO3, 18) == 0)
         {   
@@ -156,8 +133,14 @@ int main(void)
             avc__set_servo(servo_position);
 
 
+
             if((display_data_request == false)  && (mem_transfer_done == true))
             {
+            	eGFX_DrawStringColored(&camera_image,
+            							"TEST MODE",50,10,
+										&FONT_5_7_1BPP,
+										eGFX_COLOR_RGB888_TO_RGB565(0,0xFF,0));
+
                 #if CONFIG__OV7670_IS_160x120 == 1
                     eGFX_duplicate_and_dump(&camera_image);
                 #else
