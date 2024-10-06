@@ -1,8 +1,4 @@
-!JsonExSerializer.dll
-!lib_eGFX_Tools.dll
 
-!eGFX_FontGen.exe
-!eGFX_Tools.exe
 
 *.o
 *.elf
@@ -78,3 +74,10 @@ Thumbs.db
 
 #build folders
 build/
+
+
+!JsonExSerializer.dll
+!lib_eGFX_Tools.dll
+
+!eGFX_FontGen.exe
+!eGFX_Tools.exe
