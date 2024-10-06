@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+
+<link rel="stylesheet" href="LIB/SyntaxHighlighter/styles/darkula.css">
+<script src="LIB/SyntaxHighlighter/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<link rel="stylesheet" href="INC/eGFX.css">
+
+
+<body>
+<div class="MainBody">
+
+<h1>Overview</h1>
+<br>
+
+
+<p> eGFX is a graphics library written in C targeted for embedded microcontrollers. Think of it as the last stop before you may use a much more complex color display, 
+linux/android system.   It has found its way into system with monochrome OLEDs, sharp memory LCDs, etc.   Its humble beginnings was some routines to draw onto a 48x24 LED matrix display 
+using an MSP430 microcontroller.  The architecture is uses a loose coupling between various functionality so it is easy to hack and adapter.  
+
+Over time, eGFX was extended to include some useful tools to make embedded UIs a bit easier to manage.    
+
+<h1>Quickstart</h1>
+
+<br><br><img src="IMG/eGFX_Arch.png" alt="eGFX Architecture" height="75">
+
+<pre>
+<code class="c++">
+
+void main()
+{
+	eGFX_Dump(&BackBuffer);
+}
+
+</code>
+</pre>
+
+<p>
+ The library can be evaluated/test without having any embedded system.
+ An easy to hack windows program is included that simulated a 256x64 pixel display.
+ You can call the graphics functions just as you would in your embedded system. 
+ This framework is what is used to test and develop the library.
+
+
+<h1>Design Philosophy</h1>
+<br>
+<ul>
+<li>Most Datatypes are passed as 16-bit and 32-bit variables. Unless these is a good design reason, 
+    almost all new state variables, etc are 32-bit. This is the result of a transition to low cost 32-bit MCU's (Such as Cortex-M).
+ There is no reason to design/optimize for an 8/16-bit system.
+ 
+<br>
+<li>The Graphics rendering system is loosely coupled to hardware. 
+In fact, there are many cases where you want to draw to an 2d image to a buffer 
+for other purposes. Maybe something crazy like creating a 2d image that will be 
+used to generate audio.. This makes writing drivers very easy but optimzation can be a bit more difficult.
+
+<li>While the fundamental data type eGFX_PixelState is 32-bit,
+The initial applications were for monochrome displays,  some simple color displays have been implement.  The 32-bit pixel state covers most use cases.
+
+<li>Since the Graphics Driver is loosely coupled to the graphics rendering,
+ Any color is mapped at the driver level. I.E. certain bits in the pixel are for red,
+ green and blue. This is totally dependent on the driver.
+
+<li>Sprite based assets are stored in FLASH as const structures.
+ The library includes some easy to use tools for making sprites. 
+ Some microcontrollers have a SPIFI interface which memory maps the 
+ flash into the address space of the MCU. This is useful for very large 
+ assets. in theory one could load images from an external source such as an SD card but it is not supported in a clean fashion by the library. 
+ This often means that you need dynamic memory and possibly a large amount of it external to the chip. 
+ Right now, this functionality is not withing the scope of this library. 
+ Chances are once you need this capability you should be using a higher-end embedded system.
+
+<li>Fonts are just collections for sprites with some additional data 
+in a struct for some rendering hints. There is a 5x7 and 3x5 font included.
+ There is also a tool that can generate a font from any installed windows 
+ true type font. The font builder can make a custom font from a folder of .png assets.
+
+</ul>
+
+
+</div>
+</body>
+
+
+</html>

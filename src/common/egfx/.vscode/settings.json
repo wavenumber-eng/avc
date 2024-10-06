@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "egfx_plane.h": "c",
+        "egfx.h": "c"
+    }
+}
