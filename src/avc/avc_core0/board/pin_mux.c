@@ -22,6 +22,9 @@ pin_labels:
   identifier: CAM_RST}
 - {pin_num: E8, pin_signal: PIO0_28/FC1_P4/FC0_P4/CT_INP0/ADC0_B20, label: 'P0_28/J2[2]', identifier: LCD_RST}
 - {pin_num: F10, pin_signal: PIO0_26/FC1_P2/CT0_MAT2/ADC0_B18, label: 'P0_26/J2[10]', identifier: LCD_RS}
+- {pin_num: K15, pin_signal: PIO3_17/WUU0_IN26/FC8_P3/CT_INP9/PWM1_B2/FLEXIO0_D25/EZH_PIO17/SIM0_IO/SAI1_TX_FS, label: 'P3_17/J1[11]/SJ10[3]', identifier: CENTER_BTN}
+- {pin_num: L16, pin_signal: PIO3_21/TRIG_OUT1/FC8_P5/FC6_P1/CT2_MAT3/PWM1_B3/FLEXIO0_D29/EZH_PIO21/SIM0_RST/SAI1_RXD0, label: 'P3_21/J6[4]/J1[15]', identifier: LEFT_BTN}
+- {pin_num: K17, pin_signal: PIO3_19/FC7_P6/CT2_MAT1/PWM1_X1/FLEXIO0_D27/EZH_PIO19/SAI1_RX_FS, label: 'P3_19/J5[1]/J1[13]', identifier: RIGHT_BTN}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
 /* clang-format on */
@@ -42,6 +45,7 @@ void BOARD_InitBootPins(void)
     BOARD_InitPins_Core0();
     BOARD_LCDPins();
     BOARD_CAMPins();
+    BOARD_BTNPINS();
 }
 
 /* clang-format off */
@@ -698,6 +702,84 @@ void BOARD_CAMPins(void)
 
                      /* Input Buffer Enable: Enables. */
                      | PORT_PCR_IBE(PCR_IBE_ibe1));
+}
+
+/* clang-format off */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+BOARD_BTNPINS:
+- options: {callFromInitBoot: 'true', coreID: cm33_core0, enableClock: 'true'}
+- pin_list:
+  - {pin_num: L16, peripheral: GPIO3, signal: 'GPIO, 21', pin_signal: PIO3_21/TRIG_OUT1/FC8_P5/FC6_P1/CT2_MAT3/PWM1_B3/FLEXIO0_D29/EZH_PIO21/SIM0_RST/SAI1_RXD0, direction: INPUT}
+  - {pin_num: K15, peripheral: GPIO3, signal: 'GPIO, 17', pin_signal: PIO3_17/WUU0_IN26/FC8_P3/CT_INP9/PWM1_B2/FLEXIO0_D25/EZH_PIO17/SIM0_IO/SAI1_TX_FS, direction: INPUT}
+  - {pin_num: K17, peripheral: GPIO3, signal: 'GPIO, 19', pin_signal: PIO3_19/FC7_P6/CT2_MAT1/PWM1_X1/FLEXIO0_D27/EZH_PIO19/SAI1_RX_FS, direction: INPUT}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+/* clang-format on */
+
+/* FUNCTION ************************************************************************************************************
+ *
+ * Function Name : BOARD_BTNPINS
+ * Description   : Configures pin routing and optionally pin electrical features.
+ *
+ * END ****************************************************************************************************************/
+void BOARD_BTNPINS(void)
+{
+    /* Enables the clock for GPIO3: Enables clock */
+    CLOCK_EnableClock(kCLOCK_Gpio3);
+    /* Enables the clock for PORT3: Enables clock */
+    CLOCK_EnableClock(kCLOCK_Port3);
+
+    gpio_pin_config_t CENTER_BTN_config = {
+        .pinDirection = kGPIO_DigitalInput,
+        .outputLogic = 0U
+    };
+    /* Initialize GPIO functionality on pin PIO3_17 (pin K15)  */
+    GPIO_PinInit(BOARD_BTNPINS_CENTER_BTN_GPIO, BOARD_BTNPINS_CENTER_BTN_PIN, &CENTER_BTN_config);
+
+    gpio_pin_config_t RIGHT_BTN_config = {
+        .pinDirection = kGPIO_DigitalInput,
+        .outputLogic = 0U
+    };
+    /* Initialize GPIO functionality on pin PIO3_19 (pin K17)  */
+    GPIO_PinInit(BOARD_BTNPINS_RIGHT_BTN_GPIO, BOARD_BTNPINS_RIGHT_BTN_PIN, &RIGHT_BTN_config);
+
+    gpio_pin_config_t LEFT_BTN_config = {
+        .pinDirection = kGPIO_DigitalInput,
+        .outputLogic = 0U
+    };
+    /* Initialize GPIO functionality on pin PIO3_21 (pin L16)  */
+    GPIO_PinInit(BOARD_BTNPINS_LEFT_BTN_GPIO, BOARD_BTNPINS_LEFT_BTN_PIN, &LEFT_BTN_config);
+
+    /* PORT3_17 (pin K15) is configured as PIO3_17 */
+    PORT_SetPinMux(BOARD_BTNPINS_CENTER_BTN_PORT, BOARD_BTNPINS_CENTER_BTN_PIN, kPORT_MuxAlt0);
+
+    PORT3->PCR[17] = ((PORT3->PCR[17] &
+                       /* Mask bits to zero which are setting */
+                       (~(PORT_PCR_IBE_MASK)))
+
+                      /* Input Buffer Enable: Enables. */
+                      | PORT_PCR_IBE(PCR_IBE_ibe1));
+
+    /* PORT3_19 (pin K17) is configured as PIO3_19 */
+    PORT_SetPinMux(BOARD_BTNPINS_RIGHT_BTN_PORT, BOARD_BTNPINS_RIGHT_BTN_PIN, kPORT_MuxAlt0);
+
+    PORT3->PCR[19] = ((PORT3->PCR[19] &
+                       /* Mask bits to zero which are setting */
+                       (~(PORT_PCR_IBE_MASK)))
+
+                      /* Input Buffer Enable: Enables. */
+                      | PORT_PCR_IBE(PCR_IBE_ibe1));
+
+    /* PORT3_21 (pin L16) is configured as PIO3_21 */
+    PORT_SetPinMux(BOARD_BTNPINS_LEFT_BTN_PORT, BOARD_BTNPINS_LEFT_BTN_PIN, kPORT_MuxAlt0);
+
+    PORT3->PCR[21] = ((PORT3->PCR[21] &
+                       /* Mask bits to zero which are setting */
+                       (~(PORT_PCR_IBE_MASK)))
+
+                      /* Input Buffer Enable: Enables. */
+                      | PORT_PCR_IBE(PCR_IBE_ibe1));
 }
 /***********************************************************************************************************************
  * EOF

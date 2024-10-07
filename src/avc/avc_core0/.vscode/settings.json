@@ -27,6 +27,8 @@
         "fsl_gpio.h": "c",
         "fsl_debug_console.h": "c",
         "avc__adc.h": "c",
-        "avc__camera_interface.h": "c"
+        "avc__camera_interface.h": "c",
+        "button.h": "c",
+        "board.h": "c"
     }
 }

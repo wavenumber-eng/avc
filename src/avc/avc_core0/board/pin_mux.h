@@ -178,6 +178,56 @@ void BOARD_LCDPins(void);
  */
 void BOARD_CAMPins(void);
 
+#define PCR_IBE_ibe1 0x01u /*!<@brief Input Buffer Enable: Enables */
+
+/*! @name PORT3_21 (coord L16), P3_21/J6[4]/J1[15]
+  @{ */
+
+/* Symbols to be used with GPIO driver */
+#define BOARD_BTNPINS_LEFT_BTN_GPIO GPIO3                /*!<@brief GPIO peripheral base pointer */
+#define BOARD_BTNPINS_LEFT_BTN_GPIO_PIN 21U              /*!<@brief GPIO pin number */
+#define BOARD_BTNPINS_LEFT_BTN_GPIO_PIN_MASK (1U << 21U) /*!<@brief GPIO pin mask */
+
+/* Symbols to be used with PORT driver */
+#define BOARD_BTNPINS_LEFT_BTN_PORT PORT3                /*!<@brief PORT peripheral base pointer */
+#define BOARD_BTNPINS_LEFT_BTN_PIN 21U                   /*!<@brief PORT pin number */
+#define BOARD_BTNPINS_LEFT_BTN_PIN_MASK (1U << 21U)      /*!<@brief PORT pin mask */
+                                                         /* @} */
+
+/*! @name PORT3_17 (coord K15), P3_17/J1[11]/SJ10[3]
+  @{ */
+
+/* Symbols to be used with GPIO driver */
+#define BOARD_BTNPINS_CENTER_BTN_GPIO GPIO3                /*!<@brief GPIO peripheral base pointer */
+#define BOARD_BTNPINS_CENTER_BTN_GPIO_PIN 17U              /*!<@brief GPIO pin number */
+#define BOARD_BTNPINS_CENTER_BTN_GPIO_PIN_MASK (1U << 17U) /*!<@brief GPIO pin mask */
+
+/* Symbols to be used with PORT driver */
+#define BOARD_BTNPINS_CENTER_BTN_PORT PORT3                /*!<@brief PORT peripheral base pointer */
+#define BOARD_BTNPINS_CENTER_BTN_PIN 17U                   /*!<@brief PORT pin number */
+#define BOARD_BTNPINS_CENTER_BTN_PIN_MASK (1U << 17U)      /*!<@brief PORT pin mask */
+                                                           /* @} */
+
+/*! @name PORT3_19 (coord K17), P3_19/J5[1]/J1[13]
+  @{ */
+
+/* Symbols to be used with GPIO driver */
+#define BOARD_BTNPINS_RIGHT_BTN_GPIO GPIO3                /*!<@brief GPIO peripheral base pointer */
+#define BOARD_BTNPINS_RIGHT_BTN_GPIO_PIN 19U              /*!<@brief GPIO pin number */
+#define BOARD_BTNPINS_RIGHT_BTN_GPIO_PIN_MASK (1U << 19U) /*!<@brief GPIO pin mask */
+
+/* Symbols to be used with PORT driver */
+#define BOARD_BTNPINS_RIGHT_BTN_PORT PORT3                /*!<@brief PORT peripheral base pointer */
+#define BOARD_BTNPINS_RIGHT_BTN_PIN 19U                   /*!<@brief PORT pin number */
+#define BOARD_BTNPINS_RIGHT_BTN_PIN_MASK (1U << 19U)      /*!<@brief PORT pin mask */
+                                                          /* @} */
+
+/*!
+ * @brief Configures pin routing and optionally pin electrical features.
+ *
+ */
+void BOARD_BTNPINS(void);
+
 #if defined(__cplusplus)
 }
 #endif
