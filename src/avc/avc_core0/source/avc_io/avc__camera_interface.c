@@ -156,11 +156,11 @@ static uint16_t g_camera_buffer[DEMO_BUFFER_WIDTH * DEMO_BUFFER_HEIGHT];
 volatile uint8_t g_samrtdma_stack[32] = {0};
 
 
-uint16_t processing_buffer [160 * 120];
+uint16_t display_buffer [160 * 120];
 eGFX_ImagePlane camera_image =
 {
     .Type =  eGFX_IMAGE_PLANE_16BPP_RGB565, 
-    .Data = (uint8_t *)processing_buffer, 
+    .Data = (uint8_t *)display_buffer, 
     .SizeX = 160,
     .SizeY = 120,
     .User = NULL
