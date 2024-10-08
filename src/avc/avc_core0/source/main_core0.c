@@ -169,9 +169,6 @@ int main(void)
 										&FONT_5_7_1BPP,
 										eGFX_COLOR_RGB888_TO_RGB565(0,0xFF,0));
 
-                
-                
-
 
                 if(button__hal_read_port_pin(IN_PORT, LEFT_BTN_PIN) == 0)
                 {
@@ -208,11 +205,4 @@ int main(void)
         }
     }
     
-}
-
-
-
-void Systick_handler()
-{
-
 }
