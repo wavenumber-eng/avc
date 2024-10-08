@@ -152,9 +152,18 @@ camera_device_handle_t handle =
 
 };
 
-static uint16_t g_camera_buffer[DEMO_BUFFER_WIDTH * DEMO_BUFFER_HEIGHT];
-volatile uint8_t g_samrtdma_stack[32] = {0};
 
+/**
+ * EZH WILL BE FILLING ONE JUST OF THESE g_camera_buffers
+ * The buffer that is not being filled is the one used to be shown in the display
+ */
+static uint16_t g_camera_buffer1[DEMO_BUFFER_WIDTH * DEMO_BUFFER_HEIGHT];
+static uint16_t g_camera_buffer2[DEMO_BUFFER_WIDTH * DEMO_BUFFER_HEIGHT];
+uint16_t * processing_buffer;
+uint16_t * buffer_addresses [2];
+uint8_t buffer_index;
+
+volatile uint8_t g_samrtdma_stack[32] = {0};
 
 uint16_t display_buffer [160 * 120];
 eGFX_ImagePlane camera_image =
@@ -209,6 +218,12 @@ The program matches the smart DMA api verison.
     PORT3->PCR[5] = (7 << 8) | (1 << 12); // EZH_PIO5, PIO1_9,P1_9/EZH_LCD_D5_CAMERA_D5
     PORT1->PCR[10] = (7 << 8) | (1 << 12); // EZH_PIO6, PIO1_10,P1_10/EZH_LCD_D6_CAMERA_D6
     PORT1->PCR[11] = (7 << 8) | (1 << 12); // EZH_PIO7, PIO1_11,P1_11/EZH_LCD_D7_CAMERA_D7
+
+    // Buffers initialization
+    buffer_index = 0;
+    buffer_addresses[0] = &g_camera_buffer1[0];
+    buffer_addresses[1] = &g_camera_buffer2[0];
+    processing_buffer = buffer_addresses[1];
 
     DEMO_InitSmartDma();
 
@@ -270,9 +285,11 @@ static void DEMO_InitCamera(void)
 #endif
 
 #include "ezh_init.h"
+
+static smartdma_camera_param_t smartdmaParam;
+
 static void DEMO_InitSmartDma(void)
 {
-    static smartdma_camera_param_t smartdmaParam;
 
     /*
       THis bunny build program not yet working with ov7670.  There seemed to be a change in the latest SDK.
@@ -288,7 +305,9 @@ static void DEMO_InitSmartDma(void)
 
 */
     /* Clear camera buffer. */
-    memset((void *)g_camera_buffer, 0, sizeof(g_camera_buffer));
+    memset((void *)g_camera_buffer1, 0, sizeof(g_camera_buffer1));
+    memset((void *)g_camera_buffer2, 0, sizeof(g_camera_buffer2));
+
 
     /* Init smartdma for camera. */
     SMARTDMA_InitWithoutFirmware();
@@ -302,7 +321,7 @@ static void DEMO_InitSmartDma(void)
 
     /* Boot smartdma. */
     smartdmaParam.smartdma_stack = (uint32_t *)g_samrtdma_stack;
-    smartdmaParam.p_buffer = (uint32_t *)g_camera_buffer;
+    smartdmaParam.p_buffer = (uint32_t *)g_camera_buffer1;
     /* Make sure the frame size that the firmware fetches is smaller than or equal to the camera resolution.
        In this case it is half of the camera resolution. */
     SMARTDMA_Boot(DEMO_SMARTDMA_API, &smartdmaParam, 0x2);
@@ -335,9 +354,16 @@ void camera__pull_power_pin(bool pullUp)
 
 static void SDMA_CompleteCallback(void *param)
 {
+
+    processing_buffer = buffer_addresses[buffer_index];
+
+    buffer_index = (buffer_index + 1) & 1;
+    smartdmaParam.p_buffer = (uint32_t *)buffer_addresses[buffer_index];
+
+
     if(request_frame_for_display)
     {
-        dma_copy_buffer((uint32_t * )g_camera_buffer, (uint32_t * )camera_image.Data, 1, 160 * 120 * 2);
+        dma_copy_buffer((uint32_t * )processing_buffer, (uint32_t * )camera_image.Data, 1, 160 * 120 * 2);
         request_frame_for_display = false;
     }
 
