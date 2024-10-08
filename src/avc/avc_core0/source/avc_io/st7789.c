@@ -389,48 +389,6 @@ void Exit_Sleep(void)
 	Write_Cmd(0x29);     // Display on 
 } 
 
-
- 
-//show one Character
-void showzifu(unsigned int x,unsigned int y,unsigned char value,unsigned int dcolor,unsigned int bgcolor)	
-{  
-	unsigned char i,j;
-	unsigned char *temp=zifu;    
-    LCD_SetPos(x,x+7,y,y+11);      
-	temp+=(value-32)*12;
-	for(j=0;j<12;j++)
-	{
-		for(i=0;i<8;i++)
-		{ 		     
-		 	if((*temp&(1<<(7-i)))!=0)
-			{
-				Write_Data(dcolor>>8,dcolor);
-			} 
-			else
-			{
-				Write_Data(bgcolor>>8,bgcolor);
-			}   
-		}
-		temp++;
-	 }
-}
-
-//show String
-void showzifustr(unsigned int x,unsigned int y,unsigned char *str,unsigned int dcolor,unsigned int bgcolor)	  
-{  
-	unsigned int x1,y1;
-	x1=x;
-	y1=y;
-	while(*str!='\0')
-	{	
-		showzifu(x1,y1,*str,dcolor,bgcolor);
-		x1+=7;
-		str++;
-	}	
-}
-
-
-
 //===============================================================
 //��������
 void LCD_SetPos(unsigned int x0,unsigned int x1,unsigned int y0,unsigned int y1)

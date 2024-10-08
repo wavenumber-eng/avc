@@ -69,6 +69,8 @@ void avc__motor_control_init()
                  PWM_SRC_CLK_FREQ);
 
 
+    avc__set_motor_pwm(0, 0);
+
     avc__disable_motor_control();
 }
 

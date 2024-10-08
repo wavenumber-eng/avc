@@ -1,8 +1,4 @@
-#include "e.h"
-#include "stdint.h"
-#include "fsl_lpuart.h"
-#include "fsl_clock.h"
-#include "fsl_reset.h"
+#include "avc__io.h"
 
 #ifndef CONFIG__AVC_UART_TX_Q_SIZE_BYTES
 	#define CONFIG__AVC_UART_TX_Q_SIZE_BYTES 2048
@@ -14,6 +10,13 @@
 
 BYTE_QUEUE__MAKE(UART4_TX_Q , CONFIG__AVC_UART_TX_Q_SIZE_BYTES);
 BYTE_QUEUE__MAKE(UART4_RX_Q , CONFIG__AVC_UART_TX_Q_SIZE_BYTES);
+
+
+
+button_t left_btn, right_btn, center_btn;
+
+
+void avc_io__uart_init();
 
 
 void LP_FLEXCOMM4_IRQHandler(void)
@@ -73,5 +76,70 @@ void avc_io__uart_init()
 	    LPUART_EnableInterrupts(LPUART4, kLPUART_RxDataRegFullInterruptEnable);
 
 	    EnableIRQ(LP_FLEXCOMM4_IRQn);
+
+}
+
+
+
+void avc__init()
+{
+    BOARD_InitBootPins();
+    BOARD_InitBootClocks();
+
+    CLOCK_EnableClock(kCLOCK_Gpio0);
+    CLOCK_EnableClock(kCLOCK_Dma0);
+
+    avc_io__uart_init();
+
+    e__init();
+
+    MAILBOX_Init(MAILBOX);
+
+
+    avc__adc_init();
+    avc__motor_control_init();
+    avc__servo_control_init();
+    avc__enable_motor_control();
+
+    button__init(&left_btn, IN_PORT, LEFT_BTN_PIN, BUTTON_POLARITY_LOW_ACTIVE, 50);
+    button__init(&right_btn, IN_PORT, RIGHT_BTN_PIN, BUTTON_POLARITY_LOW_ACTIVE, 50);
+    button__init(&center_btn, IN_PORT, CENTER_BTN_PIN, BUTTON_POLARITY_LOW_ACTIVE, 50);
+
+    /* Print the initial banner from Primary core */
+    (void)DEBUG("\r\nHello World from core 0!\r\n");
+
+    /* Boot Secondary core application */
+    (void)DEBUG("Starting Secondary core.\r\n");
+
+
+	#if defined(FSL_FEATURE_MAILBOX_SIDE_A)
+		NVIC_SetPriority(MAILBOX_IRQn, 5);
+	#else
+		NVIC_SetPriority(MAILBOX_IRQn, 2);
+	#endif
+
+	NVIC_EnableIRQ(MAILBOX_IRQn);
+
+
+    /* Boot source for Core 1 from RAM */
+    SYSCON->CPBOOT = ((uint32_t)(char *)CORE1_EXE_ADDRESS & SYSCON_CPBOOT_CPBOOT_MASK);
+
+    uint32_t temp = SYSCON->CPUCTRL;
+    temp |= 0xc0c40000U;
+    SYSCON->CPUCTRL = temp | SYSCON_CPUCTRL_CPU1RSTEN_MASK | SYSCON_CPUCTRL_CPU1CLKEN_MASK;
+    SYSCON->CPUCTRL = (temp | SYSCON_CPUCTRL_CPU1CLKEN_MASK) & (~SYSCON_CPUCTRL_CPU1RSTEN_MASK);
+
+    (void)DEBUG("The secondary core application has been started.\r\n");
+
+
+     avc__camera_interface_init();
+
+
+    eGFX_InitDriver(0);
+
+    eGFX_Dump((eGFX_ImagePlane *)&Sprite_16BPP_RGB565_bg1);
+
+    e_tick__delay_ms(2000);
+
 
 }
