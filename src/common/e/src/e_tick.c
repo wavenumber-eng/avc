@@ -1,4 +1,5 @@
 #include "e.h"
+#include "avc__io.h"
 
 static volatile uint32_t e__delay_ticker;
 
@@ -169,6 +170,10 @@ void CONFIG__E_TICK_IRQ_HANDLER_NAME()
 	e_tick__trigger_scan(e_tick__trigger_list__irq,CONFIG__E_TICK_PERIOD__MS);
 
 	e_tick__trigger_exe(e_tick__trigger_list__irq);
+
+	button__process(&left_btn, CONFIG__E_TICK_PERIOD__MS);
+	button__process(&right_btn, CONFIG__E_TICK_PERIOD__MS);
+	button__process(&center_btn, CONFIG__E_TICK_PERIOD__MS);
 }
 
 

@@ -95,12 +95,6 @@ void avc__init()
 
     MAILBOX_Init(MAILBOX);
 
-
-    avc__adc_init();
-    avc__motor_control_init();
-    avc__servo_control_init();
-    avc__enable_motor_control();
-
     button__init(&left_btn, IN_PORT, LEFT_BTN_PIN, BUTTON_POLARITY_LOW_ACTIVE, 50);
     button__init(&right_btn, IN_PORT, RIGHT_BTN_PIN, BUTTON_POLARITY_LOW_ACTIVE, 50);
     button__init(&center_btn, IN_PORT, CENTER_BTN_PIN, BUTTON_POLARITY_LOW_ACTIVE, 50);
@@ -132,14 +126,15 @@ void avc__init()
     (void)DEBUG("The secondary core application has been started.\r\n");
 
 
-     avc__camera_interface_init();
-
-
+    avc__camera_interface_init();
     eGFX_InitDriver(0);
-
     eGFX_Dump((eGFX_ImagePlane *)&Sprite_16BPP_RGB565_bg1);
-
     e_tick__delay_ms(2000);
+
+    avc__adc_init();
+    avc__motor_control_init();
+    avc__servo_control_init();
+//    avc__enable_motor_control();
 
 
 }

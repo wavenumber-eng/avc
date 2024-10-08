@@ -29,6 +29,7 @@
         "avc__adc.h": "c",
         "avc__camera_interface.h": "c",
         "button.h": "c",
-        "board.h": "c"
+        "board.h": "c",
+        "avc__io.h": "c"
     }
 }

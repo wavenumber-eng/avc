@@ -68,6 +68,7 @@ void avc__motor_control_init()
     PWM_SetupPwm(PWM1, kPWM_Module_1, pwmSignal_diff, 2, kPWM_SignedCenterAligned, PWM_FREQUENCY,
                  PWM_SRC_CLK_FREQ);
 
+    motor_ctrl_inst.invert_right_motor_direction = 1;
 
     avc__set_motor_pwm(0, 0);
 
@@ -101,7 +102,8 @@ void avc__enable_motor_control()
  */
 void avc__disable_motor_control()
 {
-        PORT_SetPinMux(PORT2, 3U, kPORT_MuxAsGpio); /* PORT2_2 disconnected from PWM1_A2 */
+        avc__set_motor_pwm(0, 0);
+        //PORT_SetPinMux(PORT2, 3U, kPORT_MuxAsGpio); /* PORT2_2 disconnected from PWM1_A2 */
         PORT_SetPinMux(PORT2, 4U, kPORT_MuxAsGpio); /* PORT2_4 disconnected from PWM1_A1 */
         PORT_SetPinMux(PORT2, 5U, kPORT_MuxAsGpio); /* PORT2_5 disconnected from PWM1_B1 */
         PORT_SetPinMux(PORT2, 6U, kPORT_MuxAsGpio); /* PORT2_6 disconnected from PWM1_A0 */
@@ -163,7 +165,7 @@ uint16_t avc__dc_to_counts(int8_t new_dc, bool inverted_direction)
 
     if (inverted_direction)
     {
-        counts = counts - 65535;
+        counts = 65535 - counts;
     }
     return counts;
 }

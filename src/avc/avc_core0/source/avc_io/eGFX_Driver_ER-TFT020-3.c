@@ -7,10 +7,6 @@
 
 #ifdef eGFX_DRIVER_ER_TFT020_3
 
-eGFX_ImagePlane eGFX_BackBuffer[eGFX_NUM_BACKBUFFERS];
-
-uint8_t BackBufferStore[eGFX_CALCULATE_16BPP_IMAGE_STORAGE_SPACE_SIZE(eGFX_PHYSICAL_SCREEN_SIZE_X, eGFX_PHYSICAL_SCREEN_SIZE_Y)];
-
 eGFX_VSyncCallback_t *VSyncCallback;
 
 extern void ST7789_Initial(void);
@@ -22,12 +18,6 @@ void eGFX_InitDriver(eGFX_VSyncCallback_t VS)
     CLOCK_AttachClk(kPLL_DIV_to_FLEXCOMM1);
 
 	lpspi1_init(8); // Initialize with 8-bit SPI transactions
-
-    eGFX_ImagePlaneInit(&eGFX_BackBuffer[0],
-                        BackBufferStore,
-                        eGFX_PHYSICAL_SCREEN_SIZE_X,
-                        eGFX_PHYSICAL_SCREEN_SIZE_Y,
-                        eGFX_IMAGE_PLANE_16BPP);
 
     VSyncCallback = VS;
 

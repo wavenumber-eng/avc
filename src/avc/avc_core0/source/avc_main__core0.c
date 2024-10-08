@@ -7,10 +7,9 @@
 volatile uint16_t bat;
 volatile uint32_t test;
 int8_t left_intensity, right_intensity, servo_position;
+bool testmode__motors_enable = 0;
 
 uint8_t pot_text [64];
-
-
 
 
 int main(void)
@@ -29,16 +28,19 @@ int main(void)
         {   
             uint8_t alpha, gamma, beta;
 
-            alpha = avc__read_alpha();
-            gamma = avc__read_gamma();
-            beta = avc__read_beta();
+            if(testmode__motors_enable == 1)
+            {
+                alpha = avc__read_alpha();
+                gamma = avc__read_gamma();
+                beta = avc__read_beta();
 
-            left_intensity = (2*(int16_t)alpha) - 100;
-            right_intensity = (2*(int16_t)gamma) - 100;
-            servo_position = (2*(int16_t)beta) - 100;
+                left_intensity = (2*(int16_t)alpha) - 100;
+                right_intensity = (2*(int16_t)gamma) - 100;
+                servo_position = (2*(int16_t)beta) - 100;
 
-            avc__set_motor_pwm(left_intensity, right_intensity);
-            avc__set_servo(servo_position);
+                avc__set_motor_pwm(left_intensity, right_intensity);
+                avc__set_servo(servo_position);
+            }
 
             if((request_frame_for_display == false)  && (mem_transfer_done == true))
             {
@@ -75,6 +77,14 @@ int main(void)
 										eGFX_COLOR_RGB888_TO_RGB565(0,0xFF,0));
                 }
 
+                if(button__hal_read_port_pin(IN_PORT, RIGHT_BTN_PIN) == 0)
+                {
+                    eGFX_DrawStringColored(&camera_image,
+            							"R_BTN",105,100,
+										&FONT_5_7_1BPP,
+										eGFX_COLOR_RGB888_TO_RGB565(0,0xFF,0));
+                }
+
                 if(button__hal_read_port_pin(IN_PORT, CENTER_BTN_PIN) == 0)
                 {
                     eGFX_DrawStringColored(&camera_image,
@@ -83,13 +93,39 @@ int main(void)
 										eGFX_COLOR_RGB888_TO_RGB565(0,0xFF,0));
                 }
 
-                if(button__hal_read_port_pin(IN_PORT, RIGHT_BTN_PIN) == 0)
+                //if(button__down(&center_btn))
+                if(button__up(&center_btn))
+                {
+                    button__reset_state(&center_btn);
+
+                    if(testmode__motors_enable == 0)
+                    {
+                        testmode__motors_enable = 1;
+                        avc__enable_motor_control();
+                    }
+
+                    else if(testmode__motors_enable == 1)
+                    {
+                        testmode__motors_enable = 0;
+                        avc__disable_motor_control();
+                    }
+                }
+
+                if(testmode__motors_enable == 1)
                 {
                     eGFX_DrawStringColored(&camera_image,
-            							"R_BTN",105,100,
+            							"Motors active",40,20,
 										&FONT_5_7_1BPP,
 										eGFX_COLOR_RGB888_TO_RGB565(0,0xFF,0));
                 }
+                else 
+                {
+                    eGFX_DrawStringColored(&camera_image,
+            							"Motors inactive",40,20,
+										&FONT_5_7_1BPP,
+										eGFX_COLOR_RGB888_TO_RGB565(0,0xFF,0));
+                }
+
 
                 #if CONFIG__OV7670_IS_160x120 == 1
                     eGFX_duplicate_and_dump(&camera_image);

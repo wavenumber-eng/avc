@@ -125,19 +125,19 @@ void avc__adc_init()
 // Return a [0, 100] value from the Alpha pot
 uint8_t avc__read_alpha()
 {
-    return (adc_values[ALPHA_ADC_CH] * 100) / ADC_MAX_VALUE;
+    return ((ADC_MAX_VALUE - adc_values[ALPHA_ADC_CH]) * 100) / ADC_MAX_VALUE;
 }
 
 // Return a [0, 100] value from the Beta pot
 uint8_t avc__read_beta()
 {
-    return (adc_values[BETTA_ADC_CH] * 100) / ADC_MAX_VALUE;
+    return ((ADC_MAX_VALUE - adc_values[BETTA_ADC_CH]) * 100) / ADC_MAX_VALUE;
 }
 
 // Return a [0, 100] value from the Gamma pot
 uint8_t avc__read_gamma()
 {
-    return (adc_values[GAMMA_ADC_CH] * 100) / ADC_MAX_VALUE;
+    return ((ADC_MAX_VALUE - adc_values[GAMMA_ADC_CH]) * 100) / ADC_MAX_VALUE;
 }
 
 uint16_t avc__read_battery_voltage()
