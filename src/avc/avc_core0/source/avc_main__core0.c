@@ -8,8 +8,11 @@ volatile uint16_t bat;
 volatile uint32_t test;
 int8_t left_intensity, right_intensity, servo_position;
 bool testmode__motors_enable = 0;
-
 uint8_t pot_text [64];
+uint8_t alpha, gamma, beta;
+
+int32_t current_speed_left = 0;
+int32_t current_speed_right = 0;
 
 
 int main(void)
@@ -19,27 +22,50 @@ int main(void)
 
     while (1)
     {
-        test = avc_ipc.core1_counter;
 
         bat = avc__read_battery_voltage();
+        alpha = avc__read_alpha();
+        gamma = avc__read_gamma();
+        beta = avc__read_beta();
+
 
         // Test mode enable
         if(GPIO_PinRead(GPIO3, TEST_SW_PIN) == 0)
         {   
-            uint8_t alpha, gamma, beta;
+
+            left_intensity = (2*(int16_t)alpha) - 100;
+            right_intensity = (2*(int16_t)gamma) - 100;
+            servo_position = (2*(int16_t)beta) - 100;
 
             if(testmode__motors_enable == 1)
             {
-                alpha = avc__read_alpha();
-                gamma = avc__read_gamma();
-                beta = avc__read_beta();
 
-                left_intensity = (2*(int16_t)alpha) - 100;
-                right_intensity = (2*(int16_t)gamma) - 100;
-                servo_position = (2*(int16_t)beta) - 100;
+                if(current_speed_left<left_intensity)
+                {
+                	current_speed_left++;
+                }
+                else if(current_speed_left>left_intensity)
+                {
+                	current_speed_left--;
+                }
 
-                avc__set_motor_pwm(left_intensity, right_intensity);
+                if(current_speed_right<right_intensity)
+                {
+                	current_speed_right++;
+                }
+                else if(current_speed_right>right_intensity)
+                {
+                	current_speed_right--;
+                }
+
+                avc__set_motor_pwm(current_speed_left, current_speed_right);
                 avc__set_servo(servo_position);
+            }
+            else
+            {
+            	current_speed_left = 0;
+            	current_speed_right = 0;
+            	 avc__set_motor_pwm(current_speed_left, current_speed_right);
             }
 
             if((request_frame_for_display == false)  && (mem_transfer_done == true))

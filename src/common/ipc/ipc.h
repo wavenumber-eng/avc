@@ -11,6 +11,8 @@ typedef struct {
 	volatile uint32_t core1_counter;
 	volatile uint32_t core1_magic_boot_value;
 	volatile uint8_t * image_ptr;
+	volatile uint32_t core1_cmd;
+
 }ipc_t;
 
 

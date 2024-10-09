@@ -122,6 +122,8 @@ void avc__adc_init()
 }
 
 
+
+
 // Return a [0, 100] value from the Alpha pot
 uint8_t avc__read_alpha()
 {

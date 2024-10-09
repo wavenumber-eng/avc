@@ -17,6 +17,10 @@ __NOINIT(IPC_MEM) volatile ipc_t avc_ipc;
      cpu_id = kMAILBOX_CM33_Core0;
  #else
      cpu_id = kMAILBOX_CM33_Core1;
+
+
+
+
  #endif
 
      uint32_t value = MAILBOX_GetValue(MAILBOX, cpu_id);
