@@ -35,6 +35,10 @@ void camera__pull_power_pin(bool pullUp);
 
 extern void avc__camera_interface_init();
 
+bool    avc__is_frame_ready();
+void 	avc__request_new_frame_for_display();
+uint16_t * avc__get_frame_data();
+
 extern volatile bool cam_data_rdy;
 extern eGFX_ImagePlane camera_image;
 #endif

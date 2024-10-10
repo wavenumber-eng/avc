@@ -1,8 +1,12 @@
 
 
 #include "avc__io.h"
+#include "avc__line_processor.h"
 
+#define CAMERA_WIDTH	160
+#define CAMERA_HEIGHT	120
 
+#define LINE_TO_PROCESS	CAMERA_HEIGHT/2
 
 volatile uint16_t bat;
 volatile uint32_t test;
@@ -10,6 +14,12 @@ int8_t left_intensity, right_intensity, servo_position;
 bool testmode__motors_enable = 0;
 
 uint8_t pot_text [64];
+
+uint16_t * camera_frame;
+
+
+uint8_t line_buffer__red[CAMERA_WIDTH];
+
 
 
 int main(void)
@@ -42,8 +52,40 @@ int main(void)
                 avc__set_servo(servo_position);
             }
 
-            if((request_frame_for_display == false)  && (mem_transfer_done == true))
+            if(avc__is_frame_ready())
             {
+            	/*
+            	 * Camera frame is a pointer to 16-bit
+            	 * frame data in RGB565 format.
+            	 *  You can use it like an array
+            	 *  camera_frame[5] would be the 6th pixel on the 1st line
+            	 *
+            	 *  Since lines are 160 pixel long, you could do this:
+            	 *
+            	 *  camera_frame [5 + 2*CAMERA_WIDTH];
+            	 *
+            	 *  This would get you pixel 6 on the 3rd line
+            	 */
+
+            	camera_frame = avc__get_frame_data();
+
+            	//Copy Line 60 to a line buffer for the red pixels
+            	avc__convert_rgb565_to_r5(&camera_frame[60 * CAMERA_WIDTH],
+            									line_buffer__red,
+            									CAMERA_WIDTH);
+            	/*
+            	 * Render the line on the screen as little line segments
+            	 *
+            	 */
+            	for(int i = 1; i<CAMERA_WIDTH ; i++)
+            	{
+            	       eGFX_DrawLine(&camera_image,
+            	                 	  i, CAMERA_HEIGHT - line_buffer__red[i]*2,
+            	                	  i-1,CAMERA_HEIGHT - line_buffer__red[i-1]*2 ,
+            						  eGFX_COLOR_RGB888_TO_RGB565(0xff,0,0));
+            	}
+
+
             	eGFX_DrawStringColored(&camera_image,
             							"TEST MODE",50,10,
 										&FONT_5_7_1BPP,
@@ -68,8 +110,7 @@ int main(void)
 										&FONT_5_7_1BPP,
 										eGFX_COLOR_RGB888_TO_RGB565(0,0xFF,0));
 
-
-                if(button__hal_read_port_pin(IN_PORT, LEFT_BTN_PIN) == 0)
+                if(button__is_active(&left_btn))
                 {
                     eGFX_DrawStringColored(&camera_image,
             							"L_BTN",25,100,
@@ -77,7 +118,7 @@ int main(void)
 										eGFX_COLOR_RGB888_TO_RGB565(0,0xFF,0));
                 }
 
-                if(button__hal_read_port_pin(IN_PORT, RIGHT_BTN_PIN) == 0)
+                if(button__is_active(&right_btn))
                 {
                     eGFX_DrawStringColored(&camera_image,
             							"R_BTN",105,100,
@@ -85,18 +126,8 @@ int main(void)
 										eGFX_COLOR_RGB888_TO_RGB565(0,0xFF,0));
                 }
 
-                if(button__hal_read_port_pin(IN_PORT, CENTER_BTN_PIN) == 0)
-                {
-                    eGFX_DrawStringColored(&camera_image,
-            							"C_BTN",65,100,
-										&FONT_5_7_1BPP,
-										eGFX_COLOR_RGB888_TO_RGB565(0,0xFF,0));
-                }
-
-                //if(button__down(&center_btn))
                 if(button__up(&center_btn))
                 {
-                    button__reset_state(&center_btn);
 
                     if(testmode__motors_enable == 0)
                     {
@@ -127,15 +158,23 @@ int main(void)
                 }
 
 
-                #if CONFIG__OV7670_IS_160x120 == 1
-                    eGFX_duplicate_and_dump(&camera_image);
-                #else
-                    eGFX_Dump(&camera_image);
-                #endif
+                eGFX_duplicate_and_dump(&camera_image);
+
+                avc__request_new_frame_for_display();
                 request_frame_for_display = true;
             }
 
+        }//end test most
+        else
+        {
+        	//This is where we put code if we are not it test mode
+        	  if(button__up(&center_btn))
+        	  {
+        		  //Start the car!
+        	  }
+
         }
     }
+
     
 }

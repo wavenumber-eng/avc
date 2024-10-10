@@ -9,6 +9,7 @@
 #include "lpspi1.h"
 #include "bunny_build.h"
 #include "cr_section_macros.h"
+#include "stdbool.h"
 
 	/*
 		EZH_Camera_320_240_Whole_Buffer ,
@@ -369,3 +370,22 @@ static void SDMA_CompleteCallback(void *param)
 
 
 }
+
+
+bool avc__is_frame_ready()
+{
+	return (request_frame_for_display == false)  && (mem_transfer_done == true);
+}
+
+uint16_t * avc__get_frame_data()
+{
+	return processing_buffer;
+}
+
+void avc__request_new_frame_for_display()
+{
+    request_frame_for_display = true;
+}
+
+
+

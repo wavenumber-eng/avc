@@ -85,7 +85,9 @@ static inline int DbgConsole_Disabled(void)
 #define PUTCHAR(...) DbgConsole_Disabled()
 #define GETCHAR()    DbgConsole_Disabled()
 #elif SDK_DEBUGCONSOLE == DEBUGCONSOLE_REDIRECT_TO_SDK /* Select printf, scanf, putchar, getchar of SDK version. */
+#ifndef PRINTF
 #define PRINTF  DbgConsole_Printf
+#endif
 #define SCANF   DbgConsole_Scanf
 #define PUTCHAR DbgConsole_Putchar
 #define GETCHAR DbgConsole_Getchar
