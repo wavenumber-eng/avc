@@ -126,13 +126,13 @@ int main(void)
 
                 sprintf(pot_text, "beta: %d%", servo_position);
                 eGFX_DrawStringColored(&camera_image,
-            							pot_text,10,50,
+            							pot_text,10,40,
 										&FONT_5_7_1BPP,
 										eGFX_COLOR_RGB888_TO_RGB565(0,0xFF,0));
 
                 sprintf(pot_text, "gamma: %d%", right_intensity);
                 eGFX_DrawStringColored(&camera_image,
-            							pot_text,10,70,
+            							pot_text,10,50,
 										&FONT_5_7_1BPP,
 										eGFX_COLOR_RGB888_TO_RGB565(0,0xFF,0));
 
