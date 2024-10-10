@@ -126,8 +126,8 @@ typedef struct
 #define eGFX_COLOR_RGB888_TO_RGB565(R,G,B)     ( ((R>>3)<<11)   | ((G>>2)<<5)   | (B>>3)   )
 #define eGFX_COLOR_RGB_TO_RGBX888(R,G,B)       ( ((R&0xFF)<<16) | ((G&0xFF)<<8) | (B&0xff) )
 
-#define eGFX_RGB565_TO_R5(rgb565)		((((uint16_t)(rgb565)>>11)&0x1F)
-#define eGFX_RGB565_TO_G6(rgb565)		(((uint16_t)(rgb565)>>5)&0x3F)
+#define eGFX_RGB565_TO_R5(rgb565)		((((uint16_t)(rgb565))>>11)&0x1F)
+#define eGFX_RGB565_TO_G6(rgb565)		((((uint16_t)(rgb565))>>5)&0x3F)
 #define eGFX_RGB565_TO_B5(rgb565)		(((uint16_t)(rgb565))&0x1F)
 
 #define eGFX_RGB565_TO_R8(rgb565)		 (eGFX_RGB565_TO_R5(rgb565)<<3)
@@ -138,11 +138,13 @@ typedef struct
 
 //Fast Approx of Luminance from rgb565
 
-#define eGFX_RGB565_TO_Y8(rgb565)		( \
-										   (((uint16_t)eGFX_RGB565_TO_R8(rgb565))*77) + \
-										   (((uint16_t)eGFX_RGB565_TO_G8(rgb565))*150) + \
-										   (((uint16_t)eGFX_RGB565_TO_B8(rgb565))*29)) \
-										) >> 8
+#define eGFX_RGB565_TO_Y8(rgb565)	    (\
+											( \
+											   (((uint16_t)eGFX_RGB565_TO_R8(rgb565))*77) + \
+											   (((uint16_t)eGFX_RGB565_TO_G8(rgb565))*150) + \
+											   (((uint16_t)eGFX_RGB565_TO_B8(rgb565))*29) \
+											) >> 8 \
+										)
 
 
 //Fast Approx of Luminance to rgb565

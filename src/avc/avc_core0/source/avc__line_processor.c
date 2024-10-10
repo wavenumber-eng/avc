@@ -18,6 +18,16 @@ void avc__convert_rgb565_to_y8(uint16_t  * input,
 
 }
 
+void avc__convert_rgb565_to_r5(uint16_t  * input,
+							   uint8_t * output,
+							   uint32_t  length)
+{
+	for(int i=0;i<length;i++)
+	{
+		output[i] = eGFX_RGB565_TO_R5(input[i]);
+	}
+}
+
 
 uint8_t avc__find_uint8_max(uint8_t  * input,
 				      uint32_t  length)
