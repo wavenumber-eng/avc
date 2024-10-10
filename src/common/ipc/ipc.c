@@ -4,6 +4,7 @@
 #include "fsl_mailbox.h"
 
 
+
  #if defined(FSL_FEATURE_MAILBOX_SIDE_A)
 __BSS(IPC_MEM) volatile ipc_t avc_ipc;
 #else

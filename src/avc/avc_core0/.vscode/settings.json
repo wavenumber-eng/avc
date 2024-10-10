@@ -30,6 +30,10 @@
         "avc__camera_interface.h": "c",
         "button.h": "c",
         "board.h": "c",
-        "avc__io.h": "c"
+        "avc__io.h": "c",
+        "sprites_16bpp_rgb565.h": "c",
+        "avc__data_movement.h": "c",
+        "stdbool.h": "c",
+        "fsl_lpspi.h": "c"
     }
 }

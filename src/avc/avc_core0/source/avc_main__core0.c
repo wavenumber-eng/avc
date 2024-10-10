@@ -1,8 +1,4 @@
-
-
 #include "avc__io.h"
-
-
 
 volatile uint16_t bat;
 volatile uint32_t test;
@@ -42,7 +38,15 @@ int main(void)
                 avc__set_servo(servo_position);
             }
 
-            if((request_frame_for_display == false)  && (mem_transfer_done == true))
+
+            if(avc_ipc.display_request == true)
+            {
+                avc_ipc.display_request = false;
+                avc__data_movement_copy((uint32_t * )processing_buffer, (uint32_t * )camera_image.Data, 1, 160 * 120 * 2);
+            }
+
+
+            if((avc_ipc.display_request == false)  && (data_movement_transfer_done == true))
             {
             	eGFX_DrawStringColored(&camera_image,
             							"TEST MODE",50,10,
@@ -127,12 +131,15 @@ int main(void)
                 }
 
 
-                #if CONFIG__OV7670_IS_160x120 == 1
-                    eGFX_duplicate_and_dump(&camera_image);
-                #else
-                    eGFX_Dump(&camera_image);
-                #endif
-                request_frame_for_display = true;
+                avc_ipc.core1_cmd = CORE1_DOUBLE_AND_DUMP;
+                avc_ipc.image_plane_ptr = &camera_image;
+
+//                #if CONFIG__OV7670_IS_160x120 == 1
+//                    eGFX_duplicate_and_dump(&camera_image);
+//                #else
+//                    eGFX_Dump(&camera_image);
+//                #endif
+//                request_frame_for_display = true;
             }
 
         }

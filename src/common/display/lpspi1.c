@@ -1,5 +1,4 @@
 #include "lpspi1.h"
-#include "fsl_debug_console.h"
 #include "fsl_gpio.h"
 
 
@@ -57,14 +56,11 @@ void lpspi1_init(uint8_t transaction_bits)
                       MASTER_DMA_RX_CHANNEL);
     EDMA_CreateHandle(&(lpspiEdmaMasterTxDataToTxRegHandle), DMA0,
                       MASTER_DMA_TX_CHANNEL);
-    EDMA_CreateHandle(&g_DMA_Handle, DMA0, 2);
 
     EDMA_SetChannelMux(DMA0, MASTER_DMA_TX_CHANNEL,
                        DEMO_LPSPI_TRANSMIT_EDMA_CHANNEL);
     EDMA_SetChannelMux(DMA0, MASTER_DMA_RX_CHANNEL,
                        DEMO_LPSPI_RECEIVE_EDMA_CHANNEL);
-
-    EDMA_SetCallback(&g_DMA_Handle, DMA_Callback, NULL);
 
     LPSPI_MasterTransferCreateHandleEDMA(LPSPI1, &g_m_edma_handle, LPSPI_MasterUserCallback,
                                          NULL, &lpspiEdmaMasterRxRegToRxDataHandle,
@@ -88,7 +84,6 @@ void lpspi1_transfer_block(void *block, uint32_t block_size)
 
     //This is needed to avoid chip select pulses between each transfer...
     LPSPI1->TCR |=  LPSPI_TCR_CONT(1);
-    //LPSPI_MasterTransferBlocking(LPSPI1, &masterXfer);
     LPSPI_MasterTransferEDMALite(LPSPI1, &g_m_edma_handle,&masterXfer);
 
 }
@@ -102,39 +97,4 @@ void lpspi1_transfer_byte(uint8_t next_byte)
 void LPSPI_MasterUserCallback(LPSPI_Type *base, lpspi_master_edma_handle_t *handle, status_t status, void *userData)
 {
     isTransferCompleted = true;
-}
-
-
-
-
-
-void dma_copy_buffer(void * src_buff, void * dest_buff, uint8_t data_width, uint32_t transfer_size)
-{
-    GPIO_PinWrite(GPIO4, 0, 1);
-    edma_transfer_config_t transferConfig;
-
-    EDMA_PrepareTransfer(&transferConfig,   //GOOD
-                            src_buff,       //GOOD
-                            data_width,     //GOOD
-                            dest_buff,      //GOOD
-                            data_width,     //GOOD
-                            data_width * transfer_size, 
-                            data_width * transfer_size, 
-                            kEDMA_MemoryToMemory);
-    mem_transfer_done =false;
-
-    EDMA_SubmitTransfer(&g_DMA_Handle, &transferConfig);
-    EDMA_StartTransfer(&g_DMA_Handle);
-
-
-}
-
-/* User callback function for EDMA transfer. */
-void DMA_Callback(edma_handle_t *handle, void *userData, bool transferDone, uint32_t tcds)
-{
-    if (transferDone)
-    {
-        mem_transfer_done = true;
-        GPIO_PinWrite(GPIO4, 0, 0);
-    }
 }

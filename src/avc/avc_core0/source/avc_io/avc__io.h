@@ -19,8 +19,9 @@
 #include "e.h"
 #include "button.h"
 
-#include "st7789.h"
-#include "lpspi1.h"
+//#include "st7789.h"
+//#include "lpspi1.h"
+
 #include "eGFX_Driver_ER-TFT020-3.h"
 #include "assets/Sprites_16BPP_RGB565.h"
 
@@ -29,6 +30,8 @@
 #include "avc__servo_control.h"
 
 #include "avc__camera_interface.h"
+
+#include "avc__data_movement.h"
 
 
 

@@ -37,4 +37,6 @@ extern void avc__camera_interface_init();
 
 extern volatile bool cam_data_rdy;
 extern eGFX_ImagePlane camera_image;
+extern uint16_t * processing_buffer;
+
 #endif

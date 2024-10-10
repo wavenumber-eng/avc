@@ -361,11 +361,11 @@ static void SDMA_CompleteCallback(void *param)
     smartdmaParam.p_buffer = (uint32_t *)buffer_addresses[buffer_index];
 
 
-    if(request_frame_for_display)
-    {
-        dma_copy_buffer((uint32_t * )processing_buffer, (uint32_t * )camera_image.Data, 1, 160 * 120 * 2);
-        request_frame_for_display = false;
-    }
+//    if(request_frame_for_display)
+//    {
+//        dma_copy_buffer((uint32_t * )processing_buffer, (uint32_t * )camera_image.Data, 1, 160 * 120 * 2);
+//        request_frame_for_display = false;
+//    }
 
 
 }

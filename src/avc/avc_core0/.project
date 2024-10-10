@@ -38,6 +38,11 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
+			<name>display</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
 			<name>e</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
@@ -71,6 +76,36 @@
 			<name>bunny_build/test</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>display/eGFX_Driver_ER-TFT020-3.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/common/display/eGFX_Driver_ER-TFT020-3.c</locationURI>
+		</link>
+		<link>
+			<name>display/eGFX_Driver_ER-TFT020-3.h</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/common/display/eGFX_Driver_ER-TFT020-3.h</locationURI>
+		</link>
+		<link>
+			<name>display/lpspi1.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/common/display/lpspi1.c</locationURI>
+		</link>
+		<link>
+			<name>display/lpspi1.h</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/common/display/lpspi1.h</locationURI>
+		</link>
+		<link>
+			<name>display/st7789.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/common/display/st7789.c</locationURI>
+		</link>
+		<link>
+			<name>display/st7789.h</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/common/display/st7789.h</locationURI>
 		</link>
 		<link>
 			<name>e/.gitignore</name>
