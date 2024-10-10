@@ -1,7 +1,0 @@
-ExitOnError 1
-r
-h
-loadfile "C:\companies\wavenumber\bunny_vision\bunny_vision_sw\src\test\spi1_lcd\Debug\spi1_lcd.hex"
-qc
-
-qc

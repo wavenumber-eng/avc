@@ -1,7 +1,0 @@
-ExitOnError 1
-r
-h
-loadfile "C:\companies\wavenumber\bunny_vision\bunny_vision_sw\src\test\ov5640_st7789\Debug\ov5640_st7789.hex"
-qc
-
-qc
