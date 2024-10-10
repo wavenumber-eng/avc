@@ -1,6 +1,7 @@
 {
     "files.associations": {
-        "fsl_mailbox.h": "c"
+        "fsl_mailbox.h": "c",
+        "fsl_port.h": "c"
     },
     "workbench.colorCustomizations": {
         "activityBar.activeBackground": "#79021b",

@@ -260,26 +260,12 @@ void ST7789_Initial(void)
 {	 
 
 //-----------------------------------ST7789V reset sequence------------------------------------// 
-
-while(1)
-{
 	LCD_RES__SET; 
 	delayms(1); //Delay 1ms 
 	LCD_RES__CLR; 
 	delayms(10); //Delay 10ms 
 	LCD_RES__SET; 
 	delayms(120); //Delay 120ms 
-
-
-	LCD_RS__SET; 
-	delayms(1); //Delay 1ms 
-	LCD_RS__CLR; 
-	delayms(10); //Delay 10ms 
-	LCD_RS__SET; 
-	delayms(120); //Delay 120ms 
-}
-
-
 
 
 #if defined(CONFIG_DISPLAY_ORIENTATION) && (CONFIG_DISPLAY_ORIENTATION == PORTRAIT)
