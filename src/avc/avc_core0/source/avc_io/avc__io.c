@@ -79,10 +79,6 @@ void avc_io__uart_init()
 
 }
 
-#define LCD_RS__SET		GPIO_PinWrite(GPIO0,26,1)
-#define LCD_RS__CLR		GPIO_PinWrite(GPIO0,26,0)
-#define LCD_RES__SET	GPIO_PinWrite(GPIO0,28,1)
-#define LCD_RES__CLR	GPIO_PinWrite(GPIO0,28,0)
 void avc__init()
 {
     BOARD_InitBootPins();
@@ -118,6 +114,11 @@ void avc__init()
 
 	NVIC_EnableIRQ(MAILBOX_IRQn);
 
+
+    GPIO_EnablePinControlNonSecure(GPIO0, (1 << 26));
+    GPIO_EnablePinControlNonSecure(GPIO0, (1 << 28));
+
+
     /* Boot source for Core 1 from RAM */
     SYSCON->CPBOOT = ((uint32_t)(char *)CORE1_EXE_ADDRESS & SYSCON_CPBOOT_CPBOOT_MASK);
 
@@ -134,17 +135,14 @@ void avc__init()
 
     avc_ipc.image_plane_ptr = (eGFX_ImagePlane *)&Sprite_16BPP_RGB565_bg1;
     avc_ipc.core1_cmd = CORE1_DUMP;
-//    while(avc_ipc.core1_cmd != CORE1_IDLE);
-
+    while(avc_ipc.core1_cmd != CORE1_IDLE);
+    
     e_tick__delay_ms(2000);
+    avc_ipc.display_request = true;
 
     avc__adc_init();
     avc__motor_control_init();
     avc__servo_control_init();
 //    avc__enable_motor_control();
-        while(1)
-    {
-
-    }
 
 }

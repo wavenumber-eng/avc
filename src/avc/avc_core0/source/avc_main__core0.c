@@ -134,12 +134,6 @@ int main(void)
                 avc_ipc.core1_cmd = CORE1_DOUBLE_AND_DUMP;
                 avc_ipc.image_plane_ptr = &camera_image;
 
-//                #if CONFIG__OV7670_IS_160x120 == 1
-//                    eGFX_duplicate_and_dump(&camera_image);
-//                #else
-//                    eGFX_Dump(&camera_image);
-//                #endif
-//                request_frame_for_display = true;
             }
 
         }

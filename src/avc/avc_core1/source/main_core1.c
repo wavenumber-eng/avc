@@ -63,69 +63,12 @@ int main(void)
     BOARD_InitBootClocks();
     avc_ipc.core1_magic_boot_value = CORE1__MAGIC_BOOT_VALUE;
 
-    /* Enables the clock for GPIO0: Enables clock */
-    CLOCK_EnableClock(kCLOCK_Gpio0);
-    /* Enables the clock for GPIO1: Enables clock */
-    CLOCK_EnableClock(kCLOCK_Gpio1);
-    /* Enables the clock for GPIO4: Enables clock */
-    CLOCK_EnableClock(kCLOCK_Gpio4);
-    /* Enables the clock for PORT0 controller: Enables clock */
-    CLOCK_EnableClock(kCLOCK_Port0);
-    /* Enables the clock for PORT1: Enables clock */
-    CLOCK_EnableClock(kCLOCK_Port1);
-    /* Enables the clock for PORT4: Enables clock */
-    CLOCK_EnableClock(kCLOCK_Port4);
-
-
-
-    gpio_pin_config_t LCD_RS_config = {
-        .pinDirection = kGPIO_DigitalOutput,
-        .outputLogic = 1U
-    };
-    /* Initialize GPIO functionality on pin PIO0_26 (pin F10)  */
-    GPIO_PinInit(BOARD_LCDPINS_LCD_RS_GPIO, BOARD_LCDPINS_LCD_RS_PIN, &LCD_RS_config);
-
-    gpio_pin_config_t LCD_RST_config = {
-        .pinDirection = kGPIO_DigitalOutput,
-        .outputLogic = 1U
-    };
-    /* Initialize GPIO functionality on pin PIO0_28 (pin E8)  */
-    GPIO_PinInit(BOARD_LCDPINS_LCD_RST_GPIO, BOARD_LCDPINS_LCD_RST_PIN, &LCD_RST_config);
-
-
-    while(1)
-    {
-        GPIO0->PDDR |= (1 << 26) | (1 << 28);
-
-        LCD_RES__SET; 
-	    delayms(1); //Delay 1ms 
-	    LCD_RES__CLR; 
-	    delayms(10); //Delay 10ms 
-	    LCD_RES__SET; 
-	    delayms(120); //Delay 120ms 
-
-
-	    LCD_RS__SET; 
-	    delayms(1); //Delay 1ms 
-	    LCD_RS__CLR; 
-	    delayms(10); //Delay 10ms 
-	    LCD_RS__SET; 
-	    delayms(120); //Delay 120ms 
-    }
     eGFX_InitDriver(0);
 
-//    for (int i = 0; i < 1; i++)
-//    {
-//        SDK_DelayAtLeastUs(1000000U, SDK_DEVICE_MAXIMUM_CPU_CLOCK_FREQUENCY);
-//    }
-
-
     MAILBOX_SetValueBits(MAILBOX, kMAILBOX_CM33_Core0, CORE0__MAILBOX___CORE1_READY);
-    avc_ipc.display_request = true;
 
     while (1)
     {
-        //SDK_DelayAtLeastUs(500000U, SDK_DEVICE_MAXIMUM_CPU_CLOCK_FREQUENCY);
         
         switch(avc_ipc.core1_cmd)
         {
