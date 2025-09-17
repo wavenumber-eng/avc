@@ -4,8 +4,8 @@
 #define BUNNY_BUILD__CONFIG_H_
 
 #define LPC_EZH_ARCH_B_CON_BASE 			LPC_EZH_ARCH_B_CON_BASE__MCX
-#define BUNNY_BUILD_PRINTF(...)			     E_LOG(__VA_ARGS__)
-#define BUNNY_BUILD_MAX_LABELS				 32
+#define BUNNY_BUILD_PRINTF(...)			    E_LOG(__VA_ARGS__)
+#define BUNNY_BUILD_MAX_LABELS				32
 
 /*
 	Output formatting for printf messages

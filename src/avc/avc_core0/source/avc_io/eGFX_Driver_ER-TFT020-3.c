@@ -49,6 +49,22 @@ void eGFX_Dump(eGFX_ImagePlane *Image)
    // GPIO_PinWrite(GPIO4, 1, 0);
 }
 
+void eGFX_DumpRaw(uint8_t *buffer)
+{
+
+
+    lpspi1_init(8);
+
+#if (defined(CONFIG_DISPLAY_ORIENTATION) && (CONFIG_DISPLAY_ORIENTATION == LANDSCAPE))
+    LCD_SetPos(0, 319, 0, 239); // 320x240
+#endif
+
+    lpspi1_init(32);
+    ST7789__display_img(buffer);
+
+}
+
+
 
 void eGFX_duplicate_and_dump2(eGFX_ImagePlane *Image)
 {

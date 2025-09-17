@@ -6,7 +6,7 @@
 #define CAMERA__OV7670							1
 #define CAMERA__OV5460  						2
 
-#define CONFIG__CAMERA_SELECT					(CAMERA__OV7670)
+#define CONFIG__CAMERA_SELECT					(CAMERA__OV5640)
 
 
 #define CONFIG__OV7670_IS_160x120 (1)           // This only applies to the OV7670

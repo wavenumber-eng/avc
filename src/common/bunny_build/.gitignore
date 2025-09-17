@@ -1,7 +1,37 @@
-# Prerequisites
+.vscode/
+.vscode/settings.json
 
 build/
 build_vs/
+.settings/
+Debug/
+
+*.launch
+
+*.jdebug.user
+
+## CMake ###
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps
+
+### CMake Patch ###
+CMakeUserPresets.json
+
+# External projects
+*-prefix/
+
+### Ninja ###
+.ninja_deps
+.ninja_log
 
 *.d
 
@@ -54,3 +84,4 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+

@@ -21,11 +21,17 @@ uint16_t * camera_frame;
 uint8_t line_buffer__red[CAMERA_WIDTH];
 
 
+extern uint16_t g_camera_buffer[320 *240];
+extern void eGFX_DumpRaw(uint8_t *buffer);
+eGFX_ImagePlane CP;
+
 
 int main(void)
 {
 
 	avc__init();
+
+	CP.Data = (uint8_t *)&g_camera_buffer[0];
 
     while (1)
     {
@@ -38,20 +44,28 @@ int main(void)
         {   
             uint8_t alpha, gamma, beta;
 
-            if(testmode__motors_enable == 1)
+            if(img_ready)
             {
-                alpha = avc__read_alpha();
-                gamma = avc__read_gamma();
-                beta = avc__read_beta();
-
-                left_intensity = (2*(int16_t)alpha) - 100;
-                right_intensity = (2*(int16_t)gamma) - 100;
-                servo_position = (2*(int16_t)beta) - 100;
-
-                avc__set_motor_pwm(left_intensity, right_intensity);
-                avc__set_servo(servo_position);
+            	img_ready=0;
+            	eGFX_DumpRaw((uint8_t *)&g_camera_buffer[0]);
+                //eGFX_duplicate_and_dump(&CP);
             }
 
+//            if(testmode__motors_enable == 1)
+//            {
+//                alpha = avc__read_alpha();
+//                gamma = avc__read_gamma();
+//                beta = avc__read_beta();
+//
+//                left_intensity = (2*(int16_t)alpha) - 100;
+//                right_intensity = (2*(int16_t)gamma) - 100;
+//                servo_position = (2*(int16_t)beta) - 100;
+//
+//                avc__set_motor_pwm(left_intensity, right_intensity);
+//                avc__set_servo(servo_position);
+//            }
+
+#if 0
             if(avc__is_frame_ready())
             {
             	/*
@@ -163,7 +177,7 @@ int main(void)
                 avc__request_new_frame_for_display();
                 request_frame_for_display = true;
             }
-
+#endif
         }//end test most
         else
         {

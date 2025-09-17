@@ -10,6 +10,7 @@
 #include "fsl_camera.h"
 #include "fsl_camera_device.h"
 #include "fsl_ov5640.h"
+#include "e_debug.h"
 
 /*******************************************************************************
  * Definitions
@@ -443,15 +444,15 @@ static const ov5640_clock_config_t s_ov5640DvpClockConfigs[] = {
         .pclkDiv     = 0x02,
         .pclkPeriod  = 0x22,
     },*/
-    {
-        .resolution  = (uint32_t)kVIDEO_ResolutionQVGA,
-        .framePerSec = 30,
-        .pllCtrl1    = 0x11,
-        .pllCtrl2    = 0x46,
-        .vfifoCtrl0C = 0x22,
-        .pclkDiv     = 0x02,
-        .pclkPeriod  = 0x22,
-    },
+	{
+	    .resolution  = (uint32_t)kVIDEO_ResolutionQVGA,
+	    .framePerSec = 30,
+	    .pllCtrl1    = 0x11,  // Divide by 1 (6MHz → 6MHz)
+	    .pllCtrl2    = 0x40,  // Multiply by 64 (6MHz × 64 = 384MHz VCO)
+	    .vfifoCtrl0C = 0x22,
+	    .pclkDiv     = 0x03,  // Divide by 3 (384MHz / 3 / 8 = 16MHz)
+	    .pclkPeriod  = 0x22,
+	},
     {
         .resolution  = FSL_VIDEO_RESOLUTION(480, 272),
         .framePerSec = 15,
@@ -821,6 +822,366 @@ static status_t OV5640_SetPixelFormat(camera_device_handle_t *handle, video_pixe
     return kStatus_Success;
 }
 
+
+
+typedef struct __attribute__((packed)) {
+    // Input window (0x3800-0x3807)
+    uint16_t x_start;        // 0x3800-0x3801
+    uint16_t y_start;        // 0x3802-0x3803
+    uint16_t x_end;          // 0x3804-0x3805
+    uint16_t y_end;          // 0x3806-0x3807
+
+    // Output size (0x3808-0x380B)
+    uint16_t dvp_h_width;    // 0x3808-0x3809
+    uint16_t dvp_v_height;   // 0x380A-0x380B
+
+    // Total size with blanking (0x380C-0x380F)
+    uint16_t total_h_size;   // 0x380C-0x380D
+    uint16_t total_v_size;   // 0x380E-0x380F
+
+    // ISP offsets (0x3810-0x3813)
+    uint16_t h_offset;       // 0x3810-0x3811
+    uint16_t v_offset;       // 0x3812-0x3813
+
+    // Subsampling (0x3814-0x3815)
+    uint8_t h_subsample;     // 0x3814
+    uint8_t v_subsample;     // 0x3815
+
+    // HSYNC timing (0x3816-0x3819)
+    uint16_t hsync_start;    // 0x3816-0x3817
+    uint16_t hsync_width;    // 0x3818-0x3819
+
+    // Control registers (0x3820-0x3821)
+    uint8_t tc_reg20;        // 0x3820
+    uint8_t tc_reg21;        // 0x3821
+} ov5640_timing_t;
+
+// Read timing registers into struct
+status_t OV5640_ReadTiming(camera_device_handle_t *handle, ov5640_timing_t *timing)
+{
+    uint8_t val_h, val_l;
+    status_t status;
+
+    // Read X start
+    OV5640_CHECK_RET(OV5640_ReadReg(handle, 0x3800, &val_h));
+    OV5640_CHECK_RET(OV5640_ReadReg(handle, 0x3801, &val_l));
+    timing->x_start = ((val_h & 0x0F) << 8) | val_l;
+
+    // Read Y start
+    OV5640_CHECK_RET(OV5640_ReadReg(handle, 0x3802, &val_h));
+    OV5640_CHECK_RET(OV5640_ReadReg(handle, 0x3803, &val_l));
+    timing->y_start = ((val_h & 0x0F) << 8) | val_l;
+
+    // Read X end
+    OV5640_CHECK_RET(OV5640_ReadReg(handle, 0x3804, &val_h));
+    OV5640_CHECK_RET(OV5640_ReadReg(handle, 0x3805, &val_l));
+    timing->x_end = ((val_h & 0x0F) << 8) | val_l;
+
+    // Read Y end
+    OV5640_CHECK_RET(OV5640_ReadReg(handle, 0x3806, &val_h));
+    OV5640_CHECK_RET(OV5640_ReadReg(handle, 0x3807, &val_l));
+    timing->y_end = ((val_h & 0x07) << 8) | val_l;
+
+    // Read DVP output size
+    OV5640_CHECK_RET(OV5640_ReadReg(handle, 0x3808, &val_h));
+    OV5640_CHECK_RET(OV5640_ReadReg(handle, 0x3809, &val_l));
+    timing->dvp_h_width = ((val_h & 0x0F) << 8) | val_l;
+
+    OV5640_CHECK_RET(OV5640_ReadReg(handle, 0x380A, &val_h));
+    OV5640_CHECK_RET(OV5640_ReadReg(handle, 0x380B, &val_l));
+    timing->dvp_v_height = ((val_h & 0x07) << 8) | val_l;
+
+    // Read total size
+    OV5640_CHECK_RET(OV5640_ReadReg(handle, 0x380C, &val_h));
+    OV5640_CHECK_RET(OV5640_ReadReg(handle, 0x380D, &val_l));
+    timing->total_h_size = ((val_h & 0x1F) << 8) | val_l;
+
+    OV5640_CHECK_RET(OV5640_ReadReg(handle, 0x380E, &val_h));
+    OV5640_CHECK_RET(OV5640_ReadReg(handle, 0x380F, &val_l));
+    timing->total_v_size = (val_h << 8) | val_l;
+
+    // Read offsets
+    OV5640_CHECK_RET(OV5640_ReadReg(handle, 0x3810, &val_h));
+    OV5640_CHECK_RET(OV5640_ReadReg(handle, 0x3811, &val_l));
+    timing->h_offset = ((val_h & 0x0F) << 8) | val_l;
+
+    OV5640_CHECK_RET(OV5640_ReadReg(handle, 0x3812, &val_h));
+    OV5640_CHECK_RET(OV5640_ReadReg(handle, 0x3813, &val_l));
+    timing->v_offset = ((val_h & 0x07) << 8) | val_l;
+
+    // Read subsampling
+    OV5640_CHECK_RET(OV5640_ReadReg(handle, 0x3814, &timing->h_subsample));
+    OV5640_CHECK_RET(OV5640_ReadReg(handle, 0x3815, &timing->v_subsample));
+
+    // Read HSYNC
+    OV5640_CHECK_RET(OV5640_ReadReg(handle, 0x3816, &val_h));
+    OV5640_CHECK_RET(OV5640_ReadReg(handle, 0x3817, &val_l));
+    timing->hsync_start = ((val_h & 0x0F) << 8) | val_l;
+
+    OV5640_CHECK_RET(OV5640_ReadReg(handle, 0x3818, &val_h));
+    OV5640_CHECK_RET(OV5640_ReadReg(handle, 0x3819, &val_l));
+    timing->hsync_width = ((val_h & 0x0F) << 8) | val_l;
+
+    // Read control registers
+    OV5640_CHECK_RET(OV5640_ReadReg(handle, 0x3820, &timing->tc_reg20));
+    OV5640_CHECK_RET(OV5640_ReadReg(handle, 0x3821, &timing->tc_reg21));
+
+    return kStatus_Success;
+}
+
+status_t OV5640_WriteTiming(camera_device_handle_t *handle, const ov5640_timing_t *timing)
+{
+    status_t status;
+
+    // Write X start
+    OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x3800, (timing->x_start >> 8) & 0x0F));
+    OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x3801, timing->x_start & 0xFF));
+
+    // Write Y start
+    OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x3802, (timing->y_start >> 8) & 0x0F));
+    OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x3803, timing->y_start & 0xFF));
+
+    // Write X end
+    OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x3804, (timing->x_end >> 8) & 0x0F));
+    OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x3805, timing->x_end & 0xFF));
+
+    // Write Y end
+    OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x3806, (timing->y_end >> 8) & 0x07));
+    OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x3807, timing->y_end & 0xFF));
+
+    // Write DVP output size
+    OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x3808, (timing->dvp_h_width >> 8) & 0x0F));
+    OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x3809, timing->dvp_h_width & 0xFF));
+
+    OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x380A, (timing->dvp_v_height >> 8) & 0x07));
+    OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x380B, timing->dvp_v_height & 0xFF));
+
+    // Write total size
+    OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x380C, (timing->total_h_size >> 8) & 0x1F));
+    OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x380D, timing->total_h_size & 0xFF));
+
+    OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x380E, (timing->total_v_size >> 8) & 0xFF));
+    OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x380F, timing->total_v_size & 0xFF));
+
+    // Write offsets
+    OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x3810, (timing->h_offset >> 8) & 0x0F));
+    OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x3811, timing->h_offset & 0xFF));
+
+    OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x3812, (timing->v_offset >> 8) & 0x07));
+    OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x3813, timing->v_offset & 0xFF));
+
+    // Write subsampling
+    OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x3814, timing->h_subsample));
+    OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x3815, timing->v_subsample));
+
+    // Write HSYNC
+    OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x3816, (timing->hsync_start >> 8) & 0x0F));
+    OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x3817, timing->hsync_start & 0xFF));
+
+    OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x3818, (timing->hsync_width >> 8) & 0x0F));
+    OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x3819, timing->hsync_width & 0xFF));
+
+    // Write control registers
+    OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x3820, timing->tc_reg20));
+    OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x3821, timing->tc_reg21));
+
+    return kStatus_Success;
+}
+
+// Pretty print the timing struct
+void OV5640_PrintTiming(const ov5640_timing_t *timing)
+{
+    DEBUG("\n========== OV5640 TIMING ==========\n");
+    DEBUG("Input Window: (%d,%d) to (%d,%d) = %dx%d\n",
+          timing->x_start, timing->y_start,
+          timing->x_end, timing->y_end,
+          timing->x_end - timing->x_start + 1,
+          timing->y_end - timing->y_start + 1);
+
+    DEBUG("Output Size: %d x %d\n", timing->dvp_h_width, timing->dvp_v_height);
+
+    DEBUG("Total Size: %d x %d (H blank: %d, V blank: %d)\n",
+          timing->total_h_size, timing->total_v_size,
+          timing->total_h_size - timing->dvp_h_width,
+          timing->total_v_size - timing->dvp_v_height);
+
+    DEBUG("Blanking: H=%.1f%%, V=%.1f%%\n",
+          (float)(timing->total_h_size - timing->dvp_h_width) * 100.0 / timing->total_h_size,
+          (float)(timing->total_v_size - timing->dvp_v_height) * 100.0 / timing->total_v_size);
+
+    DEBUG("Offsets: H=%d, V=%d\n", timing->h_offset, timing->v_offset);
+    DEBUG("Subsampling: H=0x%02X, V=0x%02X\n", timing->h_subsample, timing->v_subsample);
+    DEBUG("HSYNC: start=%d, width=%d\n", timing->hsync_start, timing->hsync_width);
+
+    DEBUG("Flags: H_Bin=%d, V_Flip=%d, H_Mirror=%d\n",
+          timing->tc_reg21 & 0x01,
+          (timing->tc_reg20 >> 1) & 0x03,
+          (timing->tc_reg21 >> 1) & 0x03);
+    DEBUG("====================================\n");
+}
+
+// OV5640 PLL/Clock Register Structure
+typedef struct __attribute__((packed)) {
+    // PLL Control Registers
+    uint8_t pll_ctrl0;       // 0x3034
+    uint8_t pll_ctrl1;       // 0x3035
+    uint8_t pll_ctrl2;       // 0x3036
+    uint8_t pll_ctrl3;       // 0x3037
+    uint8_t pll_ctrl5;       // 0x3039
+
+    // Additional clock registers from clockConfig
+    uint8_t vfifo_ctrl0c;    // 0x460C
+    uint8_t pclk_div;        // 0x3824
+    uint8_t pclk_period;     // 0x4837
+} ov5640_pll_t;
+
+// Read PLL registers
+status_t OV5640_ReadPLL(camera_device_handle_t *handle, ov5640_pll_t *pll)
+{
+    status_t status;
+
+    OV5640_CHECK_RET(OV5640_ReadReg(handle, 0x3034, &pll->pll_ctrl0));
+    OV5640_CHECK_RET(OV5640_ReadReg(handle, 0x3035, &pll->pll_ctrl1));
+    OV5640_CHECK_RET(OV5640_ReadReg(handle, 0x3036, &pll->pll_ctrl2));
+    OV5640_CHECK_RET(OV5640_ReadReg(handle, 0x3037, &pll->pll_ctrl3));
+    OV5640_CHECK_RET(OV5640_ReadReg(handle, 0x3039, &pll->pll_ctrl5));
+    OV5640_CHECK_RET(OV5640_ReadReg(handle, 0x460C, &pll->vfifo_ctrl0c));
+    OV5640_CHECK_RET(OV5640_ReadReg(handle, 0x3824, &pll->pclk_div));
+    OV5640_CHECK_RET(OV5640_ReadReg(handle, 0x4837, &pll->pclk_period));
+
+    return kStatus_Success;
+}
+
+// Calculate and print PLL settings with pixel clock calculation
+void OV5640_PrintPLL(const ov5640_pll_t *pll, float input_clock_mhz)
+{
+    DEBUG("\n========== OV5640 PLL/CLOCK CONFIGURATION ==========\n");
+
+    // Parse PLL Control 0 (0x3034)
+    uint8_t charge_pump = (pll->pll_ctrl0 >> 4) & 0x07;
+    uint8_t mipi_mode = pll->pll_ctrl0 & 0x0F;
+    DEBUG("PLL CTRL0 (0x3034): 0x%02X\n", pll->pll_ctrl0);
+    DEBUG("  Charge Pump: %d\n", charge_pump);
+    DEBUG("  MIPI Mode: %s\n", (mipi_mode == 0x08) ? "8-bit" :
+                               (mipi_mode == 0x0A) ? "10-bit" : "Unknown");
+
+    // Parse PLL Control 1 (0x3035)
+    uint8_t sys_div = (pll->pll_ctrl1 >> 4) & 0x0F;
+    uint8_t mipi_div = pll->pll_ctrl1 & 0x0F;
+    DEBUG("PLL CTRL1 (0x3035): 0x%02X\n", pll->pll_ctrl1);
+    DEBUG("  System Clock Divider: /%d\n", sys_div);
+    DEBUG("  MIPI Scale Divider: /%d\n", mipi_div);
+
+    // Parse PLL Control 2 (0x3036)
+    uint8_t pll_multiplier = pll->pll_ctrl2;
+    DEBUG("PLL CTRL2 (0x3036): 0x%02X\n", pll->pll_ctrl2);
+    DEBUG("  PLL Multiplier: x%d\n", pll_multiplier);
+
+    // Parse PLL Control 3 (0x3037)
+    uint8_t root_div = (pll->pll_ctrl3 >> 4) & 0x01;
+    uint8_t pre_div = pll->pll_ctrl3 & 0x0F;
+    DEBUG("PLL CTRL3 (0x3037): 0x%02X\n", pll->pll_ctrl3);
+    DEBUG("  Root Divider: %s\n", root_div ? "/2" : "Bypass");
+    DEBUG("  Pre-Divider: /%d\n", pre_div);
+
+    // Parse PLL Control 5 (0x3039)
+    uint8_t pll_bypass = (pll->pll_ctrl5 >> 7) & 0x01;
+    DEBUG("PLL CTRL5 (0x3039): 0x%02X\n", pll->pll_ctrl5);
+    DEBUG("  PLL Bypass: %s\n", pll_bypass ? "YES" : "NO");
+
+    // Additional clock registers
+    DEBUG("\nADDITIONAL CLOCK REGISTERS:\n");
+    DEBUG("  VFIFO CTRL0C (0x460C): 0x%02X\n", pll->vfifo_ctrl0c);
+    DEBUG("  PCLK Divider (0x3824): 0x%02X (/%d)\n",
+           pll->pclk_div, pll->pclk_div);
+    DEBUG("  PCLK Period (0x4837): 0x%02X\n", pll->pclk_period);
+
+    // Calculate actual frequencies
+    DEBUG("\n========== FREQUENCY CALCULATION ==========\n");
+    DEBUG("Input Clock: %.3f MHz\n", input_clock_mhz);
+
+    if (pll_bypass) {
+        DEBUG("PLL BYPASSED - Using input clock directly\n");
+        float pixel_clock = input_clock_mhz / pll->pclk_div;
+        DEBUG("Pixel Clock: %.3f MHz\n", pixel_clock);
+    } else {
+        // PLL calculation path
+        float vco_input = input_clock_mhz;
+
+        // Apply pre-divider if set
+        if (pre_div > 0) {
+            vco_input = vco_input / pre_div;
+            DEBUG("After Pre-Div (/%d): %.3f MHz\n", pre_div, vco_input);
+        }
+
+        // Apply system divider
+        if (sys_div > 0) {
+            vco_input = vco_input / sys_div;
+            DEBUG("After Sys-Div (/%d): %.3f MHz\n", sys_div, vco_input);
+        }
+
+        // Apply PLL multiplier
+        float vco_freq = vco_input * pll_multiplier;
+        DEBUG("VCO Frequency (x%d): %.3f MHz\n", pll_multiplier, vco_freq);
+
+        // Apply root divider
+        if (root_div) {
+            vco_freq = vco_freq / 2;
+            DEBUG("After Root-Div (/2): %.3f MHz\n", vco_freq);
+        }
+
+        // Apply PCLK divider
+        float pixel_clock = vco_freq / pll->pclk_div;
+        DEBUG("\nFINAL PIXEL CLOCK: %.3f MHz\n", pixel_clock);
+
+        // Show the calculation formula
+        DEBUG("\nFormula: PCLK = (%.3f", input_clock_mhz);
+        if (pre_div > 0) DEBUG(" / %d", pre_div);
+        if (sys_div > 0) DEBUG(" / %d", sys_div);
+        DEBUG(" * %d", pll_multiplier);
+        if (root_div) DEBUG(" / 2");
+        DEBUG(" / %d)", pll->pclk_div);
+        DEBUG(" = %.3f MHz\n", pixel_clock);
+    }
+
+    DEBUG("====================================================\n");
+}
+
+// Print from clockConfig structure (for use during init)
+void OV5640_PrintClockConfig(const ov5640_clock_config_t *clockConfig, float input_clock_mhz)
+{
+    ov5640_pll_t pll;
+
+    // Map clockConfig to pll structure
+    pll.pll_ctrl0 = 0x1A;  // Default value (DVP mode)
+    pll.pll_ctrl1 = clockConfig->pllCtrl1;
+    pll.pll_ctrl2 = clockConfig->pllCtrl2;
+    pll.pll_ctrl3 = 0x03;  // Default value
+    pll.pll_ctrl5 = 0x00;  // Default (no bypass)
+    pll.vfifo_ctrl0c = clockConfig->vfifoCtrl0C;
+    pll.pclk_div = clockConfig->pclkDiv;
+    pll.pclk_period = clockConfig->pclkPeriod;
+
+    // Check for bypass mode
+    if (pll.pll_ctrl1 & 0x80) {
+        pll.pll_ctrl5 = 0x80;  // Set bypass flag
+    }
+
+    DEBUG("\nClock Config for %dfps:\n", clockConfig->framePerSec);
+    OV5640_PrintPLL(&pll, input_clock_mhz);
+}
+
+// Example usage function
+void OV5640_AnalyzeCurrentPLL(camera_device_handle_t *handle, float input_clock_mhz)
+{
+    ov5640_pll_t pll;
+    if (OV5640_ReadPLL(handle, &pll) == kStatus_Success) {
+        OV5640_PrintPLL(&pll, input_clock_mhz);
+    } else {
+        DEBUG("Failed to read PLL registers\n");
+    }
+}
+
 status_t OV5640_Init(camera_device_handle_t *handle, const camera_config_t *config)
 {
     status_t status;
@@ -897,37 +1258,16 @@ status_t OV5640_Init(camera_device_handle_t *handle, const camera_config_t *conf
         OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x3821, 0x06));
     }
 
+
+    //OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x3821, 0x06));
+
     OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x302c, 0xc2));
+
+
 
     /* Pixel format. */
     OV5640_CHECK_RET(OV5640_SetPixelFormat(handle, config->pixelFormat));
 
-    /*
-    .resolution  = (uint32_t)kVIDEO_ResolutionQVGA,
-    .framePerSec = 15,
-   0x3035 .pllCtrl1    = 0x22, div by 2
-   0x3036 .pllCtrl2    = 0x38, multiply by 56
-   0x460c .vfifoCtrl0C = 0x22, //pclk divider controller by 0x3824
-   0x3824 .pclkDiv     = 0x02,  //not in datasheet
-   0x4837 .pclkPeriod  = 0x0a,  0x4837
-    */
-
-    //no clock adjustsments, just pass in extenral
-
-
-
-
-   //  OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x3035, 0x18));
-    // OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x3036, 0x11));
-    // OV5640_CHECK_RET(OV5640_WriteReg(handle, 3036,6));
-    // OV5640_CHECK_RET(OV5640_WriteReg(handle, 3037, 0));
-
-    /* Clock. */
-   // OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x3035, clockConfig->pllCtrl1));
-   // OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x3036, clockConfig->pllCtrl2));
-  //  OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x460c, 22));
-   // OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x3824, clockConfig->pclkDiv));
-  //  OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x4837, 16));
 
     /* Interface. */
     if (kCAMERA_InterfaceMIPI == config->interface)
@@ -1005,6 +1345,14 @@ status_t OV5640_Init(camera_device_handle_t *handle, const camera_config_t *conf
    // OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x350A, 0x00));  // Gain high byte
    // OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x350B, 0x10));  // Gain low byte
 
+
+    ov5640_timing_t t;
+
+    OV5640_ReadTiming(handle, &t);
+
+    OV5640_PrintTiming(&t);
+
+    OV5640_AnalyzeCurrentPLL(handle,6.0f);
     //Power on
     OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x3008, 0x02));
 

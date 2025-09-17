@@ -28,7 +28,7 @@
 #include "avc__motor_control.h"
 #include "avc__servo_control.h"
 
-#include "avc__camera_interface.h"
+#include "bv_camera__interface.h"
 
 
 

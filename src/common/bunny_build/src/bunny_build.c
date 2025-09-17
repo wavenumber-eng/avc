@@ -23,7 +23,7 @@ uint32_t   bunny_build__out_len = 0;
 	Adds a label to the bunny_build storage.  Also checks if already exists
 */
 
-bunny_build_label__result_t bunny_build__add_label(char* label,uint32_t *resolved_address)
+bunny_build_label__result_t bunny_build__add_label(const char* label,uint32_t *resolved_address)
 {
 	bunny_build_label__result_t r = bunny_build_label__ok;
 	uint32_t Address = 0;
@@ -60,7 +60,7 @@ bunny_build_label__result_t bunny_build__add_label(char* label,uint32_t *resolve
 }
 
 
-bool bunny_build__label_get_address(char* label, uint32_t *Address)
+bool bunny_build__label_get_address(const char* label, uint32_t *Address)
 {
 	for (uint32_t i = 0; i < bunny_build__num_labels; i++)
 	{
@@ -85,6 +85,7 @@ uint32_t bunny_build__relocate(uint32_t* ezh_prog_mem_array,
 			 void(*ezh_program)(void))
 {
 
+#ifdef BUNNY_BUILD_SPLASH
 
     BUNNY_BUILD_PRINTF("\r\n\r\n");
     BUNNY_BUILD_PRINTF(VT100_WHITE "    *----------------------------*\r\n");
@@ -112,6 +113,8 @@ uint32_t bunny_build__relocate(uint32_t* ezh_prog_mem_array,
     BUNNY_BUILD_PRINTF(VT100_WHITE "    |	       |     |           |\r\n");
     BUNNY_BUILD_PRINTF(VT100_WHITE "    |----------------------------|\r\n");
     BUNNY_BUILD_PRINTF("\r\n\r\n");
+
+#endif
 
 	if (ezh_program == NULL)
 	{
@@ -147,7 +150,7 @@ uint32_t bunny_build__relocate(uint32_t* ezh_prog_mem_array,
 
 }
 
-uint32_t bunny_build(uint32_t* ezh_prog_mem_array,
+uint32_t bunny_build(uint32_t * ezh_prog_mem_array,
 			 uint32_t ezh_prog_mem_length, 
 			 void(*ezh_program)(void))
 {
@@ -167,7 +170,7 @@ void bunny_build__add_instruction(uint32_t instruction_encoding)
 		{
 			bunny_build__out[bunny_build__idx] = instruction_encoding;
 
-			BUNNY_BUILD_PRINTF(BUNNY_BUILD_INFO_FLAG"Adding encoded instruction 0x%08x at 0x%08x\r\n", instruction_encoding, bunny_build__base_address + bunny_build__idx);
+			BUNNY_BUILD_PRINTF(BUNNY_BUILD_INFO_FLAG"Adding encoded instruction 0x%08x at 0x%08x\r\n", instruction_encoding, bunny_build__base_address + (4 * bunny_build__idx));
 
 			bunny_build__idx++;
 		}

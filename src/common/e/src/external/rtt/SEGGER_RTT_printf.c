@@ -298,6 +298,76 @@ static void _PrintInt(SEGGER_RTT_PRINTF_DESC * pBufferDesc, int v, unsigned Base
 
 /*********************************************************************
 *
+*       _PrintFloat
+*/
+static void _PrintFloat(SEGGER_RTT_PRINTF_DESC * pBufferDesc, float fValue, unsigned NumDigits, unsigned FieldWidth, unsigned FormatFlags) {
+  int Integer;
+  unsigned Fraction;
+  unsigned i;
+  int Negative;
+
+  // Handle special cases
+  if (fValue != fValue) { // NaN check
+    _StoreChar(pBufferDesc, 'N');
+    _StoreChar(pBufferDesc, 'a');
+    _StoreChar(pBufferDesc, 'N');
+    return;
+  }
+
+  // Handle negative numbers
+  Negative = 0;
+  if (fValue < 0) {
+    Negative = 1;
+    fValue = -fValue;
+  }
+
+  // Default precision is 6 if not specified
+  if (NumDigits == 0) {
+    NumDigits = 6;
+  }
+
+  // Limit precision to avoid overflow
+  if (NumDigits > 9) {
+    NumDigits = 9;
+  }
+
+  // Extract integer part
+  Integer = (int)fValue;
+
+  // Calculate multiplier for fractional part
+  unsigned Multiplier = 1;
+  for (i = 0; i < NumDigits; i++) {
+    Multiplier *= 10;
+  }
+
+  // Extract fractional part
+  Fraction = (unsigned)((fValue - (float)Integer) * Multiplier + 0.5f);
+
+  // Handle rounding overflow
+  if (Fraction >= Multiplier) {
+    Integer++;
+    Fraction = 0;
+  }
+
+  // Print sign if needed
+  if (Negative) {
+    _StoreChar(pBufferDesc, '-');
+  } else if ((FormatFlags & FORMAT_FLAG_PRINT_SIGN) == FORMAT_FLAG_PRINT_SIGN) {
+    _StoreChar(pBufferDesc, '+');
+  }
+
+  // Print integer part
+  _PrintUnsigned(pBufferDesc, (unsigned)Integer, 10, 0, 0, 0);
+
+  // Print decimal point
+  _StoreChar(pBufferDesc, '.');
+
+  // Print fractional part with leading zeros if necessary
+  _PrintUnsigned(pBufferDesc, Fraction, 10, NumDigits, NumDigits, FORMAT_FLAG_PAD_ZERO);
+}
+
+/*********************************************************************
+*
 *       Public code
 *
 **********************************************************************
@@ -438,6 +508,15 @@ int SEGGER_RTT_vprintf(unsigned BufferIndex, const char * sFormat, va_list * pPa
         v = va_arg(*pParamList, int);
         _PrintUnsigned(&BufferDesc, (unsigned)v, 16u, 8u, 8u, 0u);
         break;
+      case 'f':
+      case 'F':
+        {
+          // Note: va_arg promotes float to double, but we'll cast back to float
+          double d = va_arg(*pParamList, double);
+          float f = (float)d;
+          _PrintFloat(&BufferDesc, f, NumDigits, FieldWidth, FormatFlags);
+        }
+        break;
       case '%':
         _StoreChar(&BufferDesc, '%');
         break;
@@ -492,6 +571,7 @@ int SEGGER_RTT_vprintf(unsigned BufferIndex, const char * sFormat, va_list * pPa
 *          x: Print the argument as an hexadecimal integer
 *          s: Print the string pointed to by the argument
 *          p: Print the argument as an 8-digit hexadecimal integer. (Argument shall be a pointer to void.)
+*          f: Print the argument as a floating point number
 */
 int SEGGER_RTT_printf(unsigned BufferIndex, const char * sFormat, ...) {
   int r;
