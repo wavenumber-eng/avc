@@ -369,6 +369,16 @@ static const ov5640_reg_val_t ov5640InitParam[] = {
 };
 
 static const ov5640_resolution_param_t resolutionParam[] = {
+				{
+			    .resolution = FSL_VIDEO_RESOLUTION(160, 120),
+			    .param      = {0x00, 0x00, 0x00, 0x04, 0x0a, 0x3f, 0x07, 0x9b, 0x00, 0xa0, 0x00,
+			                   0x78, 0x07, 0x68, 0x03, 0xd8, 0x00, 0x10, 0x00, 0x06, 0x31, 0x31},
+			},
+		{
+		    .resolution = FSL_VIDEO_RESOLUTION(320, 120),  // Custom 320x120
+		    .param      = {0x00, 0x00, 0x00, 0x04, 0x0a, 0x3f, 0x07, 0x9b, 0x01, 0x40, 0x00,
+		                   0x78, 0x07, 0x68, 0x03, 0xd8, 0x00, 0x10, 0x00, 0x06, 0x31, 0x31},
+		},
     {
         .resolution = (uint32_t)kVIDEO_ResolutionVGA,
         .param      = {0x00, 0x00, 0x00, 0x04, 0x0a, 0x3f, 0x07, 0x9b, 0x02, 0x80, 0x01,
@@ -398,61 +408,44 @@ static const ov5640_resolution_param_t resolutionParam[] = {
 
 /* DVP */
 static const ov5640_clock_config_t s_ov5640DvpClockConfigs[] = {
-    {
-        .resolution  = (uint32_t)kVIDEO_ResolutionVGA,
-        .framePerSec = 15,
-        .pllCtrl1    = 0x21,
-        .pllCtrl2    = 0x46,
-        .vfifoCtrl0C = 0x22,
-        .pclkDiv     = 0x02,
-        .pclkPeriod  = 0x22,
-    },
-    {
-        .resolution  = (uint32_t)kVIDEO_ResolutionVGA,
-        .framePerSec = 30,
-        .pllCtrl1    = 0x11,
-        .pllCtrl2    = 0x46,
-        .vfifoCtrl0C = 0x22,
-        .pclkDiv     = 0x02,
-        .pclkPeriod  = 0x22,
-    },
-    {
-        .resolution  = (uint32_t)kVIDEO_ResolutionQVGA,
-        .framePerSec = 15,
-        .pllCtrl1    = 0x21,
-        .pllCtrl2    = 0x34,
-        .vfifoCtrl0C = 0x22,
-        .pclkDiv     = 0x02,
-        .pclkPeriod  = 0x22,
-    },
-    /*
-    .resolution  = (uint32_t)kVIDEO_ResolutionQVGA,
-    .framePerSec = 15,
-   0x3035 .pllCtrl1    = 0x22, div by 2
-   0x3036 .pllCtrl2    = 0x46, 70
-   0x460c .vfifoCtrl0C = 0x22, //pclk divider controller by 0x3824
-   0x3824 .pclkDiv     = 0x02,  //not in datasheet
-   0x4837 .pclkPeriod  = 0x0a,  0x4837
-    */
 
-    /*{
-        .resolution  = (uint32_t)kVIDEO_ResolutionQVGA,
-        .framePerSec = 15,
-        .pllCtrl1    = 0x21,
-        .pllCtrl2    = 0x46,
-        .vfifoCtrl0C = 0x22,
-        .pclkDiv     = 0x02,
-        .pclkPeriod  = 0x22,
-    },*/
-	{
-	    .resolution  = (uint32_t)kVIDEO_ResolutionQVGA,
-	    .framePerSec = 30,
-	    .pllCtrl1    = 0x11,  // Divide by 1 (6MHz → 6MHz)
-	    .pllCtrl2    = 0x40,  // Multiply by 64 (6MHz × 64 = 384MHz VCO)
-	    .vfifoCtrl0C = 0x22,
-	    .pclkDiv     = 0x03,  // Divide by 3 (384MHz / 3 / 8 = 16MHz)
-	    .pclkPeriod  = 0x22,
-	},
+		{
+		    .resolution  = FSL_VIDEO_RESOLUTION(160, 120),
+		    .framePerSec = 30,
+		    .pllCtrl1    = 0x11,  // Divide by 1 (25MHz → 25MHz)
+		    .pllCtrl2    = 0x20,  // Multiply by 32 (25MHz × 32 = 800MHz VCO)
+		    .vfifoCtrl0C = 0x22,
+		    .pclkDiv     = 0x05,  // Divide by 5 (800MHz / 5 = 160MHz SYSCLK, then /8 internal = 20MHz PCLK)
+		    .pclkPeriod  = 0x22,
+		},
+
+		{
+		    .resolution  = FSL_VIDEO_RESOLUTION(320, 120),
+		    .framePerSec = 30,
+		    .pllCtrl1    = 0x21,  // Divide by 2 (12.5MHz → 6.25MHz)
+		    .pllCtrl2    = 0x38,  // Multiply by 56 (6.25MHz × 56 = 350MHz VCO)
+		    .vfifoCtrl0C = 0x22,
+		    .pclkDiv     = 0x04,  // Divide by 4 (350MHz / 4 = 87.5MHz SYSCLK, then /4 internal = 21.875MHz PCLK)
+		    .pclkPeriod  = 0x22,
+		},
+		{
+		    .resolution  = (uint32_t)kVIDEO_ResolutionQVGA,
+		    .framePerSec = 30,
+		    .pllCtrl1    = 0x11,  // Default from your working setup (divide by 1)
+		    .pllCtrl2    = 0x69,  // Default value (multiply by 105)
+		    .vfifoCtrl0C = 0x20,  // Default value
+		    .pclkDiv     = 0x01,  // Default value (divide by 1)
+		    .pclkPeriod  = 0x15,  // Default value
+		},
+		{
+		    .resolution  = (uint32_t)kVIDEO_ResolutionQVGA,
+		    .framePerSec = 15,
+		    .pllCtrl1    = 0x11,  // Default from your working setup (divide by 1)
+		    .pllCtrl2    = 0x69,  // Default value (multiply by 105)
+		    .vfifoCtrl0C = 0x20,  // Default value
+		    .pclkDiv     = 0x01,  // Default value (divide by 1)
+		    .pclkPeriod  = 0x15,  // Default value
+		},
     {
         .resolution  = FSL_VIDEO_RESOLUTION(480, 272),
         .framePerSec = 15,
@@ -502,6 +495,9 @@ static const ov5640_clock_config_t s_ov5640DvpClockConfigs[] = {
 
 /* MIPI */
 static const ov5640_clock_config_t s_ov5640MipiClockConfigs[] = {
+
+
+
     {
         .resolution  = (uint32_t)kVIDEO_ResolutionVGA,
         .framePerSec = 15,
@@ -1267,6 +1263,20 @@ status_t OV5640_Init(camera_device_handle_t *handle, const camera_config_t *conf
 
     /* Pixel format. */
     OV5640_CHECK_RET(OV5640_SetPixelFormat(handle, config->pixelFormat));
+
+
+    /* Clock configuration - Apply clock settings for 12.5MHz input */
+      OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x3035, clockConfig->pllCtrl1));
+      OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x3036, clockConfig->pllCtrl2));
+      OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x460c, clockConfig->vfifoCtrl0C));
+      OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x3824, clockConfig->pclkDiv));
+      OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x4837, clockConfig->pclkPeriod));
+
+      /* For 12.5MHz input, override the pre-divider to avoid conflicts */
+      OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x3037, 0x03));  // Pre-div=3, no root div
+
+      /* Add delay for PLL to stabilize */
+      OV5640_DelayMs(10);
 
 
     /* Interface. */

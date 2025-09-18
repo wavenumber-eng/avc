@@ -73,7 +73,8 @@ BOARD_InitPins_Core0:
   - {pin_num: A8, peripheral: TSI0, signal: 'CH, 16', pin_signal: PIO0_21/FC0_P5/FC1_P1/CT_INP1/FLEXIO0_D5/I3C0_SCL/TSI0_CH16/ADC0_A13}
   - {pin_num: K16, peripheral: GPIO3, signal: 'GPIO, 18', pin_signal: PIO3_18/FC6_P6/CT2_MAT0/PWM1_X0/FLEXIO0_D26/SMARTDMA_PIO18/SAI1_RX_BCLK, direction: INPUT}
   - {pin_num: J3, peripheral: PWM1, signal: 'B, 2', pin_signal: PIO2_3/FC9_P1/SDHC0_D0/SCT0_OUT1/PWM1_B2/FLEXIO0_D11/SMARTDMA_PIO23/FLEXSPI0_B_SCLK/SINC0_MBIT0/SAI0_RXD0}
-  - {pin_num: F4, peripheral: SMARTDMA0, signal: 'SMARTDMA_PIO, 13', pin_signal: PIO1_17/FC5_P1/FC3_P5/CT_INP13/SCT0_OUT7/FLEXIO0_D25/SMARTDMA_PIO13/PLU_OUT5/ENET0_RXD3/I3C1_SCL/ADC1_A17}
+  - {pin_num: F4, peripheral: SMARTDMA0, signal: 'SMARTDMA_PIO, 13', pin_signal: PIO1_17/FC5_P1/FC3_P5/CT_INP13/SCT0_OUT7/FLEXIO0_D25/SMARTDMA_PIO13/PLU_OUT5/ENET0_RXD3/I3C1_SCL/ADC1_A17,
+    invert_input: invert}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
 /* clang-format on */
@@ -162,10 +163,13 @@ void BOARD_InitPins_Core0(void)
 
     PORT1->PCR[17] = ((PORT1->PCR[17] &
                        /* Mask bits to zero which are setting */
-                       (~(PORT_PCR_IBE_MASK)))
+                       (~(PORT_PCR_IBE_MASK | PORT_PCR_INV_MASK)))
 
                       /* Input Buffer Enable: Enables. */
-                      | PORT_PCR_IBE(PCR_IBE_ibe1));
+                      | PORT_PCR_IBE(PCR_IBE_ibe1)
+
+                      /* Invert Input: Inverts. */
+                      | PORT_PCR_INV(PCR_INV_inv1));
 
     const port_pin_config_t DEBUG_UART_RX = {/* Internal pull-up/down resistor is disabled */
                                              .pullSelect = kPORT_PullDisable,

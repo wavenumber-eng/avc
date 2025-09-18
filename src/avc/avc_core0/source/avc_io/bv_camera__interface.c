@@ -149,6 +149,8 @@ void  EZH_Camera_320240_Whole_Buf(void)
 	E_GOSUB("PCLK_0");
 
 	E_LABEL("HSYNC_0");
+	E_BSET_IMM(GPO, GPO, 13);				//toggle the P0_18, used to measure the timming in logic device
+	E_BCLR_IMM(GPO, GPO, 13);
 	E_BCLR_IMM(R3, R3, 0);
 	E_BCLR_IMM(R3, R3, 1);
 	E_BSET_IMM(CFM, CFM, 0); 			//clear the vector flag
@@ -203,7 +205,12 @@ uint8_t bv_camera__init()
 
     CLOCK_AttachClk(kMAIN_CLK_to_CLKOUT);
 
-    CLOCK_SetClkDiv(kCLOCK_DivClkOut, 12U);
+    CLOCK_SetClkDiv(kCLOCK_DivClkOut, 6U); //320x120
+    //CLOCK_SetClkDiv(kCLOCK_DivClkOut, 7U); //160x120  <<see if we can get pll working
+
+    // CLOCK_SetClkDiv(kCLOCK_DivClkOut, 23U); //320x240
+
+
 #endif
 
     CLOCK_AttachClk(kFRO12M_to_FLEXCOMM7);
@@ -250,8 +257,8 @@ uint8_t bv_camera__init()
 
         camera_config_t camconfig = {
             .pixelFormat                = kVIDEO_PixelFormatRGB565,
-            .resolution                 = kVIDEO_ResolutionQVGA,
-            .framePerSec                = 30,
+            .resolution                 = FSL_VIDEO_RESOLUTION(320, 120),
+            .framePerSec                = 30,//
             .interface                  = kCAMERA_InterfaceNonGatedClock ,
             .frameBufferLinePitch_Bytes = 0, /* Not used. */
             .controlFlags               = kCAMERA_HrefActiveHigh | kCAMERA_VsyncActiveHigh, /* Not used. */
