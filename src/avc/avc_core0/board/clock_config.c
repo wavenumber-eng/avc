@@ -18,11 +18,11 @@
 /* clang-format off */
 /* TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
 !!GlobalInfo
-product: Clocks v14.0
+product: Clocks v17.0
 processor: MCXN947
 package_id: MCXN947VDF
 mcu_data: ksdk2_0
-processor_version: 16.3.0
+processor_version: 25.06.10
 board: FRDM-MCXN947
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
 /* clang-format on */
@@ -108,6 +108,7 @@ void BOARD_BootClockFRO12M(void)
     };
     SPC_SetSRAMOperateVoltage(SPC0, &sramCfg);
 
+    SCG0->SIRCCSR |= SCG_SIRCCSR_SIRC_CLK_PERIPH_EN_MASK; 
     /*!< Set up clock selectors  */
 
     /*!< Set up dividers */
@@ -176,6 +177,7 @@ void BOARD_BootClockFROHF48M(void)
     SPC_SetSRAMOperateVoltage(SPC0, &sramCfg);
 
     CLOCK_SetupFROHFClocking(48000000U);               /*!< Enable FRO HF(48MHz) output */
+    SCG0->SIRCCSR |= SCG_SIRCCSR_SIRC_CLK_PERIPH_EN_MASK; 
     /*!< Set up clock selectors  */
     CLOCK_AttachClk(kFRO_HF_to_MAIN_CLK);
 
@@ -249,6 +251,7 @@ void BOARD_BootClockFROHF144M(void)
     SPC_SetSRAMOperateVoltage(SPC0, &sramCfg);
 
     CLOCK_SetupFROHFClocking(144000000U);               /*!< Enable FRO HF(144MHz) output */
+    SCG0->SIRCCSR |= SCG_SIRCCSR_SIRC_CLK_PERIPH_EN_MASK; 
     /*!< Set up clock selectors  */
     CLOCK_AttachClk(kFRO_HF_to_MAIN_CLK);
 
@@ -344,6 +347,7 @@ void BOARD_BootClockPLL150M(void)
     SPC_SetSRAMOperateVoltage(SPC0, &sramCfg);
 
     CLOCK_SetupFROHFClocking(48000000U);               /*!< Enable FRO HF(48MHz) output */
+    SCG0->SIRCCSR |= SCG_SIRCCSR_SIRC_CLK_PERIPH_EN_MASK; 
     /*!< Set up PLL0 */
     const pll_setup_t pll0Setup = {
         .pllctrl = SCG_APLLCTRL_SOURCE(1U) | SCG_APLLCTRL_SELI(27U) | SCG_APLLCTRL_SELP(13U),
@@ -446,6 +450,7 @@ void BOARD_BootClockPLL100M(void)
     CLOCK_SetupExtClocking(24000000U);
     CLOCK_SetSysOscMonitorMode(kSCG_SysOscMonitorDisable);    /* System OSC Clock Monitor is disabled */
 
+    SCG0->SIRCCSR |= SCG_SIRCCSR_SIRC_CLK_PERIPH_EN_MASK; 
     /*!< Set up PLL1 */
     const pll_setup_t pll1Setup = {
         .pllctrl = SCG_SPLLCTRL_SOURCE(0U) | SCG_SPLLCTRL_SELI(53U) | SCG_SPLLCTRL_SELP(26U),

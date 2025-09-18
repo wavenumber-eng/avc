@@ -1259,7 +1259,7 @@ status_t OV5640_Init(camera_device_handle_t *handle, const camera_config_t *conf
     }
 
 
-    //OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x3821, 0x06));
+    OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x3821, 0x01));
 
     OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x302c, 0xc2));
 
@@ -1330,7 +1330,7 @@ status_t OV5640_Init(camera_device_handle_t *handle, const camera_config_t *conf
     OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x4740, reg));
 
     /* Lenc on, raw gamma on, BPC on, WPC on, CIP on. */
-    OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x5000, 0xa7));
+   OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x5000, 0xa7));
 
    // O/V5640_SetLightMode(handle,CAMERA_LIGHT_MODE_AUTO);
 
@@ -1346,13 +1346,6 @@ status_t OV5640_Init(camera_device_handle_t *handle, const camera_config_t *conf
    // OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x350B, 0x10));  // Gain low byte
 
 
-    ov5640_timing_t t;
-
-    OV5640_ReadTiming(handle, &t);
-
-    OV5640_PrintTiming(&t);
-
-    OV5640_AnalyzeCurrentPLL(handle,6.0f);
     //Power on
     OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x3008, 0x02));
 

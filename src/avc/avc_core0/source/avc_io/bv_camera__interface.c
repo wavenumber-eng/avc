@@ -29,7 +29,7 @@ static volatile uint8_t g_samrtdma_stack[EZH_STACK_SIZE];
 uint16_t g_camera_buffer[320 *240];
 
 
-__BSS(SRAMH) volatile uint32_t ezh_binary[512];
+__BSS(EZH) volatile uint32_t ezh_binary[512];
 
 
 uint16_t * camera__get_buffer()
@@ -112,7 +112,7 @@ void  EZH_Camera_320240_Whole_Buf(void)
 	E_BCLR_IMM(GPD, GPD, 5);
 	E_BCLR_IMM(GPD, GPD, 6);
 	E_BCLR_IMM(GPD, GPD, 7);
-//	E_BSET_IMM(GPD, GPD, 13);
+	E_BSET_IMM(GPD, GPD, 13);
 
 
 	E_LOAD_IMM(R1, 0xFF);
@@ -122,8 +122,8 @@ void  EZH_Camera_320240_Whole_Buf(void)
 	E_BSET_IMM(CFM, CFM, 0); 				//clear the vector flag
 
 	E_SUB_IMMS(PC, PC, 4 * 5);//BS0
-	E_BTOG_IMM(GPO, GPO, 13);				//toggle the P0_18, used to measure the timming in logic device
-	E_NOP;
+	E_BSET_IMM(GPO, GPO, 13);				//toggle the P0_18, used to measure the timming in logic device
+	E_BCLR_IMM(GPO, GPO, 13);
 	E_NOP;
 
 	E_GOSUB("VSYNC_0");//BS1
@@ -142,7 +142,8 @@ void  EZH_Camera_320240_Whole_Buf(void)
 	E_BSET_IMM(CFM, CFM, 1); 			//enable HSYNC interrupt
 	E_BSET_IMM(CFM, CFM, 2); 			//enable PCLK  interrupt
 	E_LDR(R3, R6, 1);							//R3 point to the store buffer in the RAM
-//	E_BTOG_IMM(GPO, GPO, 13);				//toggle the P0_18, used to measure the timming in logic device
+
+//#E_BTOG_IMM(GPO, GPO, 13);				//toggle the P0_18, used to measure the timing in logic device
 	E_INT_TRIGGER(0x11); // interrupt and told ARM data is ready
 
 	E_GOSUB("PCLK_0");
@@ -202,7 +203,7 @@ uint8_t bv_camera__init()
 
     CLOCK_AttachClk(kMAIN_CLK_to_CLKOUT);
 
-    CLOCK_SetClkDiv(kCLOCK_DivClkOut, 25U);
+    CLOCK_SetClkDiv(kCLOCK_DivClkOut, 12U);
 #endif
 
     CLOCK_AttachClk(kFRO12M_to_FLEXCOMM7);
@@ -295,6 +296,9 @@ uint8_t bv_camera__init()
     PORT3->PCR[5] = (7 << 8) | (1 << 12); // EZH_PIO5, PIO1_9,P1_9/EZH_LCD_D5_CAMERA_D5
     PORT1->PCR[10] = (7 << 8) | (1 << 12); // EZH_PIO6, PIO1_10,P1_10/EZH_LCD_D6_CAMERA_D6
     PORT1->PCR[11] = (7 << 8) | (1 << 12); // EZH_PIO7, PIO1_11,P1_11/EZH_LCD_D7_CAMERA_D7
+
+    PORT1->PCR[17] = (7 << 8) | (1 << 12); // EZH_PIO13, PIO1_17
+
 
 
 	smartdmaParam.smartdma_stack = (uint32_t*)g_samrtdma_stack;

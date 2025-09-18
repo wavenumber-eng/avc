@@ -82,6 +82,7 @@ void BOARD_InitPins_Core0(void);
 
 /* Symbols to be used with GPIO driver */
 #define BOARD_LCDPINS_LCD_RS_GPIO GPIO0                /*!<@brief GPIO peripheral base pointer */
+#define BOARD_LCDPINS_LCD_RS_INIT_GPIO_VALUE 0U        /*!<@brief GPIO output initial state */
 #define BOARD_LCDPINS_LCD_RS_GPIO_PIN 26U              /*!<@brief GPIO pin number */
 #define BOARD_LCDPINS_LCD_RS_GPIO_PIN_MASK (1U << 26U) /*!<@brief GPIO pin mask */
 
@@ -96,6 +97,7 @@ void BOARD_InitPins_Core0(void);
 
 /* Symbols to be used with GPIO driver */
 #define BOARD_LCDPINS_LCD_RST_GPIO GPIO0                /*!<@brief GPIO peripheral base pointer */
+#define BOARD_LCDPINS_LCD_RST_INIT_GPIO_VALUE 0U        /*!<@brief GPIO output initial state */
 #define BOARD_LCDPINS_LCD_RST_GPIO_PIN 28U              /*!<@brief GPIO pin number */
 #define BOARD_LCDPINS_LCD_RST_GPIO_PIN_MASK (1U << 28U) /*!<@brief GPIO pin mask */
 
@@ -110,6 +112,7 @@ void BOARD_InitPins_Core0(void);
 
 /* Symbols to be used with GPIO driver */
 #define BOARD_LCDPINS_FRAME_DBG_GPIO GPIO4               /*!<@brief GPIO peripheral base pointer */
+#define BOARD_LCDPINS_FRAME_DBG_INIT_GPIO_VALUE 0U       /*!<@brief GPIO output initial state */
 #define BOARD_LCDPINS_FRAME_DBG_GPIO_PIN 1U              /*!<@brief GPIO pin number */
 #define BOARD_LCDPINS_FRAME_DBG_GPIO_PIN_MASK (1U << 1U) /*!<@brief GPIO pin mask */
 
@@ -124,6 +127,7 @@ void BOARD_InitPins_Core0(void);
 
 /* Symbols to be used with GPIO driver */
 #define BOARD_LCDPINS_CAM_DBG_GPIO GPIO4               /*!<@brief GPIO peripheral base pointer */
+#define BOARD_LCDPINS_CAM_DBG_INIT_GPIO_VALUE 0U       /*!<@brief GPIO output initial state */
 #define BOARD_LCDPINS_CAM_DBG_GPIO_PIN 0U              /*!<@brief GPIO pin number */
 #define BOARD_LCDPINS_CAM_DBG_GPIO_PIN_MASK (1U << 0U) /*!<@brief GPIO pin mask */
 
@@ -149,6 +153,7 @@ void BOARD_LCDPins(void);
 
 /* Symbols to be used with GPIO driver */
 #define BOARD_CAMPINS_CAM_PDWN_GPIO GPIO1                /*!<@brief GPIO peripheral base pointer */
+#define BOARD_CAMPINS_CAM_PDWN_INIT_GPIO_VALUE 0U        /*!<@brief GPIO output initial state */
 #define BOARD_CAMPINS_CAM_PDWN_GPIO_PIN 18U              /*!<@brief GPIO pin number */
 #define BOARD_CAMPINS_CAM_PDWN_GPIO_PIN_MASK (1U << 18U) /*!<@brief GPIO pin mask */
 
@@ -163,6 +168,7 @@ void BOARD_LCDPins(void);
 
 /* Symbols to be used with GPIO driver */
 #define BOARD_CAMPINS_CAM_RST_GPIO GPIO1                /*!<@brief GPIO peripheral base pointer */
+#define BOARD_CAMPINS_CAM_RST_INIT_GPIO_VALUE 0U        /*!<@brief GPIO output initial state */
 #define BOARD_CAMPINS_CAM_RST_GPIO_PIN 19U              /*!<@brief GPIO pin number */
 #define BOARD_CAMPINS_CAM_RST_GPIO_PIN_MASK (1U << 19U) /*!<@brief GPIO pin mask */
 

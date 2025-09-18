@@ -7,24 +7,24 @@
 /*
  * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
 !!GlobalInfo
-product: Pins v16.0
+product: Pins v17.0
 processor: MCXN947
 package_id: MCXN947VDF
 mcu_data: ksdk2_0
-processor_version: 16.3.0
+processor_version: 25.06.10
 board: FRDM-MCXN947
 pin_labels:
-- {pin_num: P1, pin_signal: PIO4_0/WUU0_IN18/TRIG_IN6/FC2_P0/CT_INP16/EZH_PIO24/PLU_IN0/SINC0_MCLK3, label: 'P4_0/J8[4]/SJ14[1]', identifier: CAM_DBG}
-- {pin_num: P2, pin_signal: PIO4_1/TRIG_IN7/FC2_P1/CT_INP17/EZH_PIO25/PLU_IN1, label: 'P4_1/J8[3]/SJ15[1]', identifier: FRAME_DBG}
-- {pin_num: G4, pin_signal: PIO1_18/FREQME_CLK_IN0/FC5_P2/FC3_P6/CT3_MAT0/SCT0_IN6/FLEXIO0_D26/EZH_PIO14/PLU_IN4/ENET0_COL/CAN0_TXD/ADC1_A18, label: 'P1_18/J9[6]',
+- {pin_num: P1, pin_signal: PIO4_0/WUU0_IN18/TRIG_IN6/FC2_P0/CT_INP16/SMARTDMA_PIO24/PLU_IN0/SINC0_MCLK3, label: 'P4_0/J8[4]/SJ14[1]', identifier: CAM_DBG}
+- {pin_num: P2, pin_signal: PIO4_1/TRIG_IN7/FC2_P1/CT_INP17/SMARTDMA_PIO25/PLU_IN1, label: 'P4_1/J8[3]/SJ15[1]', identifier: FRAME_DBG}
+- {pin_num: G4, pin_signal: PIO1_18/FREQME_CLK_IN0/FC5_P2/FC3_P6/CT3_MAT0/SCT0_IN6/FLEXIO0_D26/SMARTDMA_PIO14/PLU_IN4/ENET0_COL/CAN0_TXD/ADC1_A18, label: 'P1_18/J9[6]',
   identifier: CAM_PDWN}
-- {pin_num: G5, pin_signal: PIO1_19/WUU0_IN15/FREQME_CLK_IN1/FC5_P3/CT3_MAT1/SCT0_IN7/FLEXIO0_D27/EZH_PIO15/PLU_IN5/ENET0_CRS/CAN0_RXD/ADC1_A19, label: 'P1_19/J9[5]',
+- {pin_num: G5, pin_signal: PIO1_19/WUU0_IN15/FREQME_CLK_IN1/FC5_P3/CT3_MAT1/SCT0_IN7/FLEXIO0_D27/SMARTDMA_PIO15/PLU_IN5/ENET0_CRS/CAN0_RXD/ADC1_A19, label: 'P1_19/J9[5]',
   identifier: CAM_RST}
 - {pin_num: E8, pin_signal: PIO0_28/FC1_P4/FC0_P4/CT_INP0/ADC0_B20, label: 'P0_28/J2[2]', identifier: LCD_RST}
 - {pin_num: F10, pin_signal: PIO0_26/FC1_P2/CT0_MAT2/ADC0_B18, label: 'P0_26/J2[10]', identifier: LCD_RS}
-- {pin_num: K15, pin_signal: PIO3_17/WUU0_IN26/FC8_P3/CT_INP9/PWM1_B2/FLEXIO0_D25/EZH_PIO17/SIM0_IO/SAI1_TX_FS, label: 'P3_17/J1[11]/SJ10[3]', identifier: CENTER_BTN}
-- {pin_num: L16, pin_signal: PIO3_21/TRIG_OUT1/FC8_P5/FC6_P1/CT2_MAT3/PWM1_B3/FLEXIO0_D29/EZH_PIO21/SIM0_RST/SAI1_RXD0, label: 'P3_21/J6[4]/J1[15]', identifier: LEFT_BTN}
-- {pin_num: K17, pin_signal: PIO3_19/FC7_P6/CT2_MAT1/PWM1_X1/FLEXIO0_D27/EZH_PIO19/SAI1_RX_FS, label: 'P3_19/J5[1]/J1[13]', identifier: RIGHT_BTN}
+- {pin_num: K15, pin_signal: PIO3_17/WUU0_IN26/FC8_P3/CT_INP9/PWM1_B2/FLEXIO0_D25/SMARTDMA_PIO17/SIM0_IO/SAI1_TX_FS, label: 'P3_17/J1[11]/SJ10[3]', identifier: CENTER_BTN}
+- {pin_num: L16, pin_signal: PIO3_21/TRIG_OUT1/FC8_P5/FC6_P1/CT2_MAT3/PWM1_B3/FLEXIO0_D29/SMARTDMA_PIO21/SIM0_RST/SAI1_RXD0, label: 'P3_21/J6[4]/J1[15]', identifier: LEFT_BTN}
+- {pin_num: K17, pin_signal: PIO3_19/FC7_P6/CT2_MAT1/PWM1_X1/FLEXIO0_D27/SMARTDMA_PIO19/SAI1_RX_FS, label: 'P3_19/J5[1]/J1[13]', identifier: RIGHT_BTN}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
 /* clang-format on */
@@ -54,25 +54,26 @@ void BOARD_InitBootPins(void)
 BOARD_InitPins_Core0:
 - options: {callFromInitBoot: 'true', coreID: cm33_core0, enableClock: 'true'}
 - pin_list:
-  - {pin_num: A1, peripheral: LP_FLEXCOMM4, signal: LPFLEXCOMM_P0, pin_signal: PIO1_8/WUU0_IN10/LPTMR1_ALT3/TRACE_DATA0/FC4_P0/FC5_P4/CT_INP8/SCT0_OUT2/FLEXIO0_D16/EZH_PIO4/PLU_OUT0/ENET0_TXD2/I3C1_SDA/TSI0_CH17/ADC1_A8,
+  - {pin_num: A1, peripheral: LP_FLEXCOMM4, signal: LPFLEXCOMM_P0, pin_signal: PIO1_8/WUU0_IN10/LPTMR1_ALT3/TRACE_DATA0/FC4_P0/FC5_P4/CT_INP8/SCT0_OUT2/FLEXIO0_D16/SMARTDMA_PIO4/PLU_OUT0/ENET0_TXD2/I3C1_SDA/TSI0_CH17/ADC1_A8,
     slew_rate: fast, open_drain: disable, drive_strength: low, pull_select: down, pull_enable: disable, passive_filter: disable, pull_value: low, input_buffer: enable,
     invert_input: normal}
-  - {pin_num: B1, peripheral: LP_FLEXCOMM4, signal: LPFLEXCOMM_P1, pin_signal: PIO1_9/TRACE_DATA1/FC4_P1/FC5_P5/CT_INP9/SCT0_OUT3/FLEXIO0_D17/EZH_PIO5/PLU_OUT1/ENET0_TXD3/I3C1_SCL/TSI0_CH18/ADC1_A9,
+  - {pin_num: B1, peripheral: LP_FLEXCOMM4, signal: LPFLEXCOMM_P1, pin_signal: PIO1_9/TRACE_DATA1/FC4_P1/FC5_P5/CT_INP9/SCT0_OUT3/FLEXIO0_D17/SMARTDMA_PIO5/PLU_OUT1/ENET0_TXD3/I3C1_SCL/TSI0_CH18/ADC1_A9,
     slew_rate: fast, open_drain: disable, drive_strength: low, pull_select: down, pull_enable: disable, passive_filter: disable, input_buffer: enable, invert_input: normal}
   - {pin_num: B12, peripheral: GPIO0, signal: 'GPIO, 10', pin_signal: PIO0_10/FC0_P6/CT0_MAT0/FLEXIO0_D2/ADC0_B10, slew_rate: fast, open_drain: disable, drive_strength: low,
     pull_select: down, pull_enable: disable, input_buffer: enable, invert_input: normal}
-  - {pin_num: K2, peripheral: PWM1, signal: 'A, 0', pin_signal: PIO2_6/TRIG_IN4/FC9_P4/SDHC0_D3/SCT0_OUT4/PWM1_A0/FLEXIO0_D14/EZH_PIO26/FLEXSPI0_B_DATA2/SINC0_MCLK2/SAI0_TX_BCLK}
-  - {pin_num: K3, peripheral: PWM1, signal: 'A, 1', pin_signal: PIO2_4/WUU0_IN17/FC9_P0/SDHC0_CLK/SCT0_OUT2/PWM1_A1/FLEXIO0_D12/EZH_PIO24/FLEXSPI0_B_DATA0/SINC0_MCLK1/SAI0_RXD1}
-  - {pin_num: L2, peripheral: PWM1, signal: 'B, 0', pin_signal: PIO2_7/TRIG_IN5/FC9_P5/SDHC0_D2/SCT0_OUT5/PWM1_B0/FLEXIO0_D15/EZH_PIO27/FLEXSPI0_B_DATA3/SINC0_MBIT2/SAI0_TX_FS}
-  - {pin_num: K1, peripheral: PWM1, signal: 'B, 1', pin_signal: PIO2_5/TRIG_OUT3/FC9_P2/SDHC0_CMD/SCT0_OUT3/PWM1_B1/FLEXIO0_D13/EZH_PIO25/FLEXSPI0_B_DATA1/SINC0_MBIT1/SAI0_TXD1}
+  - {pin_num: K2, peripheral: PWM1, signal: 'A, 0', pin_signal: PIO2_6/TRIG_IN4/FC9_P4/SDHC0_D3/SCT0_OUT4/PWM1_A0/FLEXIO0_D14/SMARTDMA_PIO26/FLEXSPI0_B_DATA2/SINC0_MCLK2/SAI0_TX_BCLK}
+  - {pin_num: K3, peripheral: PWM1, signal: 'A, 1', pin_signal: PIO2_4/WUU0_IN17/FC9_P0/SDHC0_CLK/SCT0_OUT2/PWM1_A1/FLEXIO0_D12/SMARTDMA_PIO24/FLEXSPI0_B_DATA0/SINC0_MCLK1/SAI0_RXD1}
+  - {pin_num: L2, peripheral: PWM1, signal: 'B, 0', pin_signal: PIO2_7/TRIG_IN5/FC9_P5/SDHC0_D2/SCT0_OUT5/PWM1_B0/FLEXIO0_D15/SMARTDMA_PIO27/FLEXSPI0_B_DATA3/SINC0_MBIT2/SAI0_TX_FS}
+  - {pin_num: K1, peripheral: PWM1, signal: 'B, 1', pin_signal: PIO2_5/TRIG_OUT3/FC9_P2/SDHC0_CMD/SCT0_OUT3/PWM1_B1/FLEXIO0_D13/SMARTDMA_PIO25/FLEXSPI0_B_DATA1/SINC0_MBIT1/SAI0_TXD1}
   - {pin_num: P3, peripheral: ADC0, signal: 'A, 0', pin_signal: ADC0_A0}
   - {pin_num: E11, peripheral: ADC0, signal: 'B, 14', pin_signal: PIO0_14/FC1_P6/FC0_P2/CT_INP2/UTICK_CAP0/FLEXIO0_D6/ADC0_B14}
   - {pin_num: C10, peripheral: ADC0, signal: 'A, 10', pin_signal: PIO0_18/EWM0_IN/FC0_P2/CT0_MAT2/FLEXIO0_D2/HSCMP0_OUT/PDM0_DATA1/TSI0_CH13/ADC0_A10}
   - {pin_num: C10, peripheral: TSI0, signal: 'CH, 13', pin_signal: PIO0_18/EWM0_IN/FC0_P2/CT0_MAT2/FLEXIO0_D2/HSCMP0_OUT/PDM0_DATA1/TSI0_CH13/ADC0_A10}
   - {pin_num: A8, peripheral: ADC0, signal: 'A, 13', pin_signal: PIO0_21/FC0_P5/FC1_P1/CT_INP1/FLEXIO0_D5/I3C0_SCL/TSI0_CH16/ADC0_A13}
   - {pin_num: A8, peripheral: TSI0, signal: 'CH, 16', pin_signal: PIO0_21/FC0_P5/FC1_P1/CT_INP1/FLEXIO0_D5/I3C0_SCL/TSI0_CH16/ADC0_A13}
-  - {pin_num: K16, peripheral: GPIO3, signal: 'GPIO, 18', pin_signal: PIO3_18/FC6_P6/CT2_MAT0/PWM1_X0/FLEXIO0_D26/EZH_PIO18/SAI1_RX_BCLK, direction: INPUT}
-  - {pin_num: J3, peripheral: PWM1, signal: 'B, 2', pin_signal: PIO2_3/FC9_P1/SDHC0_D0/SCT0_OUT1/PWM1_B2/FLEXIO0_D11/EZH_PIO23/FLEXSPI0_B_SCLK/SINC0_MBIT0/SAI0_RXD0}
+  - {pin_num: K16, peripheral: GPIO3, signal: 'GPIO, 18', pin_signal: PIO3_18/FC6_P6/CT2_MAT0/PWM1_X0/FLEXIO0_D26/SMARTDMA_PIO18/SAI1_RX_BCLK, direction: INPUT}
+  - {pin_num: J3, peripheral: PWM1, signal: 'B, 2', pin_signal: PIO2_3/FC9_P1/SDHC0_D0/SCT0_OUT1/PWM1_B2/FLEXIO0_D11/SMARTDMA_PIO23/FLEXSPI0_B_SCLK/SINC0_MBIT0/SAI0_RXD0}
+  - {pin_num: F4, peripheral: SMARTDMA0, signal: 'SMARTDMA_PIO, 13', pin_signal: PIO1_17/FC5_P1/FC3_P5/CT_INP13/SCT0_OUT7/FLEXIO0_D25/SMARTDMA_PIO13/PLU_OUT5/ENET0_RXD3/I3C1_SCL/ADC1_A17}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
 /* clang-format on */
@@ -155,6 +156,16 @@ void BOARD_InitPins_Core0(void)
 
                       /* Input Buffer Enable: Disables. */
                       | PORT_PCR_IBE(PCR_IBE_ibe0));
+
+    /* PORT1_17 (pin F4) is configured as SMARTDMA_PIO13 */
+    PORT_SetPinMux(PORT1, 17U, kPORT_MuxAlt7);
+
+    PORT1->PCR[17] = ((PORT1->PCR[17] &
+                       /* Mask bits to zero which are setting */
+                       (~(PORT_PCR_IBE_MASK)))
+
+                      /* Input Buffer Enable: Enables. */
+                      | PORT_PCR_IBE(PCR_IBE_ibe1));
 
     const port_pin_config_t DEBUG_UART_RX = {/* Internal pull-up/down resistor is disabled */
                                              .pullSelect = kPORT_PullDisable,
@@ -277,9 +288,9 @@ BOARD_LCDPins:
     pull_select: up, pull_enable: enable, input_buffer: enable, invert_input: normal}
   - {pin_num: F10, peripheral: GPIO0, signal: 'GPIO, 26', pin_signal: PIO0_26/FC1_P2/CT0_MAT2/ADC0_B18, direction: OUTPUT}
   - {pin_num: E8, peripheral: GPIO0, signal: 'GPIO, 28', pin_signal: PIO0_28/FC1_P4/FC0_P4/CT_INP0/ADC0_B20, direction: OUTPUT}
-  - {pin_num: P2, peripheral: GPIO4, signal: 'GPIO, 1', pin_signal: PIO4_1/TRIG_IN7/FC2_P1/CT_INP17/EZH_PIO25/PLU_IN1, direction: OUTPUT}
-  - {pin_num: P1, peripheral: GPIO4, signal: 'GPIO, 0', pin_signal: PIO4_0/WUU0_IN18/TRIG_IN6/FC2_P0/CT_INP16/EZH_PIO24/PLU_IN0/SINC0_MCLK3, direction: OUTPUT}
-  - {pin_num: D2, peripheral: GPIO1, signal: 'GPIO, 12', pin_signal: PIO1_12/WUU0_IN12/TRACE_CLK/FC4_P4/FC3_P0/CT2_MAT2/SCT0_OUT4/FLEXIO0_D20/EZH_PIO8/PLU_OUT2/ENET0_RXER/CAN1_RXD/TSI0_CH21/ADC1_A12,
+  - {pin_num: P2, peripheral: GPIO4, signal: 'GPIO, 1', pin_signal: PIO4_1/TRIG_IN7/FC2_P1/CT_INP17/SMARTDMA_PIO25/PLU_IN1, direction: OUTPUT}
+  - {pin_num: P1, peripheral: GPIO4, signal: 'GPIO, 0', pin_signal: PIO4_0/WUU0_IN18/TRIG_IN6/FC2_P0/CT_INP16/SMARTDMA_PIO24/PLU_IN0/SINC0_MCLK3, direction: OUTPUT}
+  - {pin_num: D2, peripheral: GPIO1, signal: 'GPIO, 12', pin_signal: PIO1_12/WUU0_IN12/TRACE_CLK/FC4_P4/FC3_P0/CT2_MAT2/SCT0_OUT4/FLEXIO0_D20/SMARTDMA_PIO8/PLU_OUT2/ENET0_RXER/CAN1_RXD/TSI0_CH21/ADC1_A12,
     direction: OUTPUT, gpio_init_state: 'true'}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
@@ -467,26 +478,26 @@ void BOARD_LCDPins(void)
 BOARD_CAMPins:
 - options: {callFromInitBoot: 'true', coreID: cm33_core0, enableClock: 'true'}
 - pin_list:
-  - {pin_num: D15, peripheral: LP_FLEXCOMM7, signal: LPFLEXCOMM_P0, pin_signal: PIO3_2/FC7_P0/CT4_MAT0/PWM0_X0/FLEXIO0_D10/EZH_PIO2/SIM1_PD}
-  - {pin_num: D16, peripheral: LP_FLEXCOMM7, signal: LPFLEXCOMM_P1, pin_signal: PIO3_3/FC7_P1/CT4_MAT1/PWM0_X1/FLEXIO0_D11/EZH_PIO3/SIM1_RST}
+  - {pin_num: D15, peripheral: LP_FLEXCOMM7, signal: LPFLEXCOMM_P0, pin_signal: PIO3_2/FC7_P0/CT4_MAT0/PWM0_X0/FLEXIO0_D10/SMARTDMA_PIO2/SIM1_PD}
+  - {pin_num: D16, peripheral: LP_FLEXCOMM7, signal: LPFLEXCOMM_P1, pin_signal: PIO3_3/FC7_P1/CT4_MAT1/PWM0_X1/FLEXIO0_D11/SMARTDMA_PIO3/SIM1_RST}
   - {pin_num: A14, peripheral: GPIO0, signal: 'GPIO, 5', pin_signal: PIO0_5/EWM0_OUT_b/FC0_P1/FC1_P5/CT0_MAT3/UTICK_CAP3/PDM0_DATA0/TSI0_CH9, invert_input: normal}
   - {pin_num: B11, peripheral: GPIO0, signal: 'GPIO, 11', pin_signal: PIO0_11/CT0_MAT1/FLEXIO0_D3/HSCMP2_OUT/ADC0_B11}
-  - {pin_num: H3, peripheral: SCG0, signal: CLKOUT, pin_signal: PIO2_2/WUU0_IN16/CLKOUT/FC9_P3/SDHC0_D1/SCT0_OUT0/PWM1_A2/FLEXIO0_D10/EZH_PIO22/FLEXSPI0_B_SS0_b/SINC0_MCLK0/SAI0_TXD0,
+  - {pin_num: H3, peripheral: SCG0, signal: CLKOUT, pin_signal: PIO2_2/WUU0_IN16/CLKOUT/FC9_P3/SDHC0_D1/SCT0_OUT0/PWM1_A2/FLEXIO0_D10/SMARTDMA_PIO22/FLEXSPI0_B_SS0_b/SINC0_MCLK0/SAI0_TXD0,
     drive_strength: high}
-  - {pin_num: B3, peripheral: GPIO1, signal: 'GPIO, 5', pin_signal: PIO1_5/FREQME_CLK_IN1/FC3_P5/FC5_P1/CT1_MAT3/SCT0_OUT1/FLEXIO0_D13/EZH_PIO1/ENET0_TXEN/SAI0_RXD1/TSI0_CH5/ADC0_A21/CMP0_IN3}
-  - {pin_num: B2, peripheral: GPIO1, signal: 'GPIO, 6', pin_signal: PIO1_6/TRIG_IN2/FC3_P6/FC5_P2/CT_INP6/SCT0_IN0/FLEXIO0_D14/EZH_PIO2/ENET0_TXD0/SAI1_RX_BCLK/CAN1_TXD/TSI0_CH6/ADC0_A22}
-  - {pin_num: A2, peripheral: GPIO1, signal: 'GPIO, 7', pin_signal: PIO1_7/WUU0_IN9/TRIG_OUT2/FC5_P3/CT_INP7/SCT0_IN1/FLEXIO0_D15/EZH_PIO3/PLU_CLK/ENET0_TXD1/SAI1_RX_FS/CAN1_RXD/TSI0_CH7/ADC0_A23}
-  - {pin_num: D3, peripheral: GPIO1, signal: 'GPIO, 11', pin_signal: PIO1_11/WUU0_IN11/TRACE_DATA3/FC4_P3/CT2_MAT1/SCT0_IN3/FLEXIO0_D19/EZH_PIO7/PLU_IN1/ENET0_RX_CLK/I3C1_PUR/CAN0_RXD/TSI0_CH20/ADC1_A11,
+  - {pin_num: B3, peripheral: GPIO1, signal: 'GPIO, 5', pin_signal: PIO1_5/FREQME_CLK_IN1/FC3_P5/FC5_P1/CT1_MAT3/SCT0_OUT1/FLEXIO0_D13/SMARTDMA_PIO1/ENET0_TXEN/SAI0_RXD1/TSI0_CH5/ADC0_A21/CMP0_IN3}
+  - {pin_num: B2, peripheral: GPIO1, signal: 'GPIO, 6', pin_signal: PIO1_6/TRIG_IN2/FC3_P6/FC5_P2/CT_INP6/SCT0_IN0/FLEXIO0_D14/SMARTDMA_PIO2/ENET0_TXD0/SAI1_RX_BCLK/CAN1_TXD/TSI0_CH6/ADC0_A22}
+  - {pin_num: A2, peripheral: GPIO1, signal: 'GPIO, 7', pin_signal: PIO1_7/WUU0_IN9/TRIG_OUT2/FC5_P3/CT_INP7/SCT0_IN1/FLEXIO0_D15/SMARTDMA_PIO3/PLU_CLK/ENET0_TXD1/SAI1_RX_FS/CAN1_RXD/TSI0_CH7/ADC0_A23}
+  - {pin_num: D3, peripheral: GPIO1, signal: 'GPIO, 11', pin_signal: PIO1_11/WUU0_IN11/TRACE_DATA3/FC4_P3/CT2_MAT1/SCT0_IN3/FLEXIO0_D19/SMARTDMA_PIO7/PLU_IN1/ENET0_RX_CLK/I3C1_PUR/CAN0_RXD/TSI0_CH20/ADC1_A11,
     slew_rate: fast}
-  - {pin_num: F14, peripheral: GPIO3, signal: 'GPIO, 4', pin_signal: PIO3_4/FC7_P2/CT_INP18/PWM0_X2/FLEXIO0_D12/EZH_PIO4/SIM1_CLK}
-  - {pin_num: G14, peripheral: GPIO3, signal: 'GPIO, 5', pin_signal: PIO3_5/FC7_P3/CT_INP19/PWM0_X3/FLEXIO0_D13/EZH_PIO5/SIM1_IO}
-  - {pin_num: C3, peripheral: GPIO1, signal: 'GPIO, 10', pin_signal: PIO1_10/TRACE_DATA2/FC4_P2/FC5_P6/CT2_MAT0/SCT0_IN2/FLEXIO0_D18/EZH_PIO6/PLU_IN0/ENET0_TXER/CAN0_TXD/TSI0_CH19/ADC1_A10,
+  - {pin_num: F14, peripheral: GPIO3, signal: 'GPIO, 4', pin_signal: PIO3_4/FC7_P2/CT_INP18/PWM0_X2/FLEXIO0_D12/SMARTDMA_PIO4/SIM1_CLK}
+  - {pin_num: G14, peripheral: GPIO3, signal: 'GPIO, 5', pin_signal: PIO3_5/FC7_P3/CT_INP19/PWM0_X3/FLEXIO0_D13/SMARTDMA_PIO5/SIM1_IO}
+  - {pin_num: C3, peripheral: GPIO1, signal: 'GPIO, 10', pin_signal: PIO1_10/TRACE_DATA2/FC4_P2/FC5_P6/CT2_MAT0/SCT0_IN2/FLEXIO0_D18/SMARTDMA_PIO6/PLU_IN0/ENET0_TXER/CAN0_TXD/TSI0_CH19/ADC1_A10,
     slew_rate: fast}
-  - {pin_num: A4, peripheral: GPIO1, signal: 'GPIO, 4', pin_signal: PIO1_4/WUU0_IN8/FREQME_CLK_IN0/FC3_P4/FC5_P0/CT1_MAT2/SCT0_OUT0/FLEXIO0_D12/EZH_PIO0/ENET0_TX_CLK/SAI0_TXD1/TSI0_CH4/ADC0_A20/CMP0_IN2}
+  - {pin_num: A4, peripheral: GPIO1, signal: 'GPIO, 4', pin_signal: PIO1_4/WUU0_IN8/FREQME_CLK_IN0/FC3_P4/FC5_P0/CT1_MAT2/SCT0_OUT0/FLEXIO0_D12/SMARTDMA_PIO0/ENET0_TX_CLK/SAI0_TXD1/TSI0_CH4/ADC0_A20/CMP0_IN2}
   - {pin_num: B14, peripheral: GPIO0, signal: 'GPIO, 4', pin_signal: PIO0_4/WUU0_IN0/EWM0_IN/FC0_P0/FC1_P4/CT0_MAT2/UTICK_CAP2/HSCMP1_OUT/PDM0_CLK/TSI0_CH8}
-  - {pin_num: G4, peripheral: GPIO1, signal: 'GPIO, 18', pin_signal: PIO1_18/FREQME_CLK_IN0/FC5_P2/FC3_P6/CT3_MAT0/SCT0_IN6/FLEXIO0_D26/EZH_PIO14/PLU_IN4/ENET0_COL/CAN0_TXD/ADC1_A18,
+  - {pin_num: G4, peripheral: GPIO1, signal: 'GPIO, 18', pin_signal: PIO1_18/FREQME_CLK_IN0/FC5_P2/FC3_P6/CT3_MAT0/SCT0_IN6/FLEXIO0_D26/SMARTDMA_PIO14/PLU_IN4/ENET0_COL/CAN0_TXD/ADC1_A18,
     direction: OUTPUT, drive_strength: high}
-  - {pin_num: G5, peripheral: GPIO1, signal: 'GPIO, 19', pin_signal: PIO1_19/WUU0_IN15/FREQME_CLK_IN1/FC5_P3/CT3_MAT1/SCT0_IN7/FLEXIO0_D27/EZH_PIO15/PLU_IN5/ENET0_CRS/CAN0_RXD/ADC1_A19,
+  - {pin_num: G5, peripheral: GPIO1, signal: 'GPIO, 19', pin_signal: PIO1_19/WUU0_IN15/FREQME_CLK_IN1/FC5_P3/CT3_MAT1/SCT0_IN7/FLEXIO0_D27/SMARTDMA_PIO15/PLU_IN5/ENET0_CRS/CAN0_RXD/ADC1_A19,
     direction: OUTPUT, drive_strength: high}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
@@ -710,9 +721,10 @@ void BOARD_CAMPins(void)
 BOARD_BTNPINS:
 - options: {callFromInitBoot: 'true', coreID: cm33_core0, enableClock: 'true'}
 - pin_list:
-  - {pin_num: L16, peripheral: GPIO3, signal: 'GPIO, 21', pin_signal: PIO3_21/TRIG_OUT1/FC8_P5/FC6_P1/CT2_MAT3/PWM1_B3/FLEXIO0_D29/EZH_PIO21/SIM0_RST/SAI1_RXD0, direction: INPUT}
-  - {pin_num: K15, peripheral: GPIO3, signal: 'GPIO, 17', pin_signal: PIO3_17/WUU0_IN26/FC8_P3/CT_INP9/PWM1_B2/FLEXIO0_D25/EZH_PIO17/SIM0_IO/SAI1_TX_FS, direction: INPUT}
-  - {pin_num: K17, peripheral: GPIO3, signal: 'GPIO, 19', pin_signal: PIO3_19/FC7_P6/CT2_MAT1/PWM1_X1/FLEXIO0_D27/EZH_PIO19/SAI1_RX_FS, direction: INPUT}
+  - {pin_num: L16, peripheral: GPIO3, signal: 'GPIO, 21', pin_signal: PIO3_21/TRIG_OUT1/FC8_P5/FC6_P1/CT2_MAT3/PWM1_B3/FLEXIO0_D29/SMARTDMA_PIO21/SIM0_RST/SAI1_RXD0,
+    direction: INPUT}
+  - {pin_num: K15, peripheral: GPIO3, signal: 'GPIO, 17', pin_signal: PIO3_17/WUU0_IN26/FC8_P3/CT_INP9/PWM1_B2/FLEXIO0_D25/SMARTDMA_PIO17/SIM0_IO/SAI1_TX_FS, direction: INPUT}
+  - {pin_num: K17, peripheral: GPIO3, signal: 'GPIO, 19', pin_signal: PIO3_19/FC7_P6/CT2_MAT1/PWM1_X1/FLEXIO0_D27/SMARTDMA_PIO19/SAI1_RX_FS, direction: INPUT}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
 /* clang-format on */

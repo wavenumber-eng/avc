@@ -67,6 +67,11 @@
                         <data>true</data>
                      </feature>
                   </dependency>
+                  <dependency resourceType="Peripheral" resourceId="SMARTDMA0" description="Peripheral SMARTDMA0 signals are routed in the Pins Tool, but the peripheral is not initialized in the Peripherals Tool." problem_level="1" source="Pins:BOARD_InitPins_Core0">
+                     <feature name="initialized" evaluation="equal">
+                        <data>true</data>
+                     </feature>
+                  </dependency>
                   <dependency resourceType="SWComponent" resourceId="platform.drivers.common" description="Pins initialization requires the COMMON Driver in the project." problem_level="2" source="Pins:BOARD_InitPins_Core0">
                      <feature name="enabled" evaluation="equal" configuration="cm33_core0">
                         <data>true</data>
@@ -136,6 +141,7 @@
                      </pin_features>
                   </pin>
                   <pin peripheral="PWM1" signal="B, 2" pin_num="J3" pin_signal="PIO2_3/FC9_P1/SDHC0_D0/SCT0_OUT1/PWM1_B2/FLEXIO0_D11/SMARTDMA_PIO23/FLEXSPI0_B_SCLK/SINC0_MBIT0/SAI0_RXD0"/>
+                  <pin peripheral="SMARTDMA0" signal="SMARTDMA_PIO, 13" pin_num="F4" pin_signal="PIO1_17/FC5_P1/FC3_P5/CT_INP13/SCT0_OUT7/FLEXIO0_D25/SMARTDMA_PIO13/PLU_OUT5/ENET0_RXD3/I3C1_SCL/ADC1_A17"/>
                </pins>
             </function>
             <function name="BOARD_LCDPins">
