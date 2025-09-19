@@ -205,7 +205,9 @@ uint8_t bv_camera__init()
 
     CLOCK_AttachClk(kMAIN_CLK_to_CLKOUT);
 
-    CLOCK_SetClkDiv(kCLOCK_DivClkOut, 6U); //320x120
+    CLOCK_SetClkDiv(kCLOCK_DivClkOut, 11U); //320x102
+
+    //CLOCK_SetClkDiv(kCLOCK_DivClkOut, 6U); //320x120
     //CLOCK_SetClkDiv(kCLOCK_DivClkOut, 7U); //160x120  <<see if we can get pll working
     // CLOCK_SetClkDiv(kCLOCK_DivClkOut, 23U); //320x240
 
@@ -256,7 +258,7 @@ uint8_t bv_camera__init()
 
         camera_config_t camconfig = {
             .pixelFormat                = kVIDEO_PixelFormatRGB565,
-            .resolution                 = FSL_VIDEO_RESOLUTION(320, 120),
+            .resolution                 = FSL_VIDEO_RESOLUTION(320, 102),
             .framePerSec                = 30,//
             .interface                  = kCAMERA_InterfaceNonGatedClock ,
             .frameBufferLinePitch_Bytes = 0, /* Not used. */
