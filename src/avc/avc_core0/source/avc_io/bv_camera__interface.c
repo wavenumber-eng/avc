@@ -207,7 +207,6 @@ uint8_t bv_camera__init()
 
     CLOCK_SetClkDiv(kCLOCK_DivClkOut, 6U); //320x120
     //CLOCK_SetClkDiv(kCLOCK_DivClkOut, 7U); //160x120  <<see if we can get pll working
-
     // CLOCK_SetClkDiv(kCLOCK_DivClkOut, 23U); //320x240
 
 
