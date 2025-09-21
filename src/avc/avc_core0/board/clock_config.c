@@ -278,6 +278,7 @@ outputs:
 - {id: FRO_HF_clock.outFreq, value: 48 MHz}
 - {id: MAIN_clock.outFreq, value: 150 MHz}
 - {id: PLL0_CLK_clock.outFreq, value: 150 MHz}
+- {id: PLL1_CLK_clock.outFreq, value: 138 MHz}
 - {id: PLL_DIV_clock.outFreq, value: 75 MHz}
 - {id: SYSTICK0_clock.outFreq, value: 25 MHz}
 - {id: SYSTICK1_clock.outFreq, value: 25 MHz}
@@ -287,6 +288,7 @@ outputs:
 - {id: trng_clock.outFreq, value: 48 MHz}
 settings:
 - {id: PLL0_Mode, value: Normal}
+- {id: PLL1_Mode, value: Fractional}
 - {id: RunPowerMode, value: OD}
 - {id: SCGMode, value: PLL0}
 - {id: CLKOUTDIV_HALT, value: Enable}
@@ -295,6 +297,9 @@ settings:
 - {id: SCG.PLL0SRCSEL.sel, value: SCG.FIRC_48M}
 - {id: SCG.PLL0_NDIV.scale, value: '8', locked: true}
 - {id: SCG.PLL0_PDIV.scale, value: '2', locked: true}
+- {id: SCG.PLL1M_MULT.scale, value: '771751936', locked: true}
+- {id: SCG.PLL1SRCSEL.sel, value: SCG.FIRC_48M}
+- {id: SCG.PLL1_NDIV.scale, value: '4', locked: true}
 - {id: SCG.SCSSEL.sel, value: SCG.PLL0_CLK}
 - {id: SYSCON.CLKOUTDIV.scale, value: '2', locked: true}
 - {id: SYSCON.CLKOUTSEL.sel, value: SCG.FRO_12M}
@@ -358,6 +363,17 @@ void BOARD_BootClockPLL150M(void)
     };
     CLOCK_SetPLL0Freq(&pll0Setup);                       /*!< Configure PLL0 to the desired values */
     CLOCK_SetPll0MonitorMode(kSCG_Pll0MonitorDisable);    /* Pll0 Monitor is disabled */
+
+    /*!< Set up PLL1 */
+    const pll_setup_t pll1Setup = {
+        .pllctrl = SCG_SPLLCTRL_SOURCE(1U) | SCG_SPLLCTRL_LIMUPOFF_MASK  | SCG_SPLLCTRL_SELI(4U) | SCG_SPLLCTRL_SELP(3U) | SCG_SPLLCTRL_SELR(4U),
+        .pllndiv = SCG_SPLLNDIV_NDIV(4U),
+        .pllpdiv = SCG_SPLLPDIV_PDIV(1U),
+        .pllsscg = {(SCG_SPLLSSCG0_SS_MDIV_LSB(771751936U)),((SCG0->SPLLSSCG1 & ~SCG_SPLLSSCG1_SS_PD_MASK) | SCG_SPLLSSCG1_SS_MDIV_MSB(0U) | (uint32_t)(kSS_MF_512) | (uint32_t)(kSS_MR_K0) | (uint32_t)(kSS_MC_NOC) | SCG_SPLLSSCG1_SEL_SS_MDIV_MASK)},
+        .pllRate = 138000000U
+    };
+    CLOCK_SetPLL1Freq(&pll1Setup);                       /*!< Configure PLL1 to the desired values */
+    CLOCK_SetPll1MonitorMode(kSCG_Pll1MonitorDisable);    /* Pll1 Monitor is disabled */
 
     /*!< Set up clock selectors  */
     CLOCK_AttachClk(kPLL0_to_MAIN_CLK);

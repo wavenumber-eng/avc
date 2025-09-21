@@ -15,6 +15,9 @@
 
 #define EZH_STACK_SIZE 64   /* stack size for EZH, see smart_dma driver recommendation */
 
+__BSS(SRAM_H) volatile uint32_t ezh_binary[512];
+
+
 
 void camera__i2c_init();
 
@@ -27,9 +30,6 @@ volatile uint8_t img_ready = 0;   /* non-zero when new data signaled by SmartDMA
 static volatile uint8_t g_samrtdma_stack[EZH_STACK_SIZE];
 
 uint16_t g_camera_buffer[320 *240];
-
-
-__BSS(EZH) volatile uint32_t ezh_binary[512];
 
 
 uint16_t * camera__get_buffer()
@@ -258,7 +258,7 @@ uint8_t bv_camera__init()
 
         camera_config_t camconfig = {
             .pixelFormat                = kVIDEO_PixelFormatRGB565,
-            .resolution                 = FSL_VIDEO_RESOLUTION(320, 102),
+            .resolution                 = FSL_VIDEO_RESOLUTION(320, 200),
             .framePerSec                = 30,//
             .interface                  = kCAMERA_InterfaceNonGatedClock ,
             .frameBufferLinePitch_Bytes = 0, /* Not used. */

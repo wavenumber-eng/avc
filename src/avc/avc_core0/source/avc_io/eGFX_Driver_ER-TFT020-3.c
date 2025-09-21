@@ -65,6 +65,29 @@ void eGFX_DumpRaw(uint8_t *buffer)
 }
 
 
+void eGFX_line_double(uint8_t *buffer,uint16_t lines)
+{
+
+
+    lpspi1_init(8);
+   // GPIO_PinWrite(GPIO4, 1, 1);
+
+#if (defined(CONFIG_DISPLAY_ORIENTATION) && (CONFIG_DISPLAY_ORIENTATION == LANDSCAPE))
+    LCD_SetPos(0, 319, 0, 239); // 320x240
+#endif
+
+    lpspi1_init(32);
+
+    for(uint32_t i = 0; i < lines; i++)
+    {
+
+        ST7789__display_row(&buffer[i * 640], eGFX_PHYSICAL_SCREEN_SIZE_X);
+        ST7789__display_row(&buffer[i * 640], eGFX_PHYSICAL_SCREEN_SIZE_X);
+     }
+   // GPIO_PinWrite(GPIO4, 1, 0);
+
+}
+
 
 void eGFX_duplicate_and_dump2(eGFX_ImagePlane *Image)
 {

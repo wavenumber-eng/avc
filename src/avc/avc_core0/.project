@@ -43,11 +43,6 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>ipc</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
 			<name>e/.gitignore</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/common/e/.gitignore</locationURI>
@@ -131,16 +126,6 @@
 			<name>egfx/tools</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
-			<name>ipc/ipc.c</name>
-			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/common/ipc/ipc.c</locationURI>
-		</link>
-		<link>
-			<name>ipc/ipc.h</name>
-			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/common/ipc/ipc.h</locationURI>
 		</link>
 		<link>
 			<name>source/bunny_build</name>

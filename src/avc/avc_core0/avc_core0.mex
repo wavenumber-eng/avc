@@ -582,6 +582,7 @@
                   <clock_output id="FRO_HF_clock.outFreq" value="48 MHz" locked="false" accuracy=""/>
                   <clock_output id="MAIN_clock.outFreq" value="150 MHz" locked="false" accuracy=""/>
                   <clock_output id="PLL0_CLK_clock.outFreq" value="150 MHz" locked="false" accuracy=""/>
+                  <clock_output id="PLL1_CLK_clock.outFreq" value="138 MHz" locked="false" accuracy=""/>
                   <clock_output id="PLL_DIV_clock.outFreq" value="75 MHz" locked="false" accuracy=""/>
                   <clock_output id="SYSTICK0_clock.outFreq" value="25 MHz" locked="false" accuracy=""/>
                   <clock_output id="SYSTICK1_clock.outFreq" value="25 MHz" locked="false" accuracy=""/>
@@ -592,6 +593,7 @@
                </clock_outputs>
                <clock_settings>
                   <setting id="PLL0_Mode" value="Normal" locked="false"/>
+                  <setting id="PLL1_Mode" value="Fractional" locked="false"/>
                   <setting id="RunPowerMode" value="OD" locked="false"/>
                   <setting id="SCGMode" value="PLL0" locked="false"/>
                   <setting id="CLKOUTDIV_HALT" value="Enable" locked="false"/>
@@ -600,6 +602,9 @@
                   <setting id="SCG.PLL0SRCSEL.sel" value="SCG.FIRC_48M" locked="false"/>
                   <setting id="SCG.PLL0_NDIV.scale" value="8" locked="true"/>
                   <setting id="SCG.PLL0_PDIV.scale" value="2" locked="true"/>
+                  <setting id="SCG.PLL1M_MULT.scale" value="771751936" locked="true"/>
+                  <setting id="SCG.PLL1SRCSEL.sel" value="SCG.FIRC_48M" locked="false"/>
+                  <setting id="SCG.PLL1_NDIV.scale" value="4" locked="true"/>
                   <setting id="SCG.SCSSEL.sel" value="SCG.PLL0_CLK" locked="false"/>
                   <setting id="SYSCON.CLKOUTDIV.scale" value="2" locked="true"/>
                   <setting id="SYSCON.CLKOUTSEL.sel" value="SCG.FRO_12M" locked="false"/>

@@ -124,7 +124,7 @@ void avc__init()
 //    SYSCON->CPUCTRL = (temp | SYSCON_CPUCTRL_CPU1CLKEN_MASK) & (~SYSCON_CPUCTRL_CPU1RSTEN_MASK);
 //
 //    (void)DEBUG("The secondary core application has been started.\r\n");
-//
+
 
     bv_camera__init();
     eGFX_InitDriver(0);

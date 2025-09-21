@@ -27,7 +27,7 @@ void BOARD_InitBootPins(void);
 
 #define PCR_IBE_ibe0 0x00u /*!<@brief Input Buffer Enable: Disables */
 #define PCR_IBE_ibe1 0x01u /*!<@brief Input Buffer Enable: Enables */
-#define PCR_INV_inv1 0x01u /*!<@brief Invert Input: Inverts */
+#define PCR_INV_inv0 0x00u /*!<@brief Invert Input: Does not invert */
 
 /*! @name PORT1_8 (coord A1), P1_8/J9[32]
   @{ */

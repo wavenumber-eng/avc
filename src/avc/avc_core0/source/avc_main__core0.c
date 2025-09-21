@@ -23,6 +23,7 @@ uint8_t line_buffer__red[CAMERA_WIDTH];
 
 extern uint16_t g_camera_buffer[320 *240];
 extern void eGFX_DumpRaw(uint8_t *buffer);
+extern void eGFX_line_double(uint8_t *buffer,uint16_t lines);
 eGFX_ImagePlane CP;
 
 
@@ -35,9 +36,9 @@ int main(void)
 
     while (1)
     {
-        test = avc_ipc.core1_counter;
+      //  test = avc_ipc.core1_counter;
 
-        bat = avc__read_battery_voltage();
+       // bat = avc__read_battery_voltage();
 
         // Test mode enable
         if(GPIO_PinRead(GPIO3, TEST_SW_PIN) == 0)
@@ -48,6 +49,8 @@ int main(void)
             {
             	img_ready=0;
             	eGFX_DumpRaw((uint8_t *)&g_camera_buffer[0]);
+
+            	//eGFX_line_double((uint8_t *)&g_camera_buffer[0],102);
                 //eGFX_duplicate_and_dump(&CP);
             }
 

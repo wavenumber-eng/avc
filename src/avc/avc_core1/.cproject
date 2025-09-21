@@ -707,7 +707,7 @@
 	<storageModule moduleId="com.nxp.mcuxpresso.core.datamodels">
 		<sdkName>SDK_2.x_FRDM-MCXN947</sdkName>
 		<sdkExample>frdmmcxn947_hello_world_cm33_core1</sdkExample>
-		<sdkVersion>25.6.000</sdkVersion>
+		<sdkVersion>25.06.00</sdkVersion>
 		<sdkComponents>middleware.multicore.mcmgr.mcxnx4x.MCXN947;utility.debug_console_lite.MCXN947;platform.utilities.assert_lite.MCXN947;platform.drivers.gpio.MCXN947;platform.drivers.port.MCXN947;platform.drivers.lpflexcomm_lpuart.MCXN947;platform.drivers.clock.MCXN947;platform.drivers.common.MCXN947;platform.drivers.reset.MCXN947;platform.devices.MCXN947_CMSIS.MCXN947;platform.devices.MCXN947_startup.MCXN947;component.lpuart_adapter.MCXN947;component.lists.MCXN947;platform.utilities.misc_utilities.MCXN947;middleware.multicore.mcmgr.MCXN947;platform.drivers.mailbox.MCXN947;utility.str.MCXN947;platform.drivers.lpflexcomm.MCXN947;platform.drivers.mcx_spc.MCXN947;CMSIS_Include_core_cm.MCXN947;platform.devices.MCXN947_system.MCXN947;frdmmcxn947_hello_world_cm33_core1;platform.drivers.lpflexcomm_lpspi_edma.MCXN947;platform.drivers.edma_soc.MCXN947;platform.drivers.lpflexcomm_lpspi.MCXN947;platform.drivers.edma4.MCXN947;middleware.baremetal.MCXN947;platform.drivers.inputmux.MCXN947;platform.drivers.inputmux_connections.MCXN947;driver.camera-device-ov7670.MCXN947;driver.camera-common.MCXN947;driver.camera-device-common.MCXN947;platform.drivers.lpflexcomm_lpi2c.MCXN947;driver.camera-device-sccb.MCXN947;driver.video-common.MCXN947;platform.drivers.lpc_smartdma.MCXN947;</sdkComponents>
 		<boardId>frdmmcxn947</boardId>
 		<package>MCXN947VDF</package>
@@ -726,8 +726,8 @@
 &lt;vendor&gt;NXP&lt;/vendor&gt;&#13;
 &lt;memory can_program="true" id="Flash" is_ro="true" size="2048" type="Flash"/&gt;&#13;
 &lt;memory id="RAM" size="512" type="RAM"/&gt;&#13;
-&lt;memoryInstance derived_from="RAM" edited="true" id="CORE1" location="0x4001000" size="0x10000"/&gt;&#13;
-&lt;memoryInstance derived_from="RAM" edited="true" id="IPC_MEM" location="0x20040000" size="0x10000"/&gt;&#13;
+&lt;memoryInstance derived_from="RAM" edited="true" id="CORE1" location="0x100000" size="0x10000"/&gt;&#13;
+&lt;memoryInstance derived_from="RAM" edited="true" id="IPC_MEM" location="0x20060000" size="0x8000"/&gt;&#13;
 &lt;/chip&gt;&#13;
 &lt;processor&gt;&#13;
 &lt;name gcc_name="cortex-m33"&gt;Cortex-M33&lt;/name&gt;&#13;

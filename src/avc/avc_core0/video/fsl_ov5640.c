@@ -369,6 +369,12 @@ static const ov5640_reg_val_t ov5640InitParam[] = {
 };
 
 static const ov5640_resolution_param_t resolutionParam[] = {
+
+		{
+		    .resolution = FSL_VIDEO_RESOLUTION(320, 102),
+		    .param      = {0x00, 0x00, 0x00, 0x04, 0x0a, 0x3f, 0x07, 0x9b, 0x01, 0x40, 0x00,
+		                   0x66, 0x07, 0x68, 0x03, 0xd8, 0x00, 0x10, 0x00, 0x06, 0x31, 0x31},
+		},
 				{
 			    .resolution = FSL_VIDEO_RESOLUTION(160, 120),
 			    .param      = {0x00, 0x00, 0x00, 0x04, 0x0a, 0x3f, 0x07, 0x9b, 0x00, 0xa0, 0x00,
@@ -378,6 +384,11 @@ static const ov5640_resolution_param_t resolutionParam[] = {
 		    .resolution = FSL_VIDEO_RESOLUTION(320, 120),  // Custom 320x120
 		    .param      = {0x00, 0x00, 0x00, 0x04, 0x0a, 0x3f, 0x07, 0x9b, 0x01, 0x40, 0x00,
 		                   0x78, 0x07, 0x68, 0x03, 0xd8, 0x00, 0x10, 0x00, 0x06, 0x31, 0x31},
+		},
+		{
+		    .resolution = FSL_VIDEO_RESOLUTION(320, 200),
+		    .param      = {0x00, 0x00, 0x00, 0x04, 0x0a, 0x3f, 0x07, 0x9b, 0x01, 0x40, 0x00,
+		                   0xc8, 0x07, 0x68, 0x03, 0xd8, 0x00, 0x10, 0x00, 0x06, 0x31, 0x31},
 		},
     {
         .resolution = (uint32_t)kVIDEO_ResolutionVGA,
@@ -428,6 +439,34 @@ static const ov5640_clock_config_t s_ov5640DvpClockConfigs[] = {
 		    .pclkDiv     = 0x04,  // Divide by 4 (350MHz / 4 = 87.5MHz SYSCLK, then /4 internal = 21.875MHz PCLK)
 		    .pclkPeriod  = 0x22,
 		},
+		{
+		    .resolution  = FSL_VIDEO_RESOLUTION(320, 102),
+		    .framePerSec = 30,
+		    .pllCtrl1    = 0x21,  // Divide by 2 (13MHz → 6.5MHz) - changed from 0x11
+		    .pllCtrl2    = 0x69,  // Keep same multiplier (105)
+		    .vfifoCtrl0C = 0x20,
+		    .pclkDiv     = 0x01,
+		    .pclkPeriod  = 0x15,
+		},
+		{
+		    .resolution  = FSL_VIDEO_RESOLUTION(320, 200),
+		    .framePerSec = 30,
+		    .pllCtrl1    = 0x21,  // Divide by 2 for 13MHz input
+		    .pllCtrl2    = 0x69,
+		    .vfifoCtrl0C = 0x20,
+		    .pclkDiv     = 0x01,
+		    .pclkPeriod  = 0x15,
+		},
+
+//		{
+//		    .resolution  = FSL_VIDEO_RESOLUTION(320, 102),
+//		    .framePerSec = 30,
+//		    .pllCtrl1    = 0x11,  // Same as your working config
+//		    .pllCtrl2    = 0x69,
+//		    .vfifoCtrl0C = 0x20,
+//		    .pclkDiv     = 0x01,
+//		    .pclkPeriod  = 0x15,
+//		},
 		{
 		    .resolution  = (uint32_t)kVIDEO_ResolutionQVGA,
 		    .framePerSec = 30,

@@ -464,7 +464,7 @@ void BOARD_BootClockFROHF144M(void);
 #define BOARD_BOOTCLOCKPLL150M_MICFILFCLK_CLOCK       0UL            /* Clock consumers of MICFILFCLK_clock output : PDM */
 #define BOARD_BOOTCLOCKPLL150M_OSTIMER_CLOCK          0UL            /* Clock consumers of OSTIMER_clock output : OSTIMER0 */
 #define BOARD_BOOTCLOCKPLL150M_PLL0_CLK_CLOCK         150000000UL    /* Clock consumers of PLL0_CLK_clock output : N/A */
-#define BOARD_BOOTCLOCKPLL150M_PLL1_CLK_CLOCK         0UL            /* Clock consumers of PLL1_CLK_clock output : N/A */
+#define BOARD_BOOTCLOCKPLL150M_PLL1_CLK_CLOCK         138000000UL    /* Clock consumers of PLL1_CLK_clock output : N/A */
 #define BOARD_BOOTCLOCKPLL150M_PLL_DIV_CLOCK          75000000UL     /* Clock consumers of PLL_DIV_clock output : N/A */
 #define BOARD_BOOTCLOCKPLL150M_PLUCLKIN_CLOCK         0UL            /* Clock consumers of PLUCLKIN_clock output : PLU0 */
 #define BOARD_BOOTCLOCKPLL150M_PLU_GLITCH_12MHZ_CLOCK 0UL            /* Clock consumers of PLU_GLITCH_12MHz_clock output : PLU0 */
