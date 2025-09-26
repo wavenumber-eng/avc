@@ -1293,8 +1293,8 @@ status_t OV5640_Init(camera_device_handle_t *handle, const camera_config_t *conf
         OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x3821, 0x06));
     }
 
-
-    OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x3821, 0x01));
+    OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x3820, 0x00));
+   // OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x3821, 0x01));
 
     OV5640_CHECK_RET(OV5640_WriteReg(handle, 0x302c, 0xc2));
 

@@ -43,26 +43,49 @@ void eGFX_Dump(eGFX_ImagePlane *Image)
 #if (defined(CONFIG_DISPLAY_ORIENTATION) && (CONFIG_DISPLAY_ORIENTATION == LANDSCAPE))
     LCD_SetPos(0, 319, 0, 239); // 320x240
 #endif
-
+    LCD_RS__SET;
     lpspi1_init(32);
     ST7789__display_img(buffer);
    // GPIO_PinWrite(GPIO4, 1, 0);
 }
 
-void eGFX_DumpRaw(uint8_t *buffer)
+void eGFX_DumpRaw(uint8_t *buffer,
+				  uint32_t length,
+				  uint32_t x0,
+				  uint32_t x1,
+				  uint32_t y0,
+				  uint32_t y1)
 {
-
 
     lpspi1_init(8);
 
-#if (defined(CONFIG_DISPLAY_ORIENTATION) && (CONFIG_DISPLAY_ORIENTATION == LANDSCAPE))
-    LCD_SetPos(0, 319, 0, 239); // 320x240
-#endif
+    LCD_SetPos(x0, x1, y0, y1); // 320x240
 
     lpspi1_init(32);
-    ST7789__display_img(buffer);
+	LCD_RS__SET;
+    uint32_t blk_size;
+    while(length)
+    {
+    	if(length >= 8192)
+    	{
+    		blk_size = 8192;
+    	}
+    	else
+    	{
+    		blk_size = length;
+    	}
+
+
+        lpspi1_transfer_block(buffer, blk_size);
+
+        buffer += blk_size;
+        length-=blk_size;
+
+    }
 
 }
+
+
 
 
 void eGFX_line_double(uint8_t *buffer,uint16_t lines)

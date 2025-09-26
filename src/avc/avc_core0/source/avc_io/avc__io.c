@@ -126,9 +126,9 @@ void avc__init()
 //    (void)DEBUG("The secondary core application has been started.\r\n");
 
 
-    bv_camera__init();
+    avc_camera__init();
     eGFX_InitDriver(0);
-    eGFX_Dump((eGFX_ImagePlane *)&Sprite_16BPP_RGB565_bg1);
+    eGFX_Dump((eGFX_ImagePlane *)&Sprite_16BPP_RGB565_fit2025);
     e_tick__delay_ms(2000);
 
     avc__adc_init();

@@ -314,7 +314,7 @@
 								<option id="com.crt.advproject.link.crpenable.1643207337" name="Enable automatic placement of Code Read Protection field in image" superClass="com.crt.advproject.link.crpenable"/>
 								<option id="com.crt.advproject.link.flashconfigenable.2044771821" name="Enable automatic placement of Flash Configuration field in image" superClass="com.crt.advproject.link.flashconfigenable" value="true" valueType="boolean"/>
 								<option id="com.crt.advproject.link.ecrp.1387344173" name="Enhanced CRP" superClass="com.crt.advproject.link.ecrp"/>
-								<option id="com.crt.advproject.link.gcc.nanofloat.1184238551" name="Enable printf float " superClass="com.crt.advproject.link.gcc.nanofloat"/>
+								<option id="com.crt.advproject.link.gcc.nanofloat.1184238551" name="Enable printf float " superClass="com.crt.advproject.link.gcc.nanofloat" value="true" valueType="boolean"/>
 								<option id="com.crt.advproject.link.gcc.nanofloat.scanf.1949765889" name="Enable scanf float " superClass="com.crt.advproject.link.gcc.nanofloat.scanf"/>
 								<option id="com.crt.advproject.link.toram.1908045178" name="Link application to RAM" superClass="com.crt.advproject.link.toram"/>
 								<option id="com.crt.advproject.link.stackOffset.954259054" name="Stack offset" superClass="com.crt.advproject.link.stackOffset"/>
@@ -343,7 +343,7 @@
 					</folderInfo>
 					<fileInfo id="com.crt.advproject.config.exe.debug.1861825334.1784654983" name="eGFX_Driver_ER-TFT020-3.c" rcbsApplicability="disable" resourcePath="source/avc_io/eGFX_Driver_ER-TFT020-3.c" toolsToInvoke="com.crt.advproject.gcc.exe.debug.665881301.1774645849">
 						<tool id="com.crt.advproject.gcc.exe.debug.665881301.1774645849" name="MCU C Compiler" superClass="com.crt.advproject.gcc.exe.debug.665881301">
-							<option id="com.crt.advproject.gcc.exe.debug.option.optimization.level.1197662376" superClass="com.crt.advproject.gcc.exe.debug.option.optimization.level" value="gnu.c.optimization.level.most" valueType="enumerated"/>
+							<option id="com.crt.advproject.gcc.exe.debug.option.optimization.level.1197662376" name="Optimization Level" superClass="com.crt.advproject.gcc.exe.debug.option.optimization.level" value="gnu.c.optimization.level.most" valueType="enumerated"/>
 							<inputType id="com.crt.advproject.compiler.input.1737757191" superClass="com.crt.advproject.compiler.input"/>
 						</tool>
 					</fileInfo>
@@ -757,7 +757,7 @@
 &lt;memory id="RAM" size="512" type="RAM"/&gt;&#13;
 &lt;memoryInstance derived_from="Flash" driver="MCXNxxx.cfx" edited="true" id="PROGRAM_FLASH0" location="0x0" size="0x100000"/&gt;&#13;
 &lt;memoryInstance derived_from="Flash" driver="MCXNxxx.cfx" edited="true" id="PROGRAM_FLASH1" location="0x100000" size="0x100000"/&gt;&#13;
-&lt;memoryInstance derived_from="RAM" edited="true" id="SRAM" location="0x20000000" size="0x60000"/&gt;&#13;
+&lt;memoryInstance derived_from="RAM" edited="true" id="FRAME_BUFFERS" location="0x20000000" size="0x60000"/&gt;&#13;
 &lt;memoryInstance derived_from="RAM" edited="true" id="SRAMX" location="0x4000000" size="0x18000"/&gt;&#13;
 &lt;memoryInstance derived_from="RAM" edited="true" id="SRAM_H" location="0x20060000" size="0x8000"/&gt;&#13;
 &lt;memoryInstance derived_from="RAM" edited="true" id="USB_RAM" location="0x400ba000" size="0x1000"/&gt;&#13;

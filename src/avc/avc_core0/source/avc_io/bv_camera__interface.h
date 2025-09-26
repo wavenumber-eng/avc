@@ -25,11 +25,7 @@
 #define BOARD_INITCAMERAPINS_CAM_PDWN_PIN 18U                   /*!<@brief PORT pin number */
 #define BOARD_INITCAMERAPINS_CAM_PDWN_PIN_MASK (1U << 18U)      /*!<@brief PORT pin mask */
 
-
-extern volatile uint8_t img_ready;
-
-extern uint8_t bv_camera__init();
-
-uint16_t * camera__get_buffer();
+void avc_camera__init();
+void avc__next_frame(uint16_t *buffer);
 
 #endif

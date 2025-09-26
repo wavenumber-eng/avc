@@ -36,5 +36,12 @@ extern SPRITE_SECTION eGFX_ImagePlane 	Sprite_16BPP_RGB565_bg2_save;
 
 extern SPRITE_SECTION eGFX_ImagePlane 	Sprite_16BPP_RGB565_colors;
 
+////***************************************************************************
+////                         Sprite_16BPP_RGB565_fit2025
+////***************************************************************************
+
+
+extern SPRITE_SECTION eGFX_ImagePlane 	Sprite_16BPP_RGB565_fit2025;
+
 #endif
 

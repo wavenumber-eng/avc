@@ -17,6 +17,114 @@
 
 __BSS(SRAM_H) volatile uint32_t ezh_binary[512];
 
+__BSS(FRAME_BUFFERS) uint16_t g_camera_buffer[FSL_VIDEO_EXTRACT_WIDTH(CONFIG__CAMERA_RESOLUTION) *
+											  FSL_VIDEO_EXTRACT_HEIGHT(CONFIG__CAMERA_RESOLUTION) *
+											  2];
+
+
+//This needs to be global
+smartdma_camera_param_t smartdmaParam;
+
+
+#define DEBUG__PCLK (0)
+#define DEBUG__VSYNC (1)
+#define DEBUG__HSYNC (1)
+
+
+void  EZH_Camera_320240_Whole_Buf(void)
+{
+	E_NOP;/*pattern*/
+	E_NOP;/*pattern*/
+	E_NOP;/*pattern*/
+	E_NOP;/*pattern*/
+
+
+	E_PER_READ(R6, ARM2EZH);
+	//Align the value of R6 to word
+	E_LSR(R6, R6, 2);
+	E_LSL(R6, R6, 2);
+	E_LDR(SP, R6, 0);//EZH stack initial
+	E_LDR(R3, R6, 1);//R3 point to the store buffer in the RAM
+
+	E_LABEL("init_0");
+	E_LDR(CFS, PC, 1); // Load CFS
+	E_LDR(CFM, PC, 1); // Load CFM
+	E_ADD_IMM(PC, PC, 1 * 4); //E_goto
+	E_DCD_VAL(BS7(0) | BS6(0) | BS5(0) | BS4(0) | BS3(0) | BS2(1) | BS1(0) | BS0(2));   // Config source (C^D + C^D-)  where C^ is Clock rise, D- is Data inverted
+	E_DCD_VAL(BS7(6) | BS6(6) | BS5(6) | BS4(6) | BS3(6) | BS2(BS_FALL) | BS1(BS_FALL) | BS0(BS_FALL) | (1 << 2)); // Config MUX    (C^D + C^D-)  where C^ is Clock rise, D- is Data inverted, enable OR
+
+
+
+	E_BCLR_IMM(GPD, GPD, 0);
+	E_BCLR_IMM(GPD, GPD, 1);
+	E_BCLR_IMM(GPD, GPD, 2);
+	E_BCLR_IMM(GPD, GPD, 3);
+	E_BCLR_IMM(GPD, GPD, 4);
+	E_BCLR_IMM(GPD, GPD, 5);
+	E_BCLR_IMM(GPD, GPD, 6);
+	E_BCLR_IMM(GPD, GPD, 7);
+	E_BSET_IMM(GPD, GPD, 13);
+
+
+	E_LOAD_IMM(R1, 0xFF);
+	E_LABEL("PCLK_0");
+	E_ACC_VECTORED_HOLD_LV(PC, (1 << 0));
+	E_STRB_POST(R3, GPI, 1);  				// data will be stored from GPI bottom byte to RAM
+	E_BSET_IMM(CFM, CFM, 0); 				//clear the vector flag
+
+	E_SUB_IMMS(PC, PC, 4 * 5);//BS0
+
+#if DEBUG__PCLK == (1)
+	E_BSET_IMM(GPO, GPO, 13);				//toggle the P0_18, used to measure the timming in logic device
+	E_BCLR_IMM(GPO, GPO, 13);
+#else
+	E_NOP;
+	E_NOP;
+#endif
+
+	E_NOP;
+
+	E_GOSUB("VSYNC_0");//BS1
+	E_NOP;
+	E_NOP;
+	E_NOP;
+
+	E_GOSUB("HSYNC_0");//BS2
+	E_NOP;
+	E_NOP;
+	E_NOP;
+
+
+	E_LABEL("VSYNC_0");
+	E_BSET_IMM(CFM, CFM, 0); 			//clear the VSYNC vector flag
+    E_BSET_IMM(CFM, CFM, 1); 			//enable HSYNC interrupt
+	E_BSET_IMM(CFM, CFM, 2); 			//enable PCLK  interrupt
+	E_LDR(R3, R6, 1);							//R3 point to the store buffer in the RAM
+
+
+#if DEBUG__VSYNC == (1)
+	E_BSET_IMM(GPO, GPO, 13);				//toggle the P0_18, used to measure the timming in logic device
+	E_BCLR_IMM(GPO, GPO, 13);
+#endif
+
+	E_INT_TRIGGER(0x11); // interrupt and told ARM data is ready
+	E_GOSUB("PCLK_0");
+
+
+	E_LABEL("HSYNC_0");
+
+	E_BCLR_IMM(R3, R3, 0);
+	E_BCLR_IMM(R3, R3, 1);
+	E_BSET_IMM(CFM, CFM, 0); 			//clear the vector flag
+	E_BSET_IMM(CFM, CFM, 1); 			//clear the vector flag
+
+	#if DEBUG__HSYNC == (1)
+		E_BSET_IMM(GPO, GPO, 13);				//toggle the P0_18, used to measure the timming in logic device
+		E_BCLR_IMM(GPO, GPO, 13);
+	#endif
+
+	E_GOSUB("PCLK_0");
+}
 
 
 void camera__i2c_init();
@@ -29,13 +137,10 @@ volatile uint8_t img_ready = 0;   /* non-zero when new data signaled by SmartDMA
 
 static volatile uint8_t g_samrtdma_stack[EZH_STACK_SIZE];
 
-uint16_t g_camera_buffer[320 *240];
+volatile uint32_t ezh_binary[512];
 
 
-uint16_t * camera__get_buffer()
-{
-	return g_camera_buffer;
-}
+
 
 void camera__pull_reset_pin(bool pullUp)
 {
@@ -80,89 +185,26 @@ void camera__pull_power_pin(bool pullUp)
 #endif
 
 
+uint32_t next_buffer=0;
 
-//this is from  with AN14191SW
-void  EZH_Camera_320240_Whole_Buf(void)
-{
-	E_NOP;/*pattern*/
-	E_NOP;/*pattern*/
-	E_NOP;/*pattern*/
-	E_NOP;/*pattern*/
-
-
-	E_PER_READ(R6, ARM2EZH);
-	//Align the value of R6 to word
-	E_LSR(R6, R6, 2);
-	E_LSL(R6, R6, 2);
-	E_LDR(SP, R6, 0);//EZH stack initial
-	E_LDR(R3, R6, 1);//R3 point to the store buffer in the RAM
-
-	E_LABEL("init_0");
-	E_LDR(CFS, PC, 1); // Load CFS
-	E_LDR(CFM, PC, 1); // Load CFM
-	E_ADD_IMM(PC, PC, 1 * 4); //E_goto
-	E_DCD_VAL(BS7(0) | BS6(0) | BS5(0) | BS4(0) | BS3(0) | BS2(1) | BS1(0) | BS0(2));   // Config source (C^D + C^D-)  where C^ is Clock rise, D- is Data inverted
-	E_DCD_VAL(BS7(6) | BS6(6) | BS5(6) | BS4(6) | BS3(6) | BS2(BS_FALL) | BS1(BS_FALL) | BS0(BS_FALL) | (1 << 2)); // Config MUX    (C^D + C^D-)  where C^ is Clock rise, D- is Data inverted, enable OR
-
-	E_BCLR_IMM(GPD, GPD, 0);
-	E_BCLR_IMM(GPD, GPD, 1);
-	E_BCLR_IMM(GPD, GPD, 2);
-	E_BCLR_IMM(GPD, GPD, 3);
-	E_BCLR_IMM(GPD, GPD, 4);
-	E_BCLR_IMM(GPD, GPD, 5);
-	E_BCLR_IMM(GPD, GPD, 6);
-	E_BCLR_IMM(GPD, GPD, 7);
-	E_BSET_IMM(GPD, GPD, 13);
-
-
-	E_LOAD_IMM(R1, 0xFF);
-	E_LABEL("PCLK_0");
-	E_ACC_VECTORED_HOLD_LV(PC, (1 << 0));
-	E_STRB_POST(R3, GPI, 1);  				// data will be stored from GPI bottom byte to RAM
-	E_BSET_IMM(CFM, CFM, 0); 				//clear the vector flag
-
-	E_SUB_IMMS(PC, PC, 4 * 5);//BS0
-	E_BSET_IMM(GPO, GPO, 13);				//toggle the P0_18, used to measure the timming in logic device
-	E_BCLR_IMM(GPO, GPO, 13);
-	E_NOP;
-
-	E_GOSUB("VSYNC_0");//BS1
-	E_NOP;
-	E_NOP;
-	E_NOP;
-
-	E_GOSUB("HSYNC_0");//BS2
-	E_NOP;
-	E_NOP;
-	E_NOP;
-
-
-	E_LABEL("VSYNC_0");
-	E_BSET_IMM(CFM, CFM, 0); 			//clear the VSYNC vector flag
-	E_BSET_IMM(CFM, CFM, 1); 			//enable HSYNC interrupt
-	E_BSET_IMM(CFM, CFM, 2); 			//enable PCLK  interrupt
-	E_LDR(R3, R6, 1);							//R3 point to the store buffer in the RAM
-
-//#E_BTOG_IMM(GPO, GPO, 13);				//toggle the P0_18, used to measure the timing in logic device
-	E_INT_TRIGGER(0x11); // interrupt and told ARM data is ready
-
-	E_GOSUB("PCLK_0");
-
-	E_LABEL("HSYNC_0");
-	E_BSET_IMM(GPO, GPO, 13);				//toggle the P0_18, used to measure the timming in logic device
-	E_BCLR_IMM(GPO, GPO, 13);
-	E_BCLR_IMM(R3, R3, 0);
-	E_BCLR_IMM(R3, R3, 1);
-	E_BSET_IMM(CFM, CFM, 0); 			//clear the vector flag
-	E_BSET_IMM(CFM, CFM, 1); 			//clear the vector flag
-	//E_BTOG_IMM(GPO, GPO, 13);				//toggle the P0_18, used to measure the timming in logic device
-	E_GOSUB("PCLK_0");
-}
 
 
 static void ezh_camera_callback(void *param)
 {
-	img_ready++;
+
+	next_buffer++;
+
+	next_buffer&=0x01;
+
+	uint16_t * buf;
+	if(next_buffer==0)
+		buf = &g_camera_buffer[0];
+	else
+		buf = &g_camera_buffer[sizeof(g_camera_buffer)/4];
+
+	smartdmaParam.p_buffer = (uint32_t *)buf;
+	avc__next_frame(buf);
+
 }
 
 
@@ -181,10 +223,7 @@ camera_device_handle_t handle =
 
 };
 
-//This needs to be global
-smartdma_camera_param_t smartdmaParam;
-
-uint8_t bv_camera__init()
+void avc_camera__init()
 {
 
 	DEBUG("Build EZH Camera application\r\n");
@@ -205,11 +244,27 @@ uint8_t bv_camera__init()
 
     CLOCK_AttachClk(kMAIN_CLK_to_CLKOUT);
 
-    CLOCK_SetClkDiv(kCLOCK_DivClkOut, 11U); //320x102
+    uint32_t res = CONFIG__CAMERA_RESOLUTION;
 
-    //CLOCK_SetClkDiv(kCLOCK_DivClkOut, 6U); //320x120
-    //CLOCK_SetClkDiv(kCLOCK_DivClkOut, 7U); //160x120  <<see if we can get pll working
-    // CLOCK_SetClkDiv(kCLOCK_DivClkOut, 23U); //320x240
+    switch(res)
+    {
+    default:
+    case FSL_VIDEO_RESOLUTION(320,200):
+		CLOCK_SetClkDiv(kCLOCK_DivClkOut, 12U); //320x200
+	break;
+    case FSL_VIDEO_RESOLUTION(320,102):
+		CLOCK_SetClkDiv(kCLOCK_DivClkOut, 11U); //320x102
+	break;
+    case FSL_VIDEO_RESOLUTION(320,120):
+		CLOCK_SetClkDiv(kCLOCK_DivClkOut, 11U); //320x102
+	break;
+    case FSL_VIDEO_RESOLUTION(160,120):
+		CLOCK_SetClkDiv(kCLOCK_DivClkOut, 6U); //320x102
+	break;
+    case FSL_VIDEO_RESOLUTION(320,240):
+		CLOCK_SetClkDiv(kCLOCK_DivClkOut, 23U); //320x102
+	break;
+    }
 
 
 #endif
@@ -220,8 +275,6 @@ uint8_t bv_camera__init()
     CLOCK_SetClkDiv(kCLOCK_DivFlexcom7Clk, 1u);
 
     camera__i2c_init();
-
-
 
 
 #if (CONFIG__CAMERA_SELECT == CAMERA__OV7670)
@@ -258,7 +311,7 @@ uint8_t bv_camera__init()
 
         camera_config_t camconfig = {
             .pixelFormat                = kVIDEO_PixelFormatRGB565,
-            .resolution                 = FSL_VIDEO_RESOLUTION(320, 200),
+            .resolution                 = CONFIG__CAMERA_RESOLUTION,
             .framePerSec                = 30,//
             .interface                  = kCAMERA_InterfaceNonGatedClock ,
             .frameBufferLinePitch_Bytes = 0, /* Not used. */
@@ -272,27 +325,17 @@ uint8_t bv_camera__init()
 
     CAMERA_DEVICE_Init(&handle, &camconfig);
 
-
-
     INPUTMUX_Init(INPUTMUX0);
 
-    INPUTMUX_AttachSignal(INPUTMUX0, 0U, kINPUTMUX_GpioPort0Pin10ToSmartDma);
-    /* P0_11 is selected for SMARTDMA arch B 1 */
-    INPUTMUX_AttachSignal(INPUTMUX0, 1U, kINPUTMUX_GpioPort0Pin11ToSmartDma);
-    /* P0_14 is selected for SMARTDMA arch B 2 */
-    INPUTMUX_AttachSignal(INPUTMUX0, 2U, kINPUTMUX_GpioPort0Pin14ToSmartDma);
-    /* Enable clock for PCLK. */
 
-    //figure out what these do... From the old camera project.
     SYSCON->LPCAC_CTRL &= ~1;                                  // rocky: enable LPCAC ICache
     SYSCON->NVM_CTRL &= SYSCON->NVM_CTRL & ~(1 << 2 | 1 << 4); // enable flash Data cache     /* init I3C0*/
     SYSCON->AHBMATPRIO |= (0x3<<4)|(0x3<<6); // Give priority to SmartDMA
     
-    /* Attach camera signals. P0_4/P0_11/P0_5 is set to EZH_CAMERA_VSYNC/EZH_CAMERA_HSYNC/EZH_CAMERA_PCLK. */
-    INPUTMUX_Init(INPUTMUX0);
-    INPUTMUX_AttachSignal(INPUTMUX0, 0, kINPUTMUX_GpioPort0Pin4ToSmartDma);
-    INPUTMUX_AttachSignal(INPUTMUX0, 1, kINPUTMUX_GpioPort0Pin11ToSmartDma);
-    INPUTMUX_AttachSignal(INPUTMUX0, 2, kINPUTMUX_GpioPort0Pin5ToSmartDma);
+
+    INPUTMUX_AttachSignal(INPUTMUX0, 0, kINPUTMUX_GpioPort0Pin4ToSmartDma); //vsync
+    INPUTMUX_AttachSignal(INPUTMUX0, 1, kINPUTMUX_GpioPort0Pin11ToSmartDma); //hsync
+    INPUTMUX_AttachSignal(INPUTMUX0, 2, kINPUTMUX_GpioPort0Pin5ToSmartDma); //pclk
     /* Turn off clock to inputmux to save power. Clock is only needed to make changes */
     INPUTMUX_Deinit(INPUTMUX0);
 
@@ -307,10 +350,9 @@ uint8_t bv_camera__init()
 
     PORT1->PCR[17] = (7 << 8) | (1 << 12); // EZH_PIO13, PIO1_17
 
-
-
 	smartdmaParam.smartdma_stack = (uint32_t*)g_samrtdma_stack;
 	smartdmaParam.p_buffer  	 = (uint32_t*)g_camera_buffer;
+
     SMARTDMA_InstallCallback(ezh_camera_callback, NULL);
     NVIC_EnableIRQ(SMARTDMA_IRQn);
     NVIC_SetPriority(SMARTDMA_IRQn, 3);
@@ -332,19 +374,19 @@ uint8_t bv_camera__init()
 
 
     DEBUG("EZH interface configured\r\n");
-    return 0;
+
 }
 
 
-//efine BOARD_CAMERA_I2C_INSTANCE   0
 #define BOARD_CAMERA_I2C_CLOCK_FREQ       CLOCK_GetLPFlexCommClkFreq(BOARD_CAMERA_I2C_INSTANCE)
 
-void camera__i2c_init(){
+void camera__i2c_init()
+{
     CLOCK_EnableClock(kCLOCK_LPI2c7);
+
     LP_FLEXCOMM_Init(BOARD_CAMERA_I2C_INSTANCE, LP_FLEXCOMM_PERIPH_LPI2C);
 
     lpi2c_master_config_t lpi2cConfig = {0};
     LPI2C_MasterGetDefaultConfig(&lpi2cConfig);
     LPI2C_MasterInit(LPI2C7, &lpi2cConfig, BOARD_CAMERA_I2C_CLOCK_FREQ);
 }
-
