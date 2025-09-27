@@ -21,15 +21,15 @@ __BSS(FRAME_BUFFERS) uint16_t g_camera_buffer[FSL_VIDEO_EXTRACT_WIDTH(CONFIG__CA
 											  FSL_VIDEO_EXTRACT_HEIGHT(CONFIG__CAMERA_RESOLUTION) *
 											  2];
 
+volatile uint32_t line;
 
 //This needs to be global
 smartdma_camera_param_t smartdmaParam;
 
 
-#define DEBUG__PCLK (0)
+#define DEBUG__PCLK (1)
 #define DEBUG__VSYNC (1)
 #define DEBUG__HSYNC (1)
-
 
 void  EZH_Camera_320240_Whole_Buf(void)
 {
@@ -46,12 +46,18 @@ void  EZH_Camera_320240_Whole_Buf(void)
 	E_LDR(SP, R6, 0);//EZH stack initial
 	E_LDR(R3, R6, 1);//R3 point to the store buffer in the RAM
 
+
 	E_LABEL("init_0");
 	E_LDR(CFS, PC, 1); // Load CFS
 	E_LDR(CFM, PC, 1); // Load CFM
 	E_ADD_IMM(PC, PC, 1 * 4); //E_goto
+
+	// INPUTMUX_AttachSignal(INPUTMUX0, 0, kINPUTMUX_GpioPort0Pin4ToSmartDma); //vsync
+	//    INPUTMUX_AttachSignal(INPUTMUX0, 1, kINPUTMUX_GpioPort0Pin11ToSmartDma);//hsync
+	//    INPUTMUX_AttachSignal(INPUTMUX0, 2, kINPUTMUX_GpioPort0Pin5ToSmartDma); //pclk
+
 	E_DCD_VAL(BS7(0) | BS6(0) | BS5(0) | BS4(0) | BS3(0) | BS2(1) | BS1(0) | BS0(2));   // Config source (C^D + C^D-)  where C^ is Clock rise, D- is Data inverted
-	E_DCD_VAL(BS7(6) | BS6(6) | BS5(6) | BS4(6) | BS3(6) | BS2(BS_FALL) | BS1(BS_FALL) | BS0(BS_FALL) | (1 << 2)); // Config MUX    (C^D + C^D-)  where C^ is Clock rise, D- is Data inverted, enable OR
+	E_DCD_VAL(BS7(6) | BS6(6) | BS5(6) | BS4(6) | BS3(6) | BS2(BS_FALL) | BS1(BS_RISE) | BS0(BS_RISE) | (1 << 2)); // Config MUX    (C^D + C^D-)  where C^ is Clock rise, D- is Data inverted, enable OR
 
 
 
@@ -69,11 +75,11 @@ void  EZH_Camera_320240_Whole_Buf(void)
 	E_LOAD_IMM(R1, 0xFF);
 	E_LABEL("PCLK_0");
 	E_ACC_VECTORED_HOLD_LV(PC, (1 << 0));
+
 	E_STRB_POST(R3, GPI, 1);  				// data will be stored from GPI bottom byte to RAM
 	E_BSET_IMM(CFM, CFM, 0); 				//clear the vector flag
 
-	E_SUB_IMMS(PC, PC, 4 * 5);//BS0
-
+	E_SUB_IMMS(PC, PC, 4 * 5);
 #if DEBUG__PCLK == (1)
 	E_BSET_IMM(GPO, GPO, 13);				//toggle the P0_18, used to measure the timming in logic device
 	E_BCLR_IMM(GPO, GPO, 13);
@@ -81,7 +87,6 @@ void  EZH_Camera_320240_Whole_Buf(void)
 	E_NOP;
 	E_NOP;
 #endif
-
 	E_NOP;
 
 	E_GOSUB("VSYNC_0");//BS1
@@ -100,6 +105,9 @@ void  EZH_Camera_320240_Whole_Buf(void)
     E_BSET_IMM(CFM, CFM, 1); 			//enable HSYNC interrupt
 	E_BSET_IMM(CFM, CFM, 2); 			//enable PCLK  interrupt
 	E_LDR(R3, R6, 1);							//R3 point to the store buffer in the RAM
+	E_INT_TRIGGER(0xFFFFFF); // interrupt and told ARM data is ready
+
+	E_LOAD_IMM(R4,0);
 
 
 #if DEBUG__VSYNC == (1)
@@ -107,21 +115,25 @@ void  EZH_Camera_320240_Whole_Buf(void)
 	E_BCLR_IMM(GPO, GPO, 13);
 #endif
 
-	E_INT_TRIGGER(0x11); // interrupt and told ARM data is ready
+	//E_INT_TRIGGER(0x11); // interrupt and told ARM data is ready
 	E_GOSUB("PCLK_0");
 
 
 	E_LABEL("HSYNC_0");
 
-	E_BCLR_IMM(R3, R3, 0);
-	E_BCLR_IMM(R3, R3, 1);
-	E_BSET_IMM(CFM, CFM, 0); 			//clear the vector flag
+	//E_PER_WRITE(R4, EZH2ARM);
+//	E_STR(R6,R4, 2); //save the line
+	E_ADD_IMM(R4,R4,1);
+//	E_INT_TRIGGER(0xFFFFFF); // interrupt and told ARM data is ready
+
 	E_BSET_IMM(CFM, CFM, 1); 			//clear the vector flag
 
 	#if DEBUG__HSYNC == (1)
 		E_BSET_IMM(GPO, GPO, 13);				//toggle the P0_18, used to measure the timming in logic device
 		E_BCLR_IMM(GPO, GPO, 13);
-	#endif
+		E_BSET_IMM(GPO, GPO, 13);				//toggle the P0_18, used to measure the timming in logic device
+		E_BCLR_IMM(GPO, GPO, 13);
+		#endif
 
 	E_GOSUB("PCLK_0");
 }
@@ -191,19 +203,30 @@ uint32_t next_buffer=0;
 
 static void ezh_camera_callback(void *param)
 {
+	//EZH_SetExternalFlag(1) ;
 
-	next_buffer++;
+	line = LPC_EZH_ARCH_B0->EZHB_EZH2ARM;
+	if(line = 0xFFFFFF)
+	{
+					next_buffer++;
 
-	next_buffer&=0x01;
+					next_buffer&=0x01;
 
-	uint16_t * buf;
-	if(next_buffer==0)
-		buf = &g_camera_buffer[0];
-	else
-		buf = &g_camera_buffer[sizeof(g_camera_buffer)/4];
+					uint16_t * buf;
 
-	smartdmaParam.p_buffer = (uint32_t *)buf;
-	avc__next_frame(buf);
+					if(next_buffer==0)
+						buf = &g_camera_buffer[0];
+					else
+						buf = &g_camera_buffer[sizeof(g_camera_buffer)/4];
+
+					smartdmaParam.p_buffer = (uint32_t *)buf;
+					avc__next_frame(buf);
+
+	}
+
+
+
+
 
 }
 
@@ -250,7 +273,7 @@ void avc_camera__init()
     {
     default:
     case FSL_VIDEO_RESOLUTION(320,200):
-		CLOCK_SetClkDiv(kCLOCK_DivClkOut, 12U); //320x200
+		CLOCK_SetClkDiv(kCLOCK_DivClkOut,12U); //320x200
 	break;
     case FSL_VIDEO_RESOLUTION(320,102):
 		CLOCK_SetClkDiv(kCLOCK_DivClkOut, 11U); //320x102
@@ -315,7 +338,7 @@ void avc_camera__init()
             .framePerSec                = 30,//
             .interface                  = kCAMERA_InterfaceNonGatedClock ,
             .frameBufferLinePitch_Bytes = 0, /* Not used. */
-            .controlFlags               = kCAMERA_HrefActiveHigh | kCAMERA_VsyncActiveHigh, /* Not used. */
+            .controlFlags               = kCAMERA_DataLatchOnRisingEdge | kCAMERA_HrefActiveHigh | kCAMERA_VsyncActiveHigh, /* Not used. */
             .bytesPerPixel              = 0, /* Not used. */
             .mipiChannel                = 0, /* Not used. */
             .csiLanes                   = 0, /* Not used. */
@@ -334,7 +357,7 @@ void avc_camera__init()
     
 
     INPUTMUX_AttachSignal(INPUTMUX0, 0, kINPUTMUX_GpioPort0Pin4ToSmartDma); //vsync
-    INPUTMUX_AttachSignal(INPUTMUX0, 1, kINPUTMUX_GpioPort0Pin11ToSmartDma); //hsync
+    INPUTMUX_AttachSignal(INPUTMUX0, 1, kINPUTMUX_GpioPort0Pin11ToSmartDma);//hsync
     INPUTMUX_AttachSignal(INPUTMUX0, 2, kINPUTMUX_GpioPort0Pin5ToSmartDma); //pclk
     /* Turn off clock to inputmux to save power. Clock is only needed to make changes */
     INPUTMUX_Deinit(INPUTMUX0);
@@ -352,6 +375,7 @@ void avc_camera__init()
 
 	smartdmaParam.smartdma_stack = (uint32_t*)g_samrtdma_stack;
 	smartdmaParam.p_buffer  	 = (uint32_t*)g_camera_buffer;
+
 
     SMARTDMA_InstallCallback(ezh_camera_callback, NULL);
     NVIC_EnableIRQ(SMARTDMA_IRQn);
