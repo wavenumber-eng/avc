@@ -2,13 +2,17 @@
 Source code for the FRDM-AVC 
 
 
+# MCUXpress Project
+
+import "avc_core0"
+
 #tools
 
-## NXP MCUXpresso 11.10.0_33148
+## NXP MCUXpresso 25.6.136
 
 
 https://www.nxp.com/design/design-center/software/development-software/mcuxpresso-software-and-tools-/mcuxpresso-integrated-development-environment-ide:MCUXpresso-IDE
-(See Previous Tab for older version
+
 
 
 ## Segger Ozone Debugger:

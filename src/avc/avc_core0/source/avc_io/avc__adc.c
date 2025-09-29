@@ -44,7 +44,7 @@ void avc__adc_init()
     vref_config_t vrefConfig;
 
     /* attach FRO HF to ADC0 */
-    CLOCK_SetClkDiv(kCLOCK_DivAdc0Clk, 1U);
+    CLOCK_SetClkDiv(kCLOCK_DivAdc0Clk, 2U);
     CLOCK_AttachClk(kFRO_HF_to_ADC0);
 
     /* Use FRO HF clock for some of the Ctimers */
@@ -62,7 +62,7 @@ void avc__adc_init()
     LPADC_GetDefaultConfig(&mLpadcConfigStruct);
     mLpadcConfigStruct.enableAnalogPreliminary = true;
     mLpadcConfigStruct.referenceVoltageSource = LPADC_VREF_SOURCE;
-    mLpadcConfigStruct.conversionAverageMode = kLPADC_ConversionAverage128;
+    mLpadcConfigStruct.conversionAverageMode = kLPADC_ConversionAverage1024;
 
     LPADC_Init(ADC0, &mLpadcConfigStruct);
     LPADC_DoOffsetCalibration(ADC0); /* Request offset calibration, automatic update OFSTRIM register. */
@@ -81,16 +81,17 @@ void avc__adc_init()
     mLpadcCommandConfigStruct[ALPHA_ADC_CH].channelBNumber = ALPHA_ADC_CHANNEL;
     mLpadcCommandConfigStruct[ALPHA_ADC_CH].enableChannelB = 1;
     mLpadcCommandConfigStruct[ALPHA_ADC_CH].sampleChannelMode = kLPADC_SampleChannelSingleEndSideB;
+    mLpadcCommandConfigStruct[ALPHA_ADC_CH].sampleTimeMode = kLPADC_SampleTimeADCK67;
     mLpadcCommandConfigStruct[ALPHA_ADC_CH].chainedNextCommandNumber = 3;
 
-    mLpadcCommandConfigStruct[BETTA_ADC_CH].channelNumber = BETA_ADC_CHANNEL;
-    mLpadcCommandConfigStruct[BETTA_ADC_CH].chainedNextCommandNumber = 4;
+    mLpadcCommandConfigStruct[BETA_ADC_CH].channelNumber = BETA_ADC_CHANNEL;
+    mLpadcCommandConfigStruct[BETA_ADC_CH].chainedNextCommandNumber = 4;
 
     mLpadcCommandConfigStruct[GAMMA_ADC_CH].channelNumber = GAMMA_ADC_CHANNEL;
 
     LPADC_SetConvCommandConfig(ADC0, 1, &mLpadcCommandConfigStruct[BATT_ADC_CH]);
     LPADC_SetConvCommandConfig(ADC0, 2, &mLpadcCommandConfigStruct[ALPHA_ADC_CH]);
-    LPADC_SetConvCommandConfig(ADC0, 3, &mLpadcCommandConfigStruct[BETTA_ADC_CH]);
+    LPADC_SetConvCommandConfig(ADC0, 3, &mLpadcCommandConfigStruct[BETA_ADC_CH]);
     LPADC_SetConvCommandConfig(ADC0, 4, &mLpadcCommandConfigStruct[GAMMA_ADC_CH]);
 
 
@@ -121,23 +122,23 @@ void avc__adc_init()
     INPUTMUX_AttachSignal(INPUTMUX, 0, kINPUTMUX_Ctimer0M3ToAdc0Trigger);
 }
 
-
-// Return a [0, 100] value from the Alpha pot
-uint8_t avc__read_alpha()
+#define ADC_NORMALIZE(x) ((((float)(x)/(float)ADC_MAX_VALUE) - 0.5f)*-2.0f)
+// Return a [-1.0 to 1.0]
+float avc__read_alpha()
 {
-    return ((ADC_MAX_VALUE - adc_values[ALPHA_ADC_CH]) * 100) / ADC_MAX_VALUE;
+    return ADC_NORMALIZE(adc_values[ALPHA_ADC_CH]);
 }
 
-// Return a [0, 100] value from the Beta pot
-uint8_t avc__read_beta()
+// Return a [-1.0 to 1.0]
+float avc__read_beta()
 {
-    return ((ADC_MAX_VALUE - adc_values[BETTA_ADC_CH]) * 100) / ADC_MAX_VALUE;
+    return ADC_NORMALIZE(adc_values[BETA_ADC_CH]);
 }
 
-// Return a [0, 100] value from the Gamma pot
-uint8_t avc__read_gamma()
+// Return a [-1.0 to 1.0]
+float avc__read_gamma()
 {
-    return ((ADC_MAX_VALUE - adc_values[GAMMA_ADC_CH]) * 100) / ADC_MAX_VALUE;
+    return ADC_NORMALIZE(adc_values[GAMMA_ADC_CH]);
 }
 
 uint16_t avc__read_battery_voltage()

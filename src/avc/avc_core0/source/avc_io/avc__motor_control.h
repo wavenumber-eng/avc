@@ -17,9 +17,9 @@ typedef struct
 
 
 extern void avc__motor_control_init();
-extern void avc__set_motor_pwm(int8_t left, int8_t right);
+extern void avc__set_motor_pwm(float left, float right);
 extern void avc__enable_motor_control();
 extern void avc__disable_motor_control();
-uint16_t avc__dc_to_counts(int8_t new_dc, bool inverted_direction);
+uint16_t avc__dc_to_counts(float new_dc, bool inverted_direction);
 
 #endif

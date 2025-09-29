@@ -36,9 +36,14 @@ void avc__servo_control_init()
 
 }
 
-void avc__set_servo(int8_t position)
+void avc__set_servo(float position)
 {
-    uint16_t position_counts = (65535 * ((int32_t)position + 300)) / 4000;
+	if(position>1.0f)
+		position=1.0f;
+	else if(position<-1.0f)
+		position=-1.0f;
+
+    uint16_t position_counts = (65535 * (((int32_t)(position*100.0f)) + 300)) / 4000;
 
     PWM_UpdatePwmDutycycleHighAccuracy(PWM1,
                                         kPWM_Module_2,

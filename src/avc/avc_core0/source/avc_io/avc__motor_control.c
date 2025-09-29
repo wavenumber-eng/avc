@@ -114,10 +114,10 @@ void avc__disable_motor_control()
 /**
  * @brief Set "left" DC to PWM1_0, and "right" DC to PWM1_1
  *
- * @param left Value between [-100, 100] that refers to the left motor intensity
- * @param right Value between [-100, 100] that refers to the right motor intensity
+ * @param left Value between [-1.0, 1.0] that refers to the left motor intensity
+ * @param right Value between [-1.0, 1.0] that refers to the right motor intensity
  */
-void avc__set_motor_pwm(int8_t left, int8_t right)
+void avc__set_motor_pwm(float left, float right)
 {
     if (motor_ctrl_inst.outputs_enable == 0)
     {
@@ -158,10 +158,19 @@ void avc__set_motor_pwm(int8_t left, int8_t right)
 // Return the number of counts to get the desired PWM duty cycle
 // 0 means DC = 0%, 65535 means DC = 100%
 // I don't really like it, but it is how the library works
-uint16_t avc__dc_to_counts(int8_t new_dc, bool inverted_direction)
+uint16_t avc__dc_to_counts(float new_dc, bool inverted_direction)
 {
-    uint16_t counts;
-    counts = (65535 * ((int32_t)new_dc + 100)) / 200;
+    int32_t counts;
+
+    new_dc = new_dc +1.0f;
+
+    if(new_dc > 2.0f)
+    	new_dc = 2.0f;
+    else if(new_dc<-2.0f)
+    	new_dc = 0.0f;
+
+
+    counts = (float)32767.5f * new_dc;
 
     if (inverted_direction)
     {

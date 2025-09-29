@@ -4,6 +4,8 @@
 #include "stdint.h"
 
 extern void avc__servo_control_init();
-extern void avc__set_servo(int8_t position);
+
+//position is -1.0f to 1.0f
+void avc__set_servo(float position);
 
 #endif
