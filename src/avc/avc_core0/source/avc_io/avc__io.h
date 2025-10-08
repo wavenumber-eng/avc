@@ -15,7 +15,6 @@
 #include "fsl_lpuart.h"
 #include "ipc.h"
 #include "fsl_lpspi_edma.h"
-
 #include "e.h"
 #include "button.h"
 
@@ -31,7 +30,6 @@
 #include "bv_camera__interface.h"
 
 
-
 #define IN_PORT             3
 #define LEFT_BTN_PIN        21
 #define RIGHT_BTN_PIN       19
@@ -44,5 +42,12 @@ extern byte_queue_t UART4_RX_Q;
 extern button_t left_btn, right_btn, center_btn;
 
 void avc__init();
+
+#define CYCLE_COUNTER DWT->CYCCNT
+
+#define INIT_CYCLE_COUNTER   CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;\
+							 DWT->CYCCNT = 0;\
+							 DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk
+
 
 #endif /* AVC__IO_H_ */

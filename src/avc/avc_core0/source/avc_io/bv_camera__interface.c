@@ -15,21 +15,34 @@
 
 #define EZH_STACK_SIZE 64   /* stack size for EZH, see smart_dma driver recommendation */
 
+#define DEBUG__PCLK (1)
+#define DEBUG__VSYNC (1)
+#define DEBUG__HSYNC (1)
+
+
 __BSS(SRAM_H) volatile uint32_t ezh_binary[512];
 
 __BSS(FRAME_BUFFERS) uint16_t g_camera_buffer[FSL_VIDEO_EXTRACT_WIDTH(CONFIG__CAMERA_RESOLUTION) *
 											  FSL_VIDEO_EXTRACT_HEIGHT(CONFIG__CAMERA_RESOLUTION) *
 											  2];
 
+
+
+volatile uint32_t next_buffer=0;
+
 volatile uint32_t line;
+
+
+volatile uint8_t img_ready = 0;   /* non-zero when new data signaled by SmartDMA IRQ */
+
+static volatile uint8_t g_samrtdma_stack[EZH_STACK_SIZE];
+
+volatile uint32_t ezh_binary[512];
+
 
 //This needs to be global
 smartdma_camera_param_t smartdmaParam;
 
-
-#define DEBUG__PCLK (1)
-#define DEBUG__VSYNC (1)
-#define DEBUG__HSYNC (1)
 
 void  EZH_Camera_320240_Whole_Buf(void)
 {
@@ -145,14 +158,6 @@ status_t camera__i2c_receiveSCCB(uint8_t deviceAddress, uint32_t subAddress, uin
 
 status_t camera__i2c_sendSCCB(uint8_t deviceAddress, uint32_t subAddress, uint8_t subAddressSize, uint8_t *txBuff, uint8_t txBuffSize);
 
-volatile uint8_t img_ready = 0;   /* non-zero when new data signaled by SmartDMA IRQ */
-
-static volatile uint8_t g_samrtdma_stack[EZH_STACK_SIZE];
-
-volatile uint32_t ezh_binary[512];
-
-
-
 
 void camera__pull_reset_pin(bool pullUp)
 {
@@ -197,9 +202,6 @@ void camera__pull_power_pin(bool pullUp)
 #endif
 
 
-uint32_t next_buffer=0;
-
-
 
 static void ezh_camera_callback(void *param)
 {
@@ -208,25 +210,21 @@ static void ezh_camera_callback(void *param)
 	line = LPC_EZH_ARCH_B0->EZHB_EZH2ARM;
 	if(line = 0xFFFFFF)
 	{
-					next_buffer++;
+			next_buffer++;
 
-					next_buffer&=0x01;
+			next_buffer&=0x01;
 
-					uint16_t * buf;
+			uint16_t * buf;
 
-					if(next_buffer==0)
-						buf = &g_camera_buffer[0];
-					else
-						buf = &g_camera_buffer[sizeof(g_camera_buffer)/4];
+			if(next_buffer==0)
+				buf = &g_camera_buffer[0];
+			else
+				buf = &g_camera_buffer[sizeof(g_camera_buffer)/4];
 
-					smartdmaParam.p_buffer = (uint32_t *)buf;
-					avc__next_frame(buf);
+			smartdmaParam.p_buffer = (uint32_t *)buf;
 
+			avc__next_frame(buf);
 	}
-
-
-
-
 
 }
 

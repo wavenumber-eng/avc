@@ -128,6 +128,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/drivers}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../common/ipc&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../common/e/src&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../common/e/src&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../common/bunny_build/src&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../common/bunny_build/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/device}&quot;"/>
@@ -347,6 +348,36 @@
 							<inputType id="com.crt.advproject.compiler.input.1737757191" superClass="com.crt.advproject.compiler.input"/>
 						</tool>
 					</fileInfo>
+					<fileInfo id="com.crt.advproject.config.exe.debug.1861825334.1753931838" name="avc__line_processor.c" rcbsApplicability="disable" resourcePath="source/avc__line_processor.c" toolsToInvoke="com.crt.advproject.gcc.exe.debug.665881301.736168056">
+						<tool id="com.crt.advproject.gcc.exe.debug.665881301.736168056" name="MCU C Compiler" superClass="com.crt.advproject.gcc.exe.debug.665881301">
+							<option id="com.crt.advproject.gcc.exe.debug.option.optimization.level.1483424199" name="Optimization Level" superClass="com.crt.advproject.gcc.exe.debug.option.optimization.level" value="gnu.c.optimization.level.most" valueType="enumerated"/>
+							<inputType id="com.crt.advproject.compiler.input.1222201403" superClass="com.crt.advproject.compiler.input"/>
+						</tool>
+					</fileInfo>
+					<fileInfo id="com.crt.advproject.config.exe.debug.1861825334.1739784706" name="main.c" rcbsApplicability="disable" resourcePath="source/main.c" toolsToInvoke="com.crt.advproject.gcc.exe.debug.665881301.440847414">
+						<tool id="com.crt.advproject.gcc.exe.debug.665881301.440847414" name="MCU C Compiler" superClass="com.crt.advproject.gcc.exe.debug.665881301">
+							<option id="com.crt.advproject.gcc.exe.debug.option.optimization.level.1991072125" name="Optimization Level" superClass="com.crt.advproject.gcc.exe.debug.option.optimization.level" value="gnu.c.optimization.level.most" valueType="enumerated"/>
+							<inputType id="com.crt.advproject.compiler.input.846154979" superClass="com.crt.advproject.compiler.input"/>
+						</tool>
+					</fileInfo>
+					<folderInfo id="com.crt.advproject.config.exe.debug.1861825334.632485128" name="/" resourcePath="egfx/src">
+						<toolChain id="com.crt.advproject.toolchain.exe.debug.1222330317" name="NXP MCU Tools" superClass="com.crt.advproject.toolchain.exe.debug" unusedChildren="">
+							<targetPlatform binaryParser="org.eclipse.cdt.core.ELF;org.eclipse.cdt.core.GNU_ELF" id="com.crt.advproject.platform.exe.debug" name="ARM-based MCU (Debug)" superClass="com.crt.advproject.platform.exe.debug"/>
+							<tool id="com.crt.advproject.cpp.exe.debug.669039688" name="MCU C++ Compiler" superClass="com.crt.advproject.cpp.exe.debug.1156190544"/>
+							<tool id="com.crt.advproject.gcc.exe.debug.1248133968" name="MCU C Compiler" superClass="com.crt.advproject.gcc.exe.debug.665881301">
+								<option id="com.crt.advproject.gcc.exe.debug.option.optimization.level.1506951868" name="Optimization Level" superClass="com.crt.advproject.gcc.exe.debug.option.optimization.level" value="gnu.c.optimization.level.most" valueType="enumerated"/>
+								<option id="com.crt.advproject.gcc.lto.921938730" superClass="com.crt.advproject.gcc.lto" value="true" valueType="boolean"/>
+								<inputType id="com.crt.advproject.compiler.input.811435205" superClass="com.crt.advproject.compiler.input"/>
+							</tool>
+							<tool id="com.crt.advproject.gas.exe.debug.346529250" name="MCU Assembler" superClass="com.crt.advproject.gas.exe.debug.1969813379">
+								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.494100186" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
+								<inputType id="com.crt.advproject.assembler.input.139677768" name="Additional Assembly Source Files" superClass="com.crt.advproject.assembler.input"/>
+							</tool>
+							<tool id="com.crt.advproject.link.cpp.exe.debug.920967970" name="MCU C++ Linker" superClass="com.crt.advproject.link.cpp.exe.debug.1352640308"/>
+							<tool id="com.crt.advproject.link.exe.debug.1553317445" name="MCU Linker" superClass="com.crt.advproject.link.exe.debug.853352475"/>
+							<tool id="com.crt.advproject.tool.debug.debug.181520454" name="MCU Debugger" superClass="com.crt.advproject.tool.debug.debug.2019212891"/>
+						</toolChain>
+					</folderInfo>
 					<sourceEntries>
 						<entry flags="LOCAL|VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="CMSIS"/>
 						<entry flags="LOCAL|VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="board"/>
@@ -736,7 +767,7 @@
 	<storageModule moduleId="com.nxp.mcuxpresso.core.datamodels">
 		<sdkName>SDK_2.x_FRDM-MCXN947</sdkName>
 		<sdkExample>frdmmcxn947_hello_world_cm33_core0</sdkExample>
-		<sdkVersion>25.06.00</sdkVersion>
+		<sdkVersion>25.9.000</sdkVersion>
 		<sdkComponents>middleware.multicore.mcmgr.mcxnx4x.MCXN947;utility.debug_console_lite.MCXN947;platform.utilities.assert_lite.MCXN947;middleware.multicore.mcmgr.MCXN947;platform.drivers.gpio.MCXN947;platform.drivers.port.MCXN947;platform.drivers.lpflexcomm_lpuart.MCXN947;platform.drivers.clock.MCXN947;utility.incbin.MCXN947;platform.drivers.common.MCXN947;platform.drivers.reset.MCXN947;platform.devices.MCXN947_CMSIS.MCXN947;platform.devices.MCXN947_startup.MCXN947;component.lpuart_adapter.MCXN947;component.lists.MCXN947;platform.utilities.misc_utilities.MCXN947;platform.drivers.mailbox.MCXN947;utility.str.MCXN947;platform.drivers.lpflexcomm.MCXN947;platform.drivers.mcx_spc.MCXN947;CMSIS_Include_core_cm.MCXN947;platform.devices.MCXN947_system.MCXN947;frdmmcxn947_hello_world_cm33_core0;platform.drivers.lpadc.MCXN947;platform.drivers.pwm.MCXN947;platform.drivers.vref_1.MCXN947;middleware.baremetal.MCXN947;platform.drivers.ctimer.MCXN947;platform.drivers.inputmux.MCXN947;platform.drivers.inputmux_connections.MCXN947;driver.camera-device-ov7670.MCXN947;driver.camera-common.MCXN947;driver.camera-device-common.MCXN947;platform.drivers.lpflexcomm_lpi2c.MCXN947;driver.camera-device-sccb.MCXN947;driver.video-common.MCXN947;platform.drivers.lpflexcomm_lpspi_edma.MCXN947;platform.drivers.edma_soc.MCXN947;platform.drivers.lpflexcomm_lpspi.MCXN947;platform.drivers.edma4.MCXN947;platform.drivers.lpc_smartdma.MCXN947;</sdkComponents>
 		<boardId>frdmmcxn947</boardId>
 		<package>MCXN947VDF</package>

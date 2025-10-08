@@ -121,8 +121,6 @@ typedef struct
 
 
 
-
-
 #define eGFX_COLOR_RGB888_TO_RGB565(R,G,B)     ( ((R>>3)<<11)   | ((G>>2)<<5)   | (B>>3)   )
 #define eGFX_COLOR_RGB_TO_RGBX888(R,G,B)       ( ((R&0xFF)<<16) | ((G&0xFF)<<8) | (B&0xff) )
 

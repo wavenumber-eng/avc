@@ -2,11 +2,11 @@
 Source code for the FRDM-AVC 
 
 
-# MCUXpress Project
+# MCUXpresso Project
 
 import "avc_core0"
 
-#tools
+# tools
 
 ## NXP MCUXpresso 25.6.136
 
@@ -16,6 +16,7 @@ https://www.nxp.com/design/design-center/software/development-software/mcuxpress
 
 
 ## Segger Ozone Debugger:
+
 https://www.segger.com/products/development-tools/ozone-j-link-debugger/
 
 Ozone_Windows_V338_x64.exe

@@ -34,7 +34,10 @@ lpadc_conv_result_t mLpadcResultConfigStruct;
 const uint32_t g_LpadcFullRange   = 4096U;
 const uint32_t g_LpadcResultShift = 3U;
 
-uint16_t adc_values [4];
+#define FILTER_SIZE 16
+uint16_t adc_values [4][FILTER_SIZE];
+uint32_t filter_idx[4];
+
 
 void avc__adc_init()
 {
@@ -122,23 +125,35 @@ void avc__adc_init()
     INPUTMUX_AttachSignal(INPUTMUX, 0, kINPUTMUX_Ctimer0M3ToAdc0Trigger);
 }
 
-#define ADC_NORMALIZE(x) ((((float)(x)/(float)ADC_MAX_VALUE) - 0.5f)*-2.0f)
-// Return a [-1.0 to 1.0]
+#define ADC_NORMALIZE(x) (1.0f  - (((float)(x)/(float)ADC_MAX_VALUE)))
+
+
+uint32_t filter_channel(uint32_t ch)
+{
+	uint32_t sum=0;
+	for(int i=0;i<FILTER_SIZE;i++)
+	{
+		sum+=adc_values[ch][i];
+	}
+
+	return sum/FILTER_SIZE;
+}
+// Return a [0 to 1.0]
 float avc__read_alpha()
 {
-    return ADC_NORMALIZE(adc_values[ALPHA_ADC_CH]);
+    return ADC_NORMALIZE(filter_channel(ALPHA_ADC_CH));
 }
 
-// Return a [-1.0 to 1.0]
+// Return a [0 to 1.0]
 float avc__read_beta()
 {
-    return ADC_NORMALIZE(adc_values[BETA_ADC_CH]);
+	 return ADC_NORMALIZE(filter_channel(BETA_ADC_CH));
 }
 
-// Return a [-1.0 to 1.0]
+// Return a [0 to 1.0]
 float avc__read_gamma()
 {
-    return ADC_NORMALIZE(adc_values[GAMMA_ADC_CH]);
+	 return ADC_NORMALIZE(filter_channel(GAMMA_ADC_CH));
 }
 
 uint16_t avc__read_battery_voltage()
@@ -146,7 +161,7 @@ uint16_t avc__read_battery_voltage()
     uint16_t v_adc;
     uint16_t v_batt;
 
-    v_adc = (adc_values[BATT_ADC_CH]  *  330) / 4095;  // Adc voltage multiplied by 100
+    v_adc = (filter_channel(BATT_ADC_CH)  *  330) / 4095;  // Adc voltage multiplied by 100
     v_batt = v_adc * 11;                                // Because of voltag divider
 
     return v_batt;
@@ -155,10 +170,14 @@ uint16_t avc__read_battery_voltage()
 
 void ADC0_IRQHandler(void)
 {
-
+	uint32_t ch;
     if(LPADC_GetConvResult(ADC0, &mLpadcResultConfigStruct, 0))
     {
-        adc_values[mLpadcResultConfigStruct.commandIdSource - 1] = ((mLpadcResultConfigStruct.convValue) >> g_LpadcResultShift);
+    	ch = mLpadcResultConfigStruct.commandIdSource - 1;
+        adc_values[ch][filter_idx[ch]] = ((mLpadcResultConfigStruct.convValue) >> g_LpadcResultShift);
+        filter_idx[ch]++;
+        if(filter_idx[ch]>=FILTER_SIZE)
+        	filter_idx[ch]=0;
     }
 
     SDK_ISR_EXIT_BARRIER;

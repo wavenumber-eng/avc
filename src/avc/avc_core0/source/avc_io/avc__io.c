@@ -89,6 +89,8 @@ void avc__init()
     CLOCK_EnableClock(kCLOCK_Gpio0);
     CLOCK_EnableClock(kCLOCK_Dma0);
 
+	INIT_CYCLE_COUNTER;
+
     avc_io__uart_init();
 
     e__init();
@@ -114,16 +116,6 @@ void avc__init()
 
 	NVIC_EnableIRQ(MAILBOX_IRQn);
 
-
-//    /* Boot source for Core 1 from RAM */
-//    SYSCON->CPBOOT = ((uint32_t)(char *)CORE1_EXE_ADDRESS & SYSCON_CPBOOT_CPBOOT_MASK);
-//
-//    uint32_t temp = SYSCON->CPUCTRL;
-//    temp |= 0xc0c40000U;
-//    SYSCON->CPUCTRL = temp | SYSCON_CPUCTRL_CPU1RSTEN_MASK | SYSCON_CPUCTRL_CPU1CLKEN_MASK;
-//    SYSCON->CPUCTRL = (temp | SYSCON_CPUCTRL_CPU1CLKEN_MASK) & (~SYSCON_CPUCTRL_CPU1RSTEN_MASK);
-//
-//    (void)DEBUG("The secondary core application has been started.\r\n");
 
 
     avc_camera__init();
