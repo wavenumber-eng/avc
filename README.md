@@ -47,13 +47,14 @@ When you 1st install, you may need to install the SDK for the MCXN947.
 
 Search on *MCXN947* and select the **frdmmcxn947**
 
+![sdk_install](https://github.com/user-attachments/assets/d34c41ca-29d5-4d4e-9772-81e568718eef)
+
+<img width="1902" height="1180" alt="image" src="https://github.com/user-attachments/assets/7ff9bbf6-95fa-48ab-a4df-97c249accfb9" />
+
 ## C Import the avc_core0 project
 
 After you download/clone this repository,  you need to import the avc_core0 project:
 
-![sdk_install](https://github.com/user-attachments/assets/d34c41ca-29d5-4d4e-9772-81e568718eef)
-
-<img width="1902" height="1180" alt="image" src="https://github.com/user-attachments/assets/7ff9bbf6-95fa-48ab-a4df-97c249accfb9" />
 
 
 
