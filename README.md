@@ -4,7 +4,6 @@ This repository has source code for use with FRDM-MCXN947 and the FRDM-AVC shiel
 
 The current project uses the MCUXpresso IDE 
 
-
 # 1 Build Tooling / Installation
 
 ## A - Install MCUXPresso 25.6
@@ -56,5 +55,22 @@ Search on *MCXN947* and select the **frdmmcxn947**
 After you download/clone this repository,  you need to import the avc_core0 project:
 
 ![import](https://github.com/user-attachments/assets/0771909c-a20b-4c25-9d27-2d0dab00ed6d)
+
+
+# Flashing / Debug
+
+We are using the FRDM-MCXN947 which has a built in debugger.   The debug circuity has been flashed with Segger J-Link firmware.
+
+There are two USB ports on the FRDM-MCXN947:  Connect via this one
+
+<img width="1772" height="689" alt="image" src="https://github.com/user-attachments/assets/8567c978-2b9e-4901-a3cb-e183004bdb03" />
+
+There is a Segger Ozone project  in the folder **src/avc/avc_core0/ozone__core0.jdebug**
+
+Once the USB-C is connected you can open the .jdebug file and flash:
+
+<img width="1111" height="406" alt="image" src="https://github.com/user-attachments/assets/ac449010-4107-4206-beb9-9637ab66a6cf" />
+
+![import](https://github.com/user-attachments/assets/1b235744-7848-40bb-9d6a-ab5e3c17bd96)
 
 
