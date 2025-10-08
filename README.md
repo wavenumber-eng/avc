@@ -26,7 +26,7 @@ https://www.segger.com/products/development-tools/ozone-j-link-debugger/
 <img width="2023" height="705" alt="image" src="https://github.com/user-attachments/assets/a4a8d28b-8518-40eb-8f88-f648009a0af2" />
 
 
-# 2 Building the Start Project
+# 2 Building the Starter Project
 
 The starter project is located in **src/avc/avc_core**
 
@@ -55,6 +55,6 @@ Search on *MCXN947* and select the **frdmmcxn947**
 
 After you download/clone this repository,  you need to import the avc_core0 project:
 
-
+![import](https://github.com/user-attachments/assets/0771909c-a20b-4c25-9d27-2d0dab00ed6d)
 
 
