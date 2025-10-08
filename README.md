@@ -69,8 +69,5 @@ There is a Segger Ozone project  in the folder **src/avc/avc_core0/ozone__core0.
 
 Once the USB-C is connected you can open the .jdebug file and flash:
 
-<img width="1111" height="406" alt="image" src="https://github.com/user-attachments/assets/ac449010-4107-4206-beb9-9637ab66a6cf" />
 
-![import](https://github.com/user-attachments/assets/1b235744-7848-40bb-9d6a-ab5e3c17bd96)
-
-
+![ozone](https://github.com/user-attachments/assets/585f7a72-cef1-4a81-a63f-e5e4352e360a)
