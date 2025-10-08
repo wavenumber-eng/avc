@@ -5,9 +5,9 @@ This repository has source code for use with FRDM-MCXN947 and the FRDM-AVC shiel
 The current project uses the MCUXpresso IDE 
 
 
-# Build Tooling / Installation
+# 1 Build Tooling / Installation
 
-## Step 1 - Install MCUXPresso 25.6
+## A - Install MCUXPresso 25.6
 
 MCUXpresso is used to compile the code
 
@@ -17,7 +17,7 @@ https://www.nxp.com/design/design-center/software/development-software/mcuxpress
 
 <img width="1525" height="564" alt="image" src="https://github.com/user-attachments/assets/ecff09ee-9258-4509-b66d-6084d930b79e" />
 
-## Step 2 - Install Segger Ozone V338  (Or latest version
+## B - Install Segger Ozone V338  (Or latest version
 
 We use Segger Ozone for flashing the MCXN947 and debug
 
